@@ -1,0 +1,24 @@
+{
+  "name": "linq-typed",
+  "version": "1.0.3",
+  "description": "linq for Typescript by array prototyping",
+  "main": "index.ts",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "SkeletonSkelettron",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SkeletonSkelettron/Linq-Typed.git"
+  },
+  "keywords": [
+    "linq",
+    "typescript",
+    "prototyping"
+  ],
+  "bugs": {
+    "url": "https://github.com/SkeletonSkelettron/Linq-Typed/issues"
+  },
+  "homepage": "https://github.com/SkeletonSkelettron/Linq-Typed#readme"
+}
