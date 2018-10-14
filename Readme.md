@@ -6,7 +6,7 @@ It is Linq implementation for Typescript by array prototyping, added some functi
 Usage - just import the file anywhere you need
 
 ```javascript
-import './linq-typed'
+import 'linq-typed'
 
 ....
 let arr: anyType[];
