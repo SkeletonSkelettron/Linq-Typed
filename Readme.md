@@ -25,7 +25,7 @@ This library contains following functions:
     All(predicate: (value: T, index: number, list: T[]) => boolean): boolean;
     Any(predicate?: (value: T, index: number, list: T[]) => boolean): boolean;
     Average(transform?: (value: T, index: number, list: T[]) => any): number;
-    Cast(): any;
+    Cast<U>(): U[];
     Concat(list: T[]): T[];
     Contains(element: T): boolean;
     Count(predicate?: (value: T, index: number, list: T[]) => boolean): number;
@@ -38,48 +38,50 @@ This library contains following functions:
     First(predicate?: (value: T, index: number, list: T[]) => boolean): T;
     FirstOrDefault(predicate?: (value: T, index: number, list: T[]) => boolean): T;
     ForEach(action: (value: T, index: number, list: T[]) => any): void;
-    GroupBy(grouper: (key: T) => any, mapper: (element: T) => any): any;
-    GroupJoin<U>(list: Array<U>, key1: (k: T) => any, key2: (k: U) => any, result: (first: T, second: U[]) => any): any[];
-    GetRange(index: number, count: number): Array<T>;
+    GroupBy<TResult = T>(grouper: (key: T) => any, mapper: (element: T) => TResult): { [key: string]: TResult[] };
+    GroupJoin<U>(list: U[], key1: (k: T) => any, key2: (k: U) => any, result: (first: T, second: U[]) => any): any[];
+    GetRange(index: number, count: number): T[];
     IndexOf(element: T): number;
     Insert(index: number, element: T): void | Error;
     Intersect(source: T[]): T[];
     Join<U>(list: Array<U>, key1: (key: T) => any, key2: (key: U) => any, result: (first: T, second: U) => any): any[];
     Last(predicate?: (value: T, index: number, list: T[]) => boolean): T;
     LastOrDefault(predicate?: (value: T, index: number, list: T[]) => boolean): T;
-    Max(): T;
+    Max(selector?: (value: T, index: number, array: T[]) => number): number;
     MaxBy(keySelector: (key: T) => any): T;
-    Min(): T;
+    Min(selector?: (value: T, index: number, array: T[]) => number): number;
     MinBy(keySelector: (key: T) => any): T;
+    OfType<U>(type: any): U[];
     OrderBy(keySelector: (key: T) => any): T[];
     OrderByDescending(keySelector: (key: T) => any): T[];
-    OrderByMany(propertyExpressions: [(item1: T) => any, (item2: T) => any]): T[];
+    OrderByMany(propertyExpressions: [(item: T) => any]): T[];
     OrderByManyDescending(propertyExpressions: [(item1: T) => any, (item2: T) => any]): T[];
     ThenBy(keySelector: (key: T) => any): T[];
     ThenByDescending(keySelector: (key: T) => any): T[];
     Remove(element: T): boolean;
-    RemoveAll(predicate?: (value: T, index: number, list: T[]) => boolean): boolean;
+    RemoveAll(predicate?: (value: T, index: number, list: T[]) => boolean): T[];
     RemoveAt(index: number): void;
     RemoveRange(index: number, count: number): void;
     Reverse(): T[];
-    Select<TOut>(mapper: (value: T, index: number, list: T[]) => TOut): TOut[];
-    SelectMany<TOut extends any[]>(mapper: (value: T, index: number, list: T[]) => TOut): TOut;
+    Select<TOut>(selector: (element: T, index: number) => TOut): TOut[];
+    SelectMany<TOut extends any[]>(selector: (element: T, index: number) => TOut): TOut;
     SequenceEqual(list: T[]): boolean;
     Single(predicate?: (value: T, index: number, list: T[]) => boolean): T;
     SingleOrDefault(predicate?: (value: T, index: number, list: T[]) => boolean): T;
     Skip(amount: number): T[];
-    SkipWhile(predicate: (value: T, index?: number, list?: T[]) => boolean): T[];
+    SkipWhile(predicate: (value?: T, index?: number, list?: T[]) => boolean): T[];
     Sum(transform?: (value: T, index: number, list: T[]) => number): number;
     Take(amount: number): T[];
     TakeWhile(predicate: (value: T, index?: number, list?: T[]) => boolean): T[];
     ToArray(): T[];
-    ToDictionary<TKey, TValue>(key: (key: T) => TKey, value: (value: T) => TValue): {
-        [id: string]: TValue | T;
-    };
+    ToDictionary<TKey, TValue>(key: (key: T) => TKey, value?: (value: T) => TValue): { Key: TKey; Value: T | TValue }[];
     ToList(): T[];
     ToLookup(keySelector: (key: T) => any, elementSelector: (element: T) => any): any;
     Union(list: T[]): T[];
     Where(predicate: (value: T, index: number, list: T[]) => boolean): T[];
     Zip<U, TOut>(list: U[], result: (first: T, second: U) => TOut): TOut[];
-    _negate(predicate: (value: T, index: number, list: T[]) => boolean): () => any;
 ```
+
+## New in version 1.1.1
+
+* Bug fixes, performance  impovements. Upgrade strictly recommended
