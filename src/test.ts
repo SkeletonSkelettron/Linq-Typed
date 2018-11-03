@@ -129,6 +129,14 @@ test("Any", t => {
   t.true(pets.Any());
 });
 
+test("Append", t => {
+  const list: string[] = [];
+  list.AddRange(["hey", "what's", "up"]);
+  list.Append("ola!"); // should not add
+  t.deepEqual(list.ToArray(), ["hey", "what's", "up",]);
+  t.deepEqual(list.Append("ola!").ToArray(), ["hey", "what's", "up", "ola!"]);
+});
+
 test("Average", t => {
   const grades = [78, 92, 100, 37, 81];
   const people: IPerson[] = [
@@ -514,6 +522,7 @@ test("OrderBy", t => {
   );
 });
 
+
 test("OrderByDescending", t => {
   t.deepEqual([4, 5, 6, 3, 2, 1].OrderByDescending(x => x).ToArray(), [
     6,
@@ -711,7 +720,7 @@ test("RemoveRange", t => {
     "Gallimimus",
     "Triceratops"
   ];
-  dinosaurs.RemoveRange(2,3);
+  dinosaurs.RemoveRange(2, 3);
   t.deepEqual(dinosaurs, lessDinosaurs);
 });
 
