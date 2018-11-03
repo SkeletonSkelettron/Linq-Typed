@@ -95,6 +95,11 @@ interface Array<T> {
     Except(source: T[]): List<T>;
 
     /**
+     * Filters a sequence of values based on a predicate and returns new sequence
+     */
+    FindAll(predicate?: (value: T, index: number, list: T[]) => boolean): T[];
+
+    /**
      * Returns the first element of a sequence.
      */
     First(predicate?: (value: T, index: number, list: T[]) => boolean): T;
@@ -191,6 +196,11 @@ interface Array<T> {
     OrderByDescending(keySelector: (key: T) => any): List<T>;
 
     /**
+     * Prepends a value to the end of the sequence and returns new sequence.
+     */
+    Prepend(value: T): List<T>;
+
+    /**
      * Performs a subsequent ordering of the elements in a sequence in ascending order according to a key.
      */
     ThenBy(keySelector: (key: T) => any): List<T>;
@@ -258,6 +268,11 @@ interface Array<T> {
     Skip(amount: number): List<T>;
 
     /**
+     * Bypasses a specified number of elements at the end of a sequence and then returns the remaining elements.
+     */
+    SkipLast(amount: number): List<T>;
+
+    /**
      * Bypasses elements in a sequence as long as a specified condition is true and then returns the remaining elements.
      */
     SkipWhile(predicate: (value?: T, index?: number, list?: T[]) => boolean): List<T>;
@@ -272,6 +287,11 @@ interface Array<T> {
      * Returns a specified number of contiguous elements from the start of a sequence.
      */
     Take(amount: number): List<T>;
+
+    /**
+     * Returns a specified number of contiguous elements from the end of a sequence.
+     */
+    TakeLast(amount: number): List<T>;
 
     /**
      * Returns elements from a sequence as long as a specified condition is true.
@@ -427,6 +447,16 @@ interface Array<T> {
 
     Array.prototype.Except = function <T>(source: T[]): List<T> {
         return getArray<T>(this).Where((x: any) => !source.Contains(x));
+    };
+
+    Array.prototype.FindAll = function <T>(
+        predicate?: (value: T, index: number, list: T[]) => boolean
+    ): T[] {
+        let ret: T[] = [];
+        getArray<T>(this).filter(predicate).forEach(item => {
+            ret.push(item)
+        });
+        return ret;
     };
 
     Array.prototype.First = function <T>(
@@ -615,6 +645,15 @@ interface Array<T> {
         return new List<T>(getArray<T>(this), comparer)
     };
 
+    Array.prototype.Prepend = function <T>(value: T): List<T> {
+        const list = new List<T>();
+        list.array.push(value)
+        getArray<T>(this).ForEach(item => {
+            list.array.push(item)
+        })
+        return list
+    };
+
     Array.prototype.ThenBy = function <T>(keySelector: (key: T) => any): List<T> {
         return getArray<T>(this).OrderBy(keySelector)
     };
@@ -700,6 +739,10 @@ interface Array<T> {
         return new List<T>(getArray<T>(this).slice(Math.max(0, amount)))
     };
 
+    Array.prototype.SkipLast = function <T>(amount: number): List<T> {
+        return new List<T>(getArray<T>(this).slice(0, Math.max(0, getArray<T>(this).length - amount)))
+    };
+
     Array.prototype.SkipWhile = function <T>(
         predicate: (value?: T, index?: number, list?: T[]) => boolean
     ): List<T> {
@@ -723,6 +766,10 @@ interface Array<T> {
 
     Array.prototype.Take = function <T>(amount: number): List<T> {
         return new List<T>(getArray<T>(this).slice(0, Math.max(0, amount)))
+    };
+
+    Array.prototype.TakeLast = function <T>(amount: number): List<T> {
+        return new List<T>(getArray<T>(this).slice(getArray<T>(this).length - amount, getArray<T>(this).length))
     };
 
     Array.prototype.TakeWhile = function <T>(

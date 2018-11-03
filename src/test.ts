@@ -540,6 +540,15 @@ test("OrderByDescending", t => {
   );
 });
 
+test("Prepend", t => {
+  const list: string[] = [];
+  list.AddRange(["hey", "what's", "up"]);
+  list.Prepend("ola!"); // should not add
+  t.deepEqual(list.ToArray(), ["hey", "what's", "up",]);
+  t.deepEqual(list.Prepend("ola!").ToArray(), [ "ola!", "hey", "what's", "up"]);
+});
+
+
 test("ThenBy", t => {
   const fruits = [
     "grape",
@@ -825,6 +834,16 @@ test("Skip", t => {
   );
 });
 
+test("SkipLast", t => {
+  const grades = [59, 82, 70, 56, 92, 98, 85];
+  t.deepEqual(
+    grades
+      .SkipLast(2)
+      .ToArray(),
+    [59, 82, 70, 56, 92]
+  );
+});
+
 test("SkipWhile", t => {
   const grades = [59, 82, 70, 56, 92, 98, 85];
   t.deepEqual(
@@ -854,6 +873,16 @@ test("Take", t => {
       .Take(3)
       .ToArray(),
     [98, 92, 85]
+  );
+});
+
+test("TakeLast", t => {
+  const grades = [59, 82, 70, 56, 92, 98, 85];
+  t.deepEqual(
+    grades
+      .TakeLast(2)
+      .ToArray(),
+    [98, 85]
   );
 });
 
