@@ -7,182 +7,394 @@ https://www.npmjs.com/package/linqts
 const TimSort = require('timsort');
 
 interface Array<T> {
+    /*
+        Adds an object to the end of the List<T>.
+    */
     Add(element: T): void;
+
+    /**
+     * Adds the elements of the specified collection to the end of the List<T>.
+     */
     AddRange(elements: T[]): void;
+
+    /**
+     * Applies an accumulator function over a sequence.
+     */
     Aggregate<U>(accumulator: (accum: U, value?: T, index?: number, list?: T[]) => any, initialValue?: U): any;
+
+    /**
+     * Determines whether all elements of a sequence satisfy a condition.
+     */
     All(predicate: (value: T, index: number, list: T[]) => boolean): boolean;
+
+    /**
+     * Determines whether a sequence contains any elements.
+     */
     Any(predicate?: (value: T, index: number, list: T[]) => boolean): boolean;
+
+    /**
+     * Computes the average of a sequence of number values that are obtained by invoking
+     * a transform function on each element of the input sequence.
+     */
     Average(transform?: (value: T, index: number, list: T[]) => any): number;
+
+    /**
+     * Casts the elements of a sequence to the specified type.
+     */
     Cast<T>(): List<T>;
+
+    /**
+     * Concatenates two sequences.
+     */
     Concat(list: T[]): List<T>;
+
+    /**
+     * Determines whether an element is in the List<T>.
+     */
     Contains(element: T): boolean;
+
+    /**
+     * Returns the number of elements in a sequence.
+     */
     Count(predicate?: (value: T, index: number, list: T[]) => boolean): number;
+
+    /**
+     * Returns the elements of the specified sequence or the type parameter's default value
+     * in a singleton collection if the sequence is empty.
+     */    
     DefaultIfEmpty(defaultValue?: T): List<T>;
+
+    /**
+     * Returns distinct elements from a sequence by using the default equality comparer to compare values.
+     */    
     Distinct(): List<T>;
+
+    /**
+     * Returns distinct elements from a sequence according to specified key selector.
+     */    
     DistinctBy(keySelector: (key: T) => any): List<T>;
+
+    /**
+     * Returns the element at a specified index in a sequence.
+     */    
     ElementAt(index: number): T;
+
+    /**
+     * Returns the element at a specified index in a sequence or a default value if the index is out of range.
+     */    
     ElementAtOrDefault(index: number): T;
+
+    /**
+     * Produces the set difference of two sequences by using the default equality comparer to compare values.
+     */    
     Except(source: T[]): List<T>;
+
+    /**
+     * Returns the first element of a sequence.
+     */    
     First(predicate?: (value: T, index: number, list: T[]) => boolean): T;
+
+    /**
+     * Returns the first element of a sequence, or a default value if the sequence contains no elements.
+     */    
     FirstOrDefault(predicate?: (value: T, index: number, list: T[]) => boolean): T;
+
+    /**
+     * Performs the specified action on each element of the Array<T>.
+     */    
     ForEach(action: (value: T, index: number, list: T[]) => any): void;
+
+    /**
+     * Groups the elements of a sequence according to a specified key selector function.
+     */    
     GroupBy<TResult = T>(grouper: (key: T) => any, mapper: (element: T) => TResult): { [key: string]: TResult[] };
+
+    /**
+     * Correlates the elements of two sequences based on equality of keys and groups the results.
+     * The default equality comparer is used to compare keys.
+     */    
     GroupJoin<T>(list: T[], key1: (k: T) => any, key2: (k: T) => any, result: (first: T, second: T[]) => any): List<any>;
+
+    /*
+    * Returns sub array of array
+    */    
     GetRange(index: number, count: number): List<T>;
+
+    /**
+     * Returns the index of the first occurence of an element in the List.
+     */    
     IndexOf(element: T): number;
+
+    /**
+     * Inserts an element into the List<T> at the specified index.
+     */    
     Insert(index: number, element: T): void | Error;
+
+    /**
+     * Produces the set intersection of two sequences by using the default equality comparer to compare values.
+     */    
     Intersect(source: T[]): List<T>;
+
+    /**
+     * Correlates the elements of two sequences based on matching keys. The default equality comparer is used to compare keys.
+     */    
     Join<U>(list: Array<U>, key1: (key: T) => any, key2: (key: U) => any, result: (first: T, second: U) => any): List<any>;
+
+    /**
+     * Returns the last element of a sequence.
+     */    
     Last(predicate?: (value: T, index: number, list: T[]) => boolean): T;
+
+    /**
+     * Returns the last element of a sequence, or a default value if the sequence contains no elements.
+     */    
     LastOrDefault(predicate?: (value: T, index: number, list: T[]) => boolean): T;
+
+    /**
+     * Returns the maximum value in a generic sequence.
+     */    
     Max(selector?: (value: T, index: number, array: T[]) => number): number;
+
+    /**
+     * Returns the element with maximum value in a generic sequence.
+     */
     MaxBy(keySelector: (key: T) => any): T;
+
+    /**
+     * Returns the minimum value in a generic sequence.
+     */
     Min(selector?: (value: T, index: number, array: T[]) => number): number;
+
+    /**
+     * Returns the element with minimum value in a generic sequence.
+     */    
     MinBy(keySelector: (key: T) => any): T;
+
+    /**
+    * Filters the elements of a sequence based on a specified type.
+    */    
     OfType<T>(type: any): List<T>;
+
+    /**
+     * Sorts the elements of a sequence in ascending order according to a key.
+     */    
     OrderBy(keySelector: (key: T) => any, keyComparer?: Function): List<T>;
+
+    /**
+     * Sorts the elements of a sequence in descending order according to a key.
+     */    
     OrderByDescending(keySelector: (key: T) => any): List<T>;
+
+    /**
+     * Sorts the elements of a sequence in descending order according to a several keys.
+     */    
     OrderByMany(propertyExpressions: [(item: T) => any]): List<T>;
+
+    /**
+     * Sorts the elements of a sequence in descending order according to a key.
+     */    
     OrderByManyDescending(propertyExpressions: [(item1: T) => any, (item2: T) => any]): List<T>;
+
+    /**
+     * Performs a subsequent ordering of the elements in a sequence in ascending order according to a key.
+     */    
     ThenBy(keySelector: (key: T) => any): List<T>;
+
+    /**
+     * Performs a subsequent ordering of the elements in a sequence in descending order, according to a key.
+     */    
     ThenByDescending(keySelector: (key: T) => any): List<T>;
+
+    /**
+     * Removes the first occurrence of a specific object from the List<T>.
+     */    
     Remove(element: T): boolean;
+
+    /**
+     * Removes all the elements that match the conditions defined by the specified predicate.
+     */    
     RemoveAll(predicate?: (value: T, index: number, list: T[]) => boolean): List<T>;
+
+    /**
+     * Removes the element at the specified index of the List<T>.
+     */    
     RemoveAt(index: number): void;
+
+    /*
+     * Removes the element at the specified index of the List<T>.
+     */    
     RemoveRange(index: number, count: number): void;
+
+    /**
+     * Reverses the order of the elements in the entire List<T>.
+     */    
     Reverse(): List<T>;
-    Select<TOut>(selector: (element: T, index: number) => TOut): TOut[];
+
+
+    /**
+     * Projects each element of a sequence into a new form.
+     */    
+    Select<TOut>(selector: (element: T, index: number) => TOut): List<TOut>;
+
+    /**
+     * Projects each element of a sequence to a List<any> and flattens the resulting sequences into one sequence.
+     */    
     SelectMany<TOut extends any[]>(selector: (element: T, index: number) => TOut): TOut;
+
+    /**
+     * Determines whether two sequences are equal by comparing the elements by using the default equality comparer for their type.
+     */    
     SequenceEqual(list: T[]): boolean;
+
+    /**
+     * Returns the only element of a sequence, or a default value if the sequence is empty;
+     * this method throws an exception if there is more than one element in the sequence.
+     */    
     Single(predicate?: (value: T, index: number, list: T[]) => boolean): T;
+
+    /**
+     * Returns the only element of a sequence, and throws an exception if there is not exactly one element in the sequence.
+     */    
     SingleOrDefault(predicate?: (value: T, index: number, list: T[]) => boolean): T;
+
+    /**
+     * Bypasses a specified number of elements in a sequence and then returns the remaining elements.
+     */    
     Skip(amount: number): List<T>;
+
+    /**
+     * Bypasses elements in a sequence as long as a specified condition is true and then returns the remaining elements.
+     */    
     SkipWhile(predicate: (value?: T, index?: number, list?: T[]) => boolean): List<T>;
+
+    /**
+     * Computes the sum of the sequence of number values that are obtained by invoking
+     * a transform function on each element of the input sequence.
+     */    
     Sum(transform?: (value: T, index: number, list: T[]) => number): number;
+
+    /**
+     * Returns a specified number of contiguous elements from the start of a sequence.
+     */    
     Take(amount: number): List<T>;
+
+    /**
+     * Returns elements from a sequence as long as a specified condition is true.
+     */    
     TakeWhile(predicate: (value: T, index?: number, list?: T[]) => boolean): List<T>;
+
+    /**
+     * Copies the elements of the List<T> to a new array.
+     */    
     ToArray(): T[];
-    ToDictionary<TKey, TValue>(key: (key: T) => TKey, value?: (value: T) => TValue): { Key: TKey; Value: T | TValue }[];
+
+    /**
+     * Creates a Dictionary<TKey, TValue> from a List<T> according to a specified key selector function.
+     */    
+    ToDictionary<TKey, TValue>(key: (key: T) => TKey, value?: (value: T) => TValue): List<{ Key: TKey; Value: T }>;
+
+    /**
+     * Creates a List<T> from an Enumerable.List<T>.
+     */    
     ToList(): List<T>;
+    
+    /**
+     * Creates a Lookup<TKey, TElement> from an IEnumerable<T> according to specified key selector and element selector functions.
+     */    
     ToLookup(keySelector: (key: T) => any, elementSelector: (element: T) => any): any;
+
+    /**
+     * Produces the set union of two sequences by using the default equality comparer.
+     */    
     Union(list: T[]): List<T>;
+
+    /**
+     * Filters a sequence of values based on a predicate.
+     */    
     Where(predicate: (value: T, index: number, list: T[]) => boolean): List<T>;
+
+    /**
+     * Applies a specified function to the corresponding elements of two sequences, producing a sequence of the results.
+     */
     Zip<U, TOut>(list: U[], result: (first: T, second: U) => TOut): TOut[];
 }
 
 (function () {
 
 
-    /*
-        Adds an object to the end of the List<T>.
-    */
     Array.prototype.Add = function <T>(e: T): void {
         this instanceof List ? (this.array.push(e)) : (this.push(e));
     };
 
-    /**
-     * Adds the elements of the specified collection to the end of the List<T>.
-     */
+
     Array.prototype.AddRange = function <T>(e: T[]): void {
         for (let i = 0; i < e.length; i++) {
             this instanceof List ? (this.array.push(e)) : (this.push(e[i]));
         }
     };
 
-    /**
-     * Applies an accumulator function over a sequence.
-     */
     Array.prototype.Aggregate = function <U, T>(
         accumulator: (accum: U, value?: T, index?: number, list?: T[]) => any,
         initialValue?: U
     ): any {
-        return getArray(this).reduce(accumulator, initialValue);
+        return getArray<T>(this).reduce(accumulator, initialValue);
     };
 
-    /**
-     * Determines whether all elements of a sequence satisfy a condition.
-     */
+
     Array.prototype.All = function <T>(
         predicate: (value: T, index: number, list: T[]) => boolean
     ): boolean {
-        return getArray(this).every(predicate);
+        return getArray<T>(this).every(predicate);
     };
 
-    /**
-     * Determines whether a sequence contains any elements.
-     */
+
     Array.prototype.Any = function <T>(
         predicate?: (value: T, index: number, list: T[]) => boolean
     ): boolean {
-        return predicate ? getArray(this).some(predicate) : getArray(this).length > 0;
+        return predicate ? getArray<T>(this).some(predicate) : getArray<T>(this).length > 0;
     };
 
-    /**
-     * Computes the average of a sequence of number values that are obtained by invoking
-     * a transform function on each element of the input sequence.
-     */
     Array.prototype.Average = function <T>(
         transform?: (value: T, index: number, list: T[]) => any
     ): number {
-        return getArray(this).Sum(transform) / getArray(this).Count(transform);
+        return getArray<T>(this).Sum(transform) / getArray<T>(this).Count(transform);
     };
 
-    /**
-     * Casts the elements of a sequence to the specified type.
-     */
     Array.prototype.Cast = function <T>(): List<T> {
-        return new List<T>(getArray(this) as any)
+        return new List<T>(getArray<T>(this) as any)
     };
 
-    /**
-     * Concatenates two sequences.
-     */
     Array.prototype.Concat = function <T>(list: T[]): List<T> {
-        return new List<T>(getArray(this).concat(list));
-    };
-    /**
-     * Determines whether an element is in the List<T>.
-     */
-    Array.prototype.Contains = function <T>(element: T): boolean {
-        return getArray(this).some(x => x === element);
+        return new List<T>(getArray<T>(this).concat(getArray<T>(list)));
     };
 
-    /**
-     * Returns the number of elements in a sequence.
-     */
+    Array.prototype.Contains = function <T>(element: T): boolean {
+        return getArray<T>(this).some(x => x === element);
+    };
+
     Array.prototype.Count = function <T>(
         predicate?: (value: T, index: number, list: T[]) => boolean
     ): number {
-        let th = getArray(this)
+        let th = getArray<T>(this)
         return predicate ? th.Where(predicate).Count() : th.length;
     };
 
-    /**
-     * Returns the elements of the specified sequence or the type parameter's default value
-     * in a singleton collection if the sequence is empty.
-     */
     Array.prototype.DefaultIfEmpty = function <T>(defaultValue?: T): List<T> {
-        let th = getArray(this)
+        let th = getArray<T>(this)
         return th.Count() ? new List(th) : new List([defaultValue]);
     };
 
-    /**
-     * Returns distinct elements from a sequence by using the default equality comparer to compare values.
-     */
     Array.prototype.Distinct = function <T>(): List<T> {
-        return getArray(this).Where(
+        return getArray<T>(this).Where(
             (value, index, iter) =>
                 (isObj(value)
-                    ? findIndex(obj => equal(obj, value))(iter)
-                    : iter.indexOf(value)) === index
+                    ? iter.findIndex(obj => equal(obj, value))
+                    : iter.IndexOf(value)) === index
         );
     };
 
-    /**
-     * Returns distinct elements from a sequence according to specified key selector.
-     */
     Array.prototype.DistinctBy = function <T>(keySelector: (key: T) => any): List<T> {
-        const groups = getArray(this).GroupBy(keySelector, (obj: any) => obj);
+        const groups = getArray<T>(this).GroupBy(keySelector, (obj: any) => obj);
         const results = new List<T>([]);
         for (const index in groups) {
             if (groups.hasOwnProperty(index)) {
@@ -192,11 +404,8 @@ interface Array<T> {
         return results;
     };
 
-    /**
-     * Returns the element at a specified index in a sequence.
-     */
     Array.prototype.ElementAt = function <T>(index: number): T {
-        let th = getArray(this)
+        let th = getArray<T>(this)
         if (index < th.Count()) {
             return th[index];
         } else {
@@ -208,29 +417,18 @@ interface Array<T> {
         }
     };
 
-    /**
-     * Returns the element at a specified index in a sequence or a default value if the index is out of range.
-     */
     Array.prototype.ElementAtOrDefault = function <T>(index: number): T {
-        return getArray(this).ElementAt(index) || undefined;
+        return getArray<T>(this).ElementAt(index) || undefined;
     };
 
-    /**
-     * Produces the set difference of two sequences by using the default equality comparer to compare values.
-     */
     Array.prototype.Except = function <T>(source: T[]): List<T> {
-        return getArray(this).Where((x: any) => !source.Contains(x));
+        return getArray<T>(this).Where((x: any) => !source.Contains(x));
     };
 
-    /**
-     * Returns the first element of a sequence.
-     */
-
-    // Array.prototype.First(predicate: (value?: T, index?: number, list?: T[]) => boolean): T
     Array.prototype.First = function <T>(
         predicate?: (value: T, index: number, list: T[]) => boolean
     ): T {
-        let th = getArray(this)
+        let th = getArray<T>(this)
         if (th.Count()) {
             return predicate ? th.Where(predicate).array[0] : th[0];
         } else {
@@ -240,33 +438,24 @@ interface Array<T> {
         }
     };
 
-    /**
-     * Returns the first element of a sequence, or a default value if the sequence contains no elements.
-     */
     Array.prototype.FirstOrDefault = function <T>(
         predicate?: (value: T, index: number, list: T[]) => boolean
     ): T {
-        let th = getArray(this)
+        let th = getArray<T>(this)
         return th.Count(predicate) ? th.First(predicate) : undefined;
     };
 
-    /**
-     * Performs the specified action on each element of the List<T>.
-     */
     Array.prototype.ForEach = function <T>(action: (value: T, index: number, list: T[]) => any): void {
-        return getArray(this).forEach(action);
+        return getArray<T>(this).forEach(action);
     };
 
-    /**
-     * Groups the elements of a sequence according to a specified key selector function.
-     */
     Array.prototype.GroupBy = function <T, TResult = T>(grouper: (key: T) => string | number,
         mapper?: (element: T) => TResult): { [key: string]: TResult[] } {
         const initialValue: { [key: string]: TResult[] } = {}
         if (!mapper) {
             mapper = val => <TResult>(<any>val)
         }
-        return getArray(this).Aggregate((ac, v) => {
+        return getArray<T>(this).Aggregate((ac, v) => {
             const key = grouper(v)
             const existingGroup = ac[key]
             const mappedValue = mapper(v)
@@ -279,45 +468,32 @@ interface Array<T> {
         }, initialValue)
     };
 
-    /**
-     * Correlates the elements of two sequences based on equality of keys and groups the results.
-     * The default equality comparer is used to compare keys.
-     */
     Array.prototype.GroupJoin = function <U, T>(
-        list: List<U>,
+        list: U[],
         key1: (k: T) => any,
         key2: (k: U) => any,
-        result: (first: T, second: List<U>) => any
+        result: (first: T, second: U[]) => any
     ): List<any> {
-        return getArray(this).Select((x, y) =>
+        return getArray<T>(this).Select((x, y) =>
             result(x, list.Where(z => key1(x) === key2(z)))
         )
     };
-    /*
-    Returns sub range
-    */
 
     Array.prototype.GetRange = function <T>(index: number, count: number): List<T> {
         // tslint:disable-next-line:prefer-const
         let result: Array<T> = new Array<T>();
         for (let i = 0; i < count; i++) {
-            result.push(getArray(this)[index + i]);
+            result.push(getArray<T>(this)[index + i]);
         }
         return new List<T>(result);
     };
 
-    /**
-     * Returns the index of the first occurence of an element in the List.
-     */
     Array.prototype.IndexOf = function <T>(element: T): number {
-        return getArray(this).indexOf(element);
+        return getArray<T>(this).indexOf(element);
     };
 
-    /**
-     * Inserts an element into the List<T> at the specified index.
-     */
     Array.prototype.Insert = function <T>(index: number, element: T): void | Error {
-        let th = getArray(this)
+        let th = getArray<T>(this)
         if (index < 0 || index > th.length) {
             throw new Error('Index is out of range.');
         }
@@ -325,34 +501,25 @@ interface Array<T> {
         th.splice(index, 0, element);
     };
 
-    /**
-     * Produces the set intersection of two sequences by using the default equality comparer to compare values.
-     */
     Array.prototype.Intersect = function <T>(source: List<T>): List<T> {
-        return new List<T>(getArray(this).Where((x: any) => source.Contains(x)));
+        return new List<T>(getArray<T>(this).Where((x: any) => source.Contains(x)));
     };
 
-    /**
-     * Correlates the elements of two sequences based on matching keys. The default equality comparer is used to compare keys.
-     */
     Array.prototype.Join = function <T, U>(
         list: U[],
         key1: (key: T) => any,
         key2: (key: U) => any,
         result: (first: T, second: U) => any
     ): List<any> {
-        return new List<T>(getArray(this).SelectMany(x =>
+        return new List<T>(getArray<T>(this).SelectMany(x =>
             list.Where(y => key2(y) === key1(x)).Select(z => result(x, z))
         ))
     };
 
-    /**
-     * Returns the last element of a sequence.
-     */
     Array.prototype.Last = function <T>(
         predicate?: (value: T, index: number, list: T[]) => boolean
     ): T {
-        let th = getArray(this)
+        let th = getArray<T>(this)
         if (this.Count()) {
             return predicate ? th.Where(predicate).Last() : th[th.Count() - 1];
         } else {
@@ -361,22 +528,16 @@ interface Array<T> {
         }
     };
 
-    /**
-     * Returns the last element of a sequence, or a default value if the sequence contains no elements.
-     */
     Array.prototype.LastOrDefault = function <T>(
         predicate?: (value: T, index: number, list: T[]) => boolean
     ): T {
-        let th = getArray(this)
+        let th = getArray<T>(this)
         return th.Count(predicate) ? th.Last(predicate) : undefined;
     };
 
-    /**
-     * Returns the maximum value in a generic sequence.
-     */
     Array.prototype.Max = function <T>(selector?: (value: T, index: number, array: T[]) => number): number {
         const id = x => x
-        let th = getArray(this)
+        let th = getArray<T>(this)
         let max = selector ? selector(th[0], 0, th) : id(th[0])
         if (selector) {
             for (let i = 0; i < th.length; i++) {
@@ -390,19 +551,13 @@ interface Array<T> {
         return max;
     };
 
-    /**
-     * Returns the element with maximum value in a generic sequence.
-     */
     Array.prototype.MaxBy = function <T>(keySelector: (item: T) => any): T {
-        return getArray(this).OrderByDescending(keySelector).FirstOrDefault();
+        return getArray<T>(this).OrderByDescending(keySelector).FirstOrDefault();
     };
 
-    /**
-     * Returns the minimum value in a generic sequence.
-     */
     Array.prototype.Min = function <T>(selector?: (value: T, index: number, array: T[]) => number): number {
         const id = x => x
-        let th = getArray(this)
+        let th = getArray<T>(this)
         let min = selector ? selector(this[0], 0, this) : id(this[0])
         if (selector) {
             for (let i = 0; i < th.length; i++) {
@@ -416,19 +571,13 @@ interface Array<T> {
         return min;
     };
 
-    /**
-     * Returns the element with minimum value in a generic sequence.
-     */
     Array.prototype.MinBy = function <T>(keySelector: (item: T) => any): T {
-        return getArray(this).OrderBy(keySelector).ToArray().FirstOrDefault();
+        return getArray<T>(this).OrderBy(keySelector).ToArray().FirstOrDefault();
     };
 
-    /**
-    * Filters the elements of a sequence based on a specified type.
-    */
     Array.prototype.OfType = function <T>(type: any): List<T> {
         let typeName: string;
-        let th = getArray(this)
+        let th = getArray<T>(this)
         switch (type) {
             case Number:
                 typeName = typeof 0
@@ -452,24 +601,16 @@ interface Array<T> {
 
     }
 
-    /**
-     * Sorts the elements of a sequence in ascending order according to a key.
-     */
     Array.prototype.OrderBy = function <T>(keySelector: (key: T) => any,
         comparer = keyComparer(keySelector, false)): List<T> {
-        return new List<T>(getArray(this), comparer)
+        return new List<T>(getArray<T>(this), comparer)
     };
 
-    /**
-     * Sorts the elements of a sequence in descending order according to a key.
-     */
     Array.prototype.OrderByDescending = function <T>(keySelector: (key: T) => any,
         comparer = keyComparer(keySelector, true)): List<T> {
-        return new List<T>(getArray(this), comparer)
+        return new List<T>(getArray<T>(this), comparer)
     };
-    /**
-     * Sorts the elements of a sequence in descending order according to a several key.
-     */
+
     Array.prototype.OrderByMany = function <T>(keySelectors: [(item: T) => any]): List<T> {
         const compareFunction = (item1: any, item2: any): number => {
             for (let i = 0; i < keySelectors.length; i++) {
@@ -479,11 +620,9 @@ interface Array<T> {
                 if (keySelector(item1) < keySelector(item2)) { return -1; }
             }
         };
-        return (<List<T>>getArray(this)).sort(compareFunction);
+        return (<List<T>>getArray<T>(this)).sort(compareFunction);
     };
-    /**
-     * Sorts the elements of a sequence in descending order according to a key.
-     */
+
     Array.prototype.OrderByManyDescending = function <T>(propertyExpressions: [(item1: T) => any, (item2: T) => any]): List<T> {
         const compareFunction = (item1: any, item2: any): number => {
             for (let i = 0; i < propertyExpressions.length; i++) {
@@ -493,78 +632,52 @@ interface Array<T> {
                 if (propertyExpression(item1) < propertyExpression(item2)) { return 1; }
             }
         };
-        return (<List<T>>getArray(this)).sort(compareFunction);
+        return (<List<T>>getArray<T>(this)).sort(compareFunction);
     };
-    /**
-     * Performs a subsequent ordering of the elements in a sequence in ascending order according to a key.
-     */
+
     Array.prototype.ThenBy = function <T>(keySelector: (key: T) => any): List<T> {
-        return getArray(this).OrderBy(keySelector)
+        return getArray<T>(this).OrderBy(keySelector)
     };
 
-    /**
-     * Performs a subsequent ordering of the elements in a sequence in descending order, according to a key.
-     */
     Array.prototype.ThenByDescending = function <T>(keySelector: (key: T) => any): List<T> {
-        return getArray(this).OrderByDescending(keySelector);
+        return getArray<T>(this).OrderByDescending(keySelector);
     };
 
-    /**
-     * Removes the first occurrence of a specific object from the List<T>.
-     */
     Array.prototype.Remove = function <T>(element: T): boolean {
-        let th = getArray(this)
+        let th = getArray<T>(this)
         return th.IndexOf(element) !== -1
             ? (th.RemoveAt(th.IndexOf(element)), true)
             : false;
     };
 
-    /**
-     * Removes all the elements that match the conditions defined by the specified predicate.
-     */
     Array.prototype.RemoveAll = function <T>(
         predicate: (value?: T, index?: number, list?: T[]) => boolean
     ): List<T> {
-        return getArray(this).Where(negate(predicate))
+        return getArray<T>(this).Where(negate(predicate))
     };
 
-    /**
-     * Removes the element at the specified index of the List<T>.
-     */
     Array.prototype.RemoveAt = function <T>(index: number): List<T> {
-        return new List<T>(getArray(this).splice(index, 1));
+        return new List<T>(getArray<T>(this).splice(index, 1));
     };
 
-    /*
-     * Removes the element at the specified index of the List<T>.
-     */
     Array.prototype.RemoveRange = function <T>(index: number, count: number): List<T> {
-        return new List<T>(getArray(this).splice(index, count));
+        return new List<T>(getArray<T>(this).splice(index, count));
     };
 
-    /**
-     * Reverses the order of the elements in the entire List<T>.
-     */
     Array.prototype.Reverse = function <T>(): List<T> {
-        return new List<T>(getArray(this).reverse());
+        return new List<T>(getArray<T>(this).reverse());
     };
 
-    /**
-     * Projects each element of a sequence into a new form.
-     */
     Array.prototype.Select = function <TOut, T>(
         selector: (element: T, index: number) => TOut
-    ): TOut[] {
-        return getArray(this).map(selector);
+    ): List<TOut> {
+        return new List<TOut>(getArray<T>(this).map(selector));
     };
 
-    /**
-     * Projects each element of a sequence to a List<any> and flattens the resulting sequences into one sequence.
-     */
     Array.prototype.SelectMany = function <T, TOut extends any[]>(
         selector: (element: T, index: number) => TOut
     ): TOut {
-        let th = getArray(this)
+        let th = getArray<T>(this)
         return th.Aggregate(
             (ac, v, i) => (
                 ac.AddRange(
@@ -578,22 +691,16 @@ interface Array<T> {
         )
     };
 
-    /**
-     * Determines whether two sequences are equal by comparing the elements by using the default equality comparer for their type.
-     */
     Array.prototype.SequenceEqual = function <T>(list: T[]): boolean {
-        return !!getArray(this).reduce(
+        return !!getArray<T>(this).reduce(
             (x: any, y: any, z: any) => (list[z] === y ? x : undefined)
         );
     };
 
-    /**
-     * Returns the only element of a sequence, and throws an exception if there is not exactly one element in the sequence.
-     */
     Array.prototype.Single = function <T>(
         predicate?: (value: T, index: number, list: T[]) => boolean
     ): T {
-        let th = getArray(this)
+        let th = getArray<T>(this)
         if (th.Count(predicate) !== 1) {
             console.log('Single - ' + 'The collection does not contain exactly one element.');
             throw new Error('The collection does not contain exactly one element.');
@@ -602,31 +709,21 @@ interface Array<T> {
         }
     };
 
-    /**
-     * Returns the only element of a sequence, or a default value if the sequence is empty;
-     * this method throws an exception if there is more than one element in the sequence.
-     */
     Array.prototype.SingleOrDefault = function <T>(
         predicate?: (value: T, index: number, list: T[]) => boolean
     ): T {
-        let th = getArray(this)
+        let th = getArray<T>(this)
         return th.Count(predicate) ? th.Single(predicate) : undefined;
     };
 
-    /**
-     * Bypasses a specified number of elements in a sequence and then returns the remaining elements.
-     */
     Array.prototype.Skip = function <T>(amount: number): List<T> {
-        return new List<T>(getArray(this).slice(Math.max(0, amount)))
+        return new List<T>(getArray<T>(this).slice(Math.max(0, amount)))
     };
 
-    /**
-     * Bypasses elements in a sequence as long as a specified condition is true and then returns the remaining elements.
-     */
     Array.prototype.SkipWhile = function <T>(
         predicate: (value?: T, index?: number, list?: T[]) => boolean
     ): List<T> {
-        let th = getArray(this)
+        let th = getArray<T>(this)
         return th.Skip(
             th.Aggregate(
                 (ac, val) => (predicate(th.ElementAt(ac)) ? ++ac : ac),
@@ -635,33 +732,23 @@ interface Array<T> {
         )
     };
 
-    /**
-     * Computes the sum of the sequence of number values that are obtained by invoking
-     * a transform function on each element of the input sequence.
-     */
     Array.prototype.Sum = function <T>(
-        transform?: (value: T, index: number, list: T[]) => number
+        transform?: (value?: T, index?: number, list?: T[]) => number
     ): number {
-        let th = getArray(this)
+        let th = getArray<T>(this)
         return transform
             ? th.Select(transform).Sum()
             : th.Aggregate((ac: any, v: any) => (ac += +v), 0);
     };
 
-    /**
-     * Returns a specified number of contiguous elements from the start of a sequence.
-     */
     Array.prototype.Take = function <T>(amount: number): List<T> {
-        return new List<T>(getArray(this).slice(0, Math.max(0, amount)))
+        return new List<T>(getArray<T>(this).slice(0, Math.max(0, amount)))
     };
 
-    /**
-     * Returns elements from a sequence as long as a specified condition is true.
-     */
     Array.prototype.TakeWhile = function <T>(
         predicate: (value: T, index?: number, list?: T[]) => boolean
     ): List<T> {
-        let th = getArray(this)
+        let th = getArray<T>(this)
         return th.Take(
             th.Aggregate(
                 (ac: any) => (predicate(th.ElementAt(ac)) ? ++ac : ac),
@@ -670,22 +757,16 @@ interface Array<T> {
         );
     };
 
-    /**
-     * Copies the elements of the List<T> to a new array.
-     */
     Array.prototype.ToArray = function <T>(): T[] {
-        return getArray(this);
+        return getArray<T>(this);
     };
 
-    /**
-     * Creates a Dictionary<TKey, TValue> from a List<T> according to a specified key selector function.
-     */
     Array.prototype.ToDictionary = function <TKey, TValue, T>(
         key: (key: T) => TKey,
         value?: (value: T) => TValue
-    ): Array<{ Key: TKey; Value: T }> | Array<{ Key: TKey; Value: T | TValue }> | Array<{ Key: TKey; Value: T | TValue }> {
-        let th = getArray(this)
-        return th.Aggregate((dicc, v, i) => {
+    ): List<{ Key: TKey; Value: T }> | List<{ Key: TKey; Value: T | TValue }> {
+        let th = getArray<T>(this)
+        return new List<{ Key: TKey; Value: T | TValue }>(th.Aggregate((dicc, v, i) => {
             dicc[
                 th.Select(key)
                     .ElementAt(i)
@@ -696,66 +777,40 @@ interface Array<T> {
                 Value: value ? th.Select(value).ElementAt(i) : v
             })
             return dicc
-        }, new Array<{ Key: TKey; Value: T | TValue }>())
+        }, Array<{ Key: TKey; Value: T | TValue }>()))
     }
 
-    /**
-     * Creates a List<T> from an Enumerable.List<T>.
-     */
     Array.prototype.ToList = function <T>(): List<T> {
         return new List<T>(this);
     };
 
-    /**
-     * Creates a Lookup<TKey, TElement> from an IEnumerable<T> according to specified key selector and element selector functions.
-     */
     Array.prototype.ToLookup = function <T>(
         keySelector: (key: T) => any,
         elementSelector: (element: T) => any
     ): any {
-        return getArray(this).GroupBy(keySelector, elementSelector);
+        return getArray<T>(this).GroupBy(keySelector, elementSelector);
     };
 
-    /**
-     * Produces the set union of two sequences by using the default equality comparer.
-     */
     Array.prototype.Union = function <T>(list: T[]): List<T> {
-        return getArray(this).Concat(list).Distinct();
+        return getArray<T>(this).Concat(list).Distinct();
     };
 
-    /**
-     * Filters a sequence of values based on a predicate.
-     */
     Array.prototype.Where = function <T>(
         predicate: (value: T, index: number, list: T[]) => boolean
     ): List<T> {
-        // const t = getArray(this);
-        // const g: T[] = [];
-        // for (let i = 0; i++; i < t.length) {
-        //     if (predicate(t[i], i, t) === true) {
-        //         g.push(t[i])
-        //     }
-        // }
-        // return new List<T>(g)
-        return new List<T>(getArray(this).filter(predicate));
+        return new List<T>(getArray<T>(this).filter(predicate));
     };
 
-    /**
-     * Applies a specified function to the corresponding elements of two sequences, producing a sequence of the results.
-     */
     Array.prototype.Zip = function <T, U, TOut>(
         list: U[],
         result: (first: T, second: U) => TOut
     ): TOut[] {
-        let th = getArray(this)
+        let th = getArray<T>(this)
         return list.Count() < this.Count()
             ? list.Select((x: any, y: any) => result(th.ElementAt(y), x))
             : th.Select((x: any, y: any) => result(x, list.ElementAt(y)));
     };
 
-    /**
-     * Creates a function that negates the result of the predicate
-     */
 })();
 
 
@@ -773,16 +828,9 @@ const negate = <T>(
  */
 const isObj = <T>(x: T): boolean => typeof x === 'object'
 
-
-/**
- * Returns the index of the first item matching the predicate
- */
-const findIndex = f => xs => xs.reduceRight((x, y, i) => (f(y) ? i : x))
-
-
-const getArray = (
-    obj
-)  => {
+const getArray = function <T>(
+    obj: List<T> | Array<T>
+): Array<T> {
     return (obj instanceof List ? (obj.array) : (obj))
 }
 
@@ -841,7 +889,7 @@ class List<T> extends Array<T> {
      */
     public ThenBy(keySelector: (key: T) => any): List<T> {
         return new List<T>(
-            getArray(this),
+            getArray<T>(this),
             composeComparers(this._comparer, keyComparer(keySelector, false))
         )
     }
@@ -852,7 +900,7 @@ class List<T> extends Array<T> {
      */
     public ThenByDescending(keySelector: (key: T) => any): List<T> {
         return new List<T>(
-            getArray(this),
+            getArray<T>(this),
             composeComparers(this._comparer, keyComparer(keySelector, true))
         )
     }

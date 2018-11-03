@@ -222,11 +222,13 @@ test("Distinct", t => {
     new Pet({ Age: 1, Name: "Whiskers" }),
     new Pet({ Age: 1, Name: "Whiskers" }),
     new Pet({ Age: 8, Name: "Barley" }),
-    new Pet({ Age: 8, Name: "Barley" })
+    new Pet({ Age: 8, Name: "Barley" }),
+    new Pet({ Age: 81, Name: "Barley1" })
   ];
   const expected = [
     new Pet({ Age: 1, Name: "Whiskers" }),
-    new Pet({ Age: 8, Name: "Barley" })
+    new Pet({ Age: 8, Name: "Barley" }),
+    new Pet({ Age: 81, Name: "Barley1" })
   ];
   t.deepEqual(ages.Distinct().ToArray(), [21, 46, 55, 17]);
   t.deepEqual(pets.Distinct().ToArray(), expected);
@@ -402,8 +404,8 @@ test("Join", t => {
   const whiskers = new Pet({ Name: "Whiskers", Owner: charlotte });
   const daisy = new Pet({ Name: "Daisy", Owner: magnus });
 
-  const people:Person[] = ([magnus, terry, charlotte]);
-  const pets:Pet[] = [barley, boots, whiskers, daisy];
+  const people: Person[] = ([magnus, terry, charlotte]);
+  const pets: Pet[] = [barley, boots, whiskers, daisy];
 
   // create a list of Person-Pet pairs where
   // each element is an anonymous type that contains a
@@ -691,6 +693,28 @@ test("RemoveAt", t => {
   t.deepEqual(dinosaurs, lessDinosaurs);
 });
 
+test("RemoveRange", t => {
+  const dinosaurs = [
+    "Compsognathus",
+    "Amargasaurus",
+    "Oviraptor",
+    "Velociraptor",
+    "Deinonychus",
+    "Dilophosaurus",
+    "Gallimimus",
+    "Triceratops"
+  ];
+  const lessDinosaurs = [
+    "Compsognathus",
+    "Amargasaurus",
+    "Dilophosaurus",
+    "Gallimimus",
+    "Triceratops"
+  ];
+  dinosaurs.RemoveRange(2,3);
+  t.deepEqual(dinosaurs, lessDinosaurs);
+});
+
 test("Reverse", t => {
   t.deepEqual([1, 2, 3, 4, 5].Reverse().ToArray(), [5, 4, 3, 2, 1]);
 });
@@ -850,17 +874,21 @@ test("ToDictionary", t => {
     { Age: 25, Name: "Alice" },
     { Age: 50, Name: "Bob" }
   ];
-  const dictionary = people.ToDictionary(x => x.Name);
+  const dictionary = people.ToDictionary(x => x.Name).ToArray();
   t.deepEqual(dictionary["Bob"], { Age: 50, Name: "Bob" });
   t.is(dictionary["Bob"].Age, 50);
-  const dictionary2 = people.ToDictionary(x => x.Name, y => y.Age);
+  const dictionary2 = people.ToDictionary(x => x.Name, y => y.Age).ToArray();
   t.is(dictionary2["Alice"], 25);
   // Dictionary should behave just like in C#
-  // t.is(dictionary.Max(x => x.Value.Age), 50)
-  // t.is(dictionary.Min(x => x.Value.Age), 15)
+  const knum = dictionary.Max(x => x.Value.Age);
+  const kage = dictionary.Min(x => x.Value.Age);
+  t.is(knum, 50)
+  t.is(kage, 15)
   const expectedKeys = ["Cathy", "Alice", "Bob"];
-  t.deepEqual(dictionary.Select(x => x.Key), expectedKeys);
-  t.deepEqual(dictionary.Select(x => x.Value), people);
+  const kkey = dictionary.Select(x => x.Key).ToArray();
+  const kvalue = dictionary.Select(x => x.Value).ToArray();
+  t.deepEqual(kkey, expectedKeys);
+  t.deepEqual(kvalue, people);
 });
 
 test("ToList", t => {
@@ -919,9 +947,9 @@ test("Union", t => {
   t.deepEqual(ints1.Union(ints2).ToArray(), [5, 3, 9, 7, 8, 6, 4, 1, 0]);
 
   const result = [
-    { Name: "apple", Code: 9 },
-    { Name: "orange", Code: 4 },
-    { Name: "lemon", Code: 12 }
+    new Product({ Name: "apple", Code: 9 }),
+    new Product({ Name: "orange", Code: 4 }),
+    new Product({ Name: "lemon", Code: 12 })
   ];
   const store1 = [
     new Product({ Name: "apple", Code: 9 }),
