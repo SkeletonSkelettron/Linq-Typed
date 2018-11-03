@@ -396,6 +396,41 @@ test("Insert", t => {
   );
 });
 
+test("InsertRange", t => {
+  const pets = [
+    new Pet({ Age: 10, Name: "Barley" }),
+    new Pet({ Age: 4, Name: "Boots" }),
+    new Pet({ Age: 6, Name: "Whiskers" })
+  ];
+
+  const result = [
+    new Pet({ Age: 10, Name: "Barley" }),
+    new Pet({ Age: 13, Name: "Max1" }),
+    new Pet({ Age: 14, Name: "Max2" }),
+    new Pet({ Age: 4, Name: "Boots" }),
+    new Pet({ Age: 6, Name: "Whiskers" }),
+
+  ];
+
+  let newPetArr = [
+    new Pet({ Age: 13, Name: "Max1" }),
+    new Pet({ Age: 14, Name: "Max2" })
+  ];
+
+  pets.InsertRange(1, newPetArr);
+
+  t.deepEqual(
+    pets,
+    result
+  );
+
+  t.throws(() => pets.InsertRange(-1, newPetArr), /Index is out of range./);
+  t.throws(
+    () => pets.InsertRange(pets.Count() + 1, newPetArr),
+    /Index is out of range./
+  );
+});
+
 test("Intersect", t => {
   const id1 = [44, 26, 92, 30, 71, 38];
   const id2 = [39, 59, 83, 47, 26, 4, 30];
@@ -545,7 +580,7 @@ test("Prepend", t => {
   list.AddRange(["hey", "what's", "up"]);
   list.Prepend("ola!"); // should not add
   t.deepEqual(list.ToArray(), ["hey", "what's", "up",]);
-  t.deepEqual(list.Prepend("ola!").ToArray(), [ "ola!", "hey", "what's", "up"]);
+  t.deepEqual(list.Prepend("ola!").ToArray(), ["ola!", "hey", "what's", "up"]);
 });
 
 

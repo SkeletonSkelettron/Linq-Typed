@@ -141,6 +141,11 @@ interface Array<T> {
     Insert(index: number, element: T): void | Error;
 
     /**
+     * Inserts an element into the List<T> at the specified index.
+     */
+    InsertRange(index: number, array: T[]): void | Error;
+
+    /**
      * Produces the set intersection of two sequences by using the default equality comparer to compare values.
      */
     Intersect(source: T[]): List<T>;
@@ -533,6 +538,16 @@ interface Array<T> {
         }
 
         th.splice(index, 0, element);
+    };
+
+    Array.prototype.InsertRange = function <T>(index: number, array: T[]): void | Error {
+        let th = getArray<T>(this)
+        if (index < 0 || index > th.length) {
+            throw new Error('Index is out of range.');
+        }
+        for (let i = 0; i < array.length; i++) {
+            th.splice(index + i, 0, array[i]);
+        }
     };
 
     Array.prototype.Intersect = function <T>(source: List<T>): List<T> {
