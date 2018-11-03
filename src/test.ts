@@ -129,6 +129,14 @@ test("Any", t => {
   t.true(pets.Any());
 });
 
+test("Append", t => {
+  const list: string[] = [];
+  list.AddRange(["hey", "what's", "up"]);
+  list.Append("ola!"); // should not add
+  t.deepEqual(list.ToArray(), ["hey", "what's", "up",]);
+  t.deepEqual(list.Append("ola!").ToArray(), ["hey", "what's", "up", "ola!"]);
+});
+
 test("Average", t => {
   const grades = [78, 92, 100, 37, 81];
   const people: IPerson[] = [
@@ -514,6 +522,7 @@ test("OrderBy", t => {
   );
 });
 
+
 test("OrderByDescending", t => {
   t.deepEqual([4, 5, 6, 3, 2, 1].OrderByDescending(x => x).ToArray(), [
     6,
@@ -530,6 +539,15 @@ test("OrderByDescending", t => {
     ["Griechenland", "Deutschland", "Agypten"]
   );
 });
+
+test("Prepend", t => {
+  const list: string[] = [];
+  list.AddRange(["hey", "what's", "up"]);
+  list.Prepend("ola!"); // should not add
+  t.deepEqual(list.ToArray(), ["hey", "what's", "up",]);
+  t.deepEqual(list.Prepend("ola!").ToArray(), [ "ola!", "hey", "what's", "up"]);
+});
+
 
 test("ThenBy", t => {
   const fruits = [
@@ -711,7 +729,7 @@ test("RemoveRange", t => {
     "Gallimimus",
     "Triceratops"
   ];
-  dinosaurs.RemoveRange(2,3);
+  dinosaurs.RemoveRange(2, 3);
   t.deepEqual(dinosaurs, lessDinosaurs);
 });
 
@@ -816,6 +834,16 @@ test("Skip", t => {
   );
 });
 
+test("SkipLast", t => {
+  const grades = [59, 82, 70, 56, 92, 98, 85];
+  t.deepEqual(
+    grades
+      .SkipLast(2)
+      .ToArray(),
+    [59, 82, 70, 56, 92]
+  );
+});
+
 test("SkipWhile", t => {
   const grades = [59, 82, 70, 56, 92, 98, 85];
   t.deepEqual(
@@ -845,6 +873,16 @@ test("Take", t => {
       .Take(3)
       .ToArray(),
     [98, 92, 85]
+  );
+});
+
+test("TakeLast", t => {
+  const grades = [59, 82, 70, 56, 92, 98, 85];
+  t.deepEqual(
+    grades
+      .TakeLast(2)
+      .ToArray(),
+    [98, 85]
   );
 });
 
