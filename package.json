@@ -1,6 +1,6 @@
 {
   "name": "linq-typed",
-  "version": "1.2.1",
+  "version": "1.2.4",
   "description": "linq for Typescript by array prototyping",
   "main": "index.ts",
   "scripts": {

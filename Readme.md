@@ -84,7 +84,7 @@ This library contains following functions:
     Zip<U, TOut>(list: U[], result: (first: T, second: U) => TOut): TOut[];
 ```
 
-## New in version 1.2.1
+## New in version 1.2.4
 
 * Breaking changes. Now all array functions require .ToArray() for getting results, just like in c#. + Added new functions, Append, InserRange, SkipLast, TakeLast. Bug fixes, performance  impovements. TimSort is no default sorting algorithm. Upgrade strictly recommended.
 
