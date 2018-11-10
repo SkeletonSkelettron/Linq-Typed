@@ -1,5 +1,6 @@
 import test from "ava";
 import "./index.js";
+'use strict';
 
 interface IPackage {
   Company: string;
