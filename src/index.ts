@@ -141,6 +141,11 @@ interface Array<T> {
     Insert(index: number, element: T): void | Error;
 
     /**
+     * Inserts an element into the List<T> at the specified index.
+     */
+    InsertRange(index: number, array: T[]): void | Error;
+
+    /**
      * Produces the set intersection of two sequences by using the default equality comparer to compare values.
      */
     Intersect(source: T[]): List<T>;
@@ -234,7 +239,6 @@ interface Array<T> {
      * Reverses the order of the elements in the entire List<T>.
      */
     Reverse(): List<T>;
-
 
     /**
      * Projects each element of a sequence into a new form.
@@ -334,17 +338,18 @@ interface Array<T> {
     Zip<U, TOut>(list: U[], result: (first: T, second: U) => TOut): TOut[];
 }
 
-(function () {
+
 
 
     Array.prototype.Add = function <T>(e: T): void {
-        this instanceof List ? (this.array.push(e)) : (this.push(e));
+        getArray<T>(this).push(e);
     };
 
 
     Array.prototype.AddRange = function <T>(e: T[]): void {
+        const t = getArray<T>(this);
         for (let i = 0; i < e.length; i++) {
-            this instanceof List ? (this.array.push(e)) : (this.push(e[i]));
+            t.push(e[i]);
         }
     };
 
@@ -533,6 +538,16 @@ interface Array<T> {
         }
 
         th.splice(index, 0, element);
+    };
+
+    Array.prototype.InsertRange = function <T>(index: number, array: T[]): void | Error {
+        let th = getArray<T>(this)
+        if (index < 0 || index > th.length) {
+            throw new Error('Index is out of range.');
+        }
+        for (let i = 0; i < array.length; i++) {
+            th.splice(index + i, 0, array[i]);
+        }
     };
 
     Array.prototype.Intersect = function <T>(source: List<T>): List<T> {
@@ -838,8 +853,6 @@ interface Array<T> {
             : th.Select((x: any, y: any) => result(x, list.ElementAt(y)));
     };
 
-})();
-
 
 
 /**
@@ -934,3 +947,27 @@ class List<T> extends Array<T> {
         )
     }
 }
+
+class Enumerable {
+    /**
+     * Generates a sequence of integral numbers within a specified range.
+     */
+    public static Range(start: number, count: number): List<number> {
+      let result = new List<number>()
+      while (count--) {
+        result.Add(start++)
+      }
+      return result
+    }
+  
+    /**
+     * Generates a sequence that contains one repeated value.
+     */
+    public static Repeat<T>(element: T, count: number): List<T> {
+      let result = new List<T>()
+      while (count--) {
+        result.Add(element)
+      }
+      return result
+    }
+  }
