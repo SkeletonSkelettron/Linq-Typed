@@ -177,7 +177,7 @@ test("Concat", t => {
   t.deepEqual(
     cats
       .Select(cat => cat.Name)
-      .Concat(dogs.Select(dog => dog.Name))
+      .Concat(dogs.Select(dog => dog.Name).ToArray())
       .ToArray(),
     expected
   );
@@ -436,6 +436,8 @@ test("Intersect", t => {
   const id1 = [44, 26, 92, 30, 71, 38];
   const id2 = [39, 59, 83, 47, 26, 4, 30];
   t.is(id1.Intersect(id2).Sum(x => x), 56);
+  const expected = [26, 30];
+  t.deepEqual(id1.Intersect(id2).ToArray(), expected);
 });
 
 test("Join", t => {
