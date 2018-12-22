@@ -84,6 +84,10 @@ This library contains following functions:
     Zip<U, TOut>(list: U[], result: (first: T, second: U) => TOut): TOut[];
 ```
 
+## New in version 1.2.6
+
+* Bug fixes in RemoveAll() function
+
 ## New in version 1.2.5
 
 * Bug fixes

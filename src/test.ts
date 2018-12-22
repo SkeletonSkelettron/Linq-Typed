@@ -722,7 +722,11 @@ test("RemoveAll", t => {
     "Gallimimus",
     "Triceratops"
   ];
+  const num1 = [5,7, 8, 17, 9, 10, 11, 0, 2, 3, 4];
+  const num2 = [17, 10, 11];
   t.deepEqual(dinosaurs.RemoveAll(x => x.endsWith("saurus")).ToArray(), lessDinosaurs);
+  t.deepEqual(num1.RemoveAll(x => x < 10).ToArray(), num2);
+  t.deepEqual(num2.RemoveAll().ToArray(), []);
 });
 
 test("RemoveAt", t => {

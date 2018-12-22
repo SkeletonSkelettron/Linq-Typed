@@ -680,9 +680,19 @@ Array.prototype.Remove = function <T>(element: T): boolean {
 };
 
 Array.prototype.RemoveAll = function <T>(
-    predicate: (value?: T, index?: number, list?: T[]) => boolean
+    predicate?: (value?: T, index?: number, list?: T[]) => boolean
 ): List<T> {
-    return this.Where(negate(predicate))
+    if (predicate) {
+        const arr = getArray<T>(this);
+         for (let i = 0; i < arr.length; i++) {
+            if (predicate(arr[i])) {
+                arr.splice(i, 1);
+                i--;
+            }
+        }
+        return new List<T>(arr);
+    }
+    return new List<T>();
 };
 
 Array.prototype.RemoveAt = function <T>(index: number): List<T> {
@@ -840,14 +850,6 @@ Array.prototype.Zip = function <T, U, TOut>(
         : this.Select((x: any, y: any) => result(x, list.ElementAt(y)));
 };
 
-
-
-/**
- * Creates a function that negates the result of the predicate
- */
-const negate = <T>(
-    predicate: (value?: T, index?: number, list?: T[]) => boolean
-): any => (...args) => !predicate(...args)
 
 
 /**
