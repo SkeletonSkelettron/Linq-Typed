@@ -1,6 +1,6 @@
 {
   "name": "linq-typed",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "linq for Typescript by array prototyping",
   "main": "index.ts",
   "umd:main": "dist/linq-typed/index.umd.js",
