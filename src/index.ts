@@ -515,8 +515,7 @@ Array.prototype.GroupJoin = function <U, T>(
 };
 
 Array.prototype.GetRange = function <T>(index: number, count: number): List<T> {
-    // tslint:disable-next-line:prefer-const
-    let result: Array<T> = new Array<T>();
+    const result: Array<T> = new Array<T>();
     for (let i = 0; i < count; i++) {
         result.push(getArray<T>(this)[index + i]);
     }
@@ -634,7 +633,7 @@ Array.prototype.OfType = function <T>(type: any): List<T> {
             typeName = typeof true
             break
         case Function:
-            typeName = typeof function () { } // tslint:disable-line no-empty
+            typeName = typeof function () { }
             break
         default:
             typeName = null
@@ -643,7 +642,6 @@ Array.prototype.OfType = function <T>(type: any): List<T> {
     return typeName === null
         ? th.Where(x => x instanceof type).Cast()
         : th.Where(x => typeof x === typeName).Cast()
-
 }
 
 Array.prototype.OrderBy = function <T>(keySelector: (key: T) => any,
