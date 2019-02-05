@@ -1,5 +1,5 @@
 import test from "ava";
-import "./operators/index.js";
+import "./Index.js";
 'use strict';
 
 interface IPackage {
