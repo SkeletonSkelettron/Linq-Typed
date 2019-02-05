@@ -1,5 +1,4 @@
-﻿
-export * from './operators/Add'
+﻿export * from './operators/Add'
 export * from './operators/AddRange'
 export * from './operators/Aggregate'
 export * from './operators/All'
