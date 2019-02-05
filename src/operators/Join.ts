@@ -2,7 +2,7 @@ import { List } from '../list';
 
 export { }
 
-declare global { // to access the global type String
+declare global {
     interface Array<T> {
         /**
          * Correlates the elements of two sequences based on matching keys. The default equality comparer is used to compare keys.

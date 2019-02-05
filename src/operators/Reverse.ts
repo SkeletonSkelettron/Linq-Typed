@@ -1,9 +1,9 @@
 import { List } from '../list';
-import { getArray } from '../utility-fucntions/getArray';
+import { getArray } from '../utility-functions/getArray';
 
 export { }
 
-declare global { // to access the global type String
+declare global {
     interface Array<T> {
         /**
          * Reverses the order of the elements in the entire List<T>.

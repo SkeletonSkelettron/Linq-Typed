@@ -1,9 +1,9 @@
 import { List } from '../list';
-import { getArray } from '../utility-fucntions/getArray';
+import { getArray } from '../utility-functions/getArray';
 
 export { }
 
-declare global { // to access the global type String
+declare global {
     interface Array<T> {
         /**
          * Bypasses a specified number of elements in a sequence and then returns the remaining elements.

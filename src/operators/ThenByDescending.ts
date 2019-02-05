@@ -2,7 +2,7 @@ import { List } from '../list';
 
 export { }
 
-declare global { // to access the global type String
+declare global {
     interface Array<T> {
         /**
          * Performs a subsequent ordering of the elements in a sequence in descending order, according to a key.

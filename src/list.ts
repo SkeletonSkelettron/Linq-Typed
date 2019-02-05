@@ -1,6 +1,6 @@
-import { getArray } from "./utility-fucntions/getArray";
-import { composeComparers } from "./utility-fucntions/composeComparers";
-import { keyComparer } from "./utility-fucntions/keyComparer";
+import { getArray } from "./utility-functions/getArray";
+import { composeComparers } from "./utility-functions/composeComparers";
+import { keyComparer } from "./utility-functions/keyComparer";
 'use strict';
 
 // import TimSort = require('timsort');

@@ -1,9 +1,9 @@
-import { getArray } from "../utility-fucntions/getArray";
+import { getArray } from "../utility-functions/getArray";
 import { List } from '../list';
 
 export { }
 
-declare global { // to access the global type String
+declare global {
     interface Array<T> {
         /**
          * Adds the elements of the specified collection to the end of the List<T>.

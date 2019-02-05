@@ -2,7 +2,7 @@ import { List } from '../list';
 
 export { }
 
-declare global { // to access the global type String
+declare global {
     interface Array<T> {
         /**
          * Creates a Lookup<TKey, TElement> from an IEnumerable<T> according to specified key selector and element selector functions.

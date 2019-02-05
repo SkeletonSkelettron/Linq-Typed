@@ -2,7 +2,7 @@ import { List } from '../list';
 
 export { }
 
-declare global { // to access the global type String
+declare global {
     interface Array<T> {
         /**
          * Bypasses elements in a sequence as long as a specified condition is true and then returns the remaining elements.

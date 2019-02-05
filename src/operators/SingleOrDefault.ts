@@ -2,7 +2,7 @@ import { List } from '../list';
 
 export { }
 
-declare global { // to access the global type String
+declare global {
     interface Array<T> {
         /**
          * Returns the only element of a sequence, and throws an exception if there is not exactly one element in the sequence.

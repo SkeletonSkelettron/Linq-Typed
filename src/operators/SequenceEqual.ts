@@ -1,9 +1,9 @@
 import { List } from '../list';
-import { getArray } from '../utility-fucntions/getArray';
+import { getArray } from '../utility-functions/getArray';
 
 export { }
 
-declare global { // to access the global type String
+declare global {
     interface Array<T> {
         /**
          * Determines whether two sequences are equal by comparing the elements by using the default equality comparer for their type.

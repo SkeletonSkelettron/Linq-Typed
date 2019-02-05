@@ -1,9 +1,8 @@
-import { getArray } from "../utility-fucntions/getArray";
 import { List } from '../list';
 
 export { }
 
-declare global { // to access the global type String
+declare global {
     interface Array<T> {
         /**
          * Returns the elements of the specified sequence or the type parameter's default value

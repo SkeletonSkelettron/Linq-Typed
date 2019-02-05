@@ -1,11 +1,10 @@
-import { getArray } from "../utility-fucntions/getArray";
 import { List } from '../list';
-import { isObj } from "../utility-fucntions/isObj";
-import { equal } from "../utility-fucntions/equal";
+import { isObj } from "../utility-functions/isObj";
+import { equal } from "../utility-functions/equal";
 
 export { }
 
-declare global { // to access the global type String
+declare global {
     interface Array<T> {
         /**
          * Returns distinct elements from a sequence by using the default equality comparer to compare values.

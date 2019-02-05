@@ -1,10 +1,10 @@
 import { List } from '../list';
-import { keyComparer } from '../utility-fucntions/keyComparer';
-import { getArray } from '../utility-fucntions/getArray';
+import { keyComparer } from '../utility-functions/keyComparer';
+import { getArray } from '../utility-functions/getArray';
 
 export { }
 
-declare global { // to access the global type String
+declare global {
     interface Array<T> {
         /**
          * Sorts the elements of a sequence in descending order according to a key.

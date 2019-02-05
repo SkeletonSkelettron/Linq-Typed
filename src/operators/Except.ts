@@ -1,9 +1,8 @@
-import { getArray } from "../utility-fucntions/getArray";
 import { List } from '../list';
 
 export { }
 
-declare global { // to access the global type String
+declare global {
     interface Array<T> {
         /**
          * Produces the set difference of two sequences by using the default equality comparer to compare values.
