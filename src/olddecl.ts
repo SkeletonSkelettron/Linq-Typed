@@ -3,20 +3,11 @@
 
 
 
-    /**
-     * Casts the elements of a sequence to the specified type.
-     */
-    Cast<T>(): List<T>;
 
-    /**
-     * Concatenates two sequences.
-     */
-    Concat(list: T[]): List<T>;
 
-    /**
-     * Determines whether an element is in the List<T>.
-     */
-    Contains(element: T): boolean;
+
+
+
 
     /**
      * Returns the number of elements in a sequence.

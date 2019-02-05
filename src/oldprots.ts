@@ -1,16 +1,10 @@
 
 
-Array.prototype.Cast = function <T>(): List<T> {
-    return new List<T>(getArray<T>(this) as any)
-};
 
-Array.prototype.Concat = function <T>(list: T[]): List<T> {
-    return new List<T>(getArray<T>(this).concat(list));
-};
 
-Array.prototype.Contains = function <T>(element: T): boolean {
-    return getArray<T>(this).some(x => x === element);
-};
+
+
+
 
 Array.prototype.Count = function <T>(
     predicate?: (value: T, index: number, list: T[]) => boolean

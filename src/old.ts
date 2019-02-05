@@ -9,15 +9,9 @@ const TimSort = require('timsort');
 interface Array<T> {
 
 
-     Cast<T>() {
-         return this._array.Cast<T>()
-     }
-     Concat(list: T[]) {
-         return this._array.Concat(list);
-     }
-     Contains(element: T) {
-         return this._array.Contains(element);
-     }
+
+
+
      Count(predicate?: (value: T, index: number, list: T[]) => boolean) {
          return this._array.Count(predicate);
      }
