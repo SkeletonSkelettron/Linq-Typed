@@ -1,5 +1,5 @@
 import test from "ava";
-import "./index.js";
+import "./operators/index.js";
 'use strict';
 
 interface IPackage {
@@ -722,7 +722,7 @@ test("RemoveAll", t => {
     "Gallimimus",
     "Triceratops"
   ];
-  const num1 = [5,7, 8, 17, 9, 10, 11, 0, 2, 3, 4];
+  const num1 = [5, 7, 8, 17, 9, 10, 11, 0, 2, 3, 4];
   const num2 = [17, 10, 11];
   t.deepEqual(dinosaurs.RemoveAll(x => x.endsWith("saurus")).ToArray(), lessDinosaurs);
   t.deepEqual(num1.RemoveAll(x => x < 10).ToArray(), num2);
