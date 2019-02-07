@@ -1,6 +1,3 @@
-import { getArray } from "./utility-fucntions/getArray";
-import { List } from './list';
-
 export { }
 
 declare global { // to access the global type String
@@ -16,15 +13,5 @@ Array.prototype.Aggregate = function <U, T>(
     accumulator: (accum: U, value?: T, index?: number, list?: T[]) => any,
     initialValue?: U
 ): any {
-    return getArray<T>(this).reduce(accumulator, initialValue);
+    return this.reduce(accumulator, initialValue);
 };
-
-declare module './list' {
-    interface List<T> {
-        Aggregate<U>(accumulator: (accum: U, value?: T, index?: number, list?: T[]) => any, initialValue?: U): any;
-    }
-}
-
-List.prototype.Aggregate = function <U,T>(accumulator: (accum: U, value?: T, index?: number, list?: T[]) => any, initialValue?: U) {
-    return this._array.Aggregate(accumulator, initialValue);
-}

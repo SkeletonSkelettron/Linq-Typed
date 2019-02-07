@@ -1,6 +1,3 @@
-import { getArray } from "./utility-fucntions/getArray";
-import { List } from './list';
-
 export { }
 
 declare global { // to access the global type String
@@ -13,15 +10,5 @@ declare global { // to access the global type String
 }
 
 Array.prototype.Add = function <T>(e: T): void {
-    getArray<T>(this).push(e);
+    this.push(e);
 };
-
-declare module './list' {
-    interface List<T> {
-        Add(element: T): void;
-    }
-}
-
-List.prototype.Add = function <T>(element: T) {
-    return this._array.Add(element);
-}
