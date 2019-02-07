@@ -1,6 +1,6 @@
 import test from "ava";
 import "../src/Index.ts";
-'use strict';
+"use strict";
 interface IPackage {
   Company: string;
   Weight: number;
@@ -67,7 +67,7 @@ class Dog extends Pet {
 }
 
 class PetOwner {
-  constructor(public Name: string, public Pets: Pet[]) { }
+  constructor(public Name: string, public Pets: Pet[]) {}
 }
 
 class Product implements IProduct {

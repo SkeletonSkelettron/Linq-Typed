@@ -1,6 +1,6 @@
 import { getArray } from './utility-functions/getArray';
 import { List } from './list';
-export { }
+export default {}
 
 declare global {
     interface Array<T> {

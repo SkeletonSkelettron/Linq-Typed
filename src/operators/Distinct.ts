@@ -2,7 +2,7 @@ import { List } from './list';
 import { isObj } from './utility-functions/isObj';
 import { equal } from './utility-functions/equal';
 
-export { }
+export default {}
 
 declare global {
     interface Array<T> {

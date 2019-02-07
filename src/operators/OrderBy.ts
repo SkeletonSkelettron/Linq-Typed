@@ -2,7 +2,7 @@ import { List } from './list';
 import { getArray } from './utility-functions/getArray';
 import { keyComparer } from './utility-functions/keyComparer';
 
-export { }
+export default {}
 
 declare global {
     interface Array<T> {

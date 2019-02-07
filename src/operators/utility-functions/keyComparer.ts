@@ -1,3 +1,5 @@
+import { compare } from "./compare";
+
 export const keyComparer = <T>(
     _keySelector: (key: T) => any,
     descending?: boolean

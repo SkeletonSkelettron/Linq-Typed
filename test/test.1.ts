@@ -1,6 +1,6 @@
 import test from "ava";
 import ".src/Index";
-'use strict';
+"use strict";
 
 interface IPackage {
   Company: string;
@@ -68,7 +68,7 @@ class Dog extends Pet {
 }
 
 class PetOwner {
-  constructor(public Name: string, public Pets: Pet[]) { }
+  constructor(public Name: string, public Pets: Pet[]) {}
 }
 
 class Product implements IProduct {
@@ -134,7 +134,7 @@ test("Append", t => {
   const list: string[] = [];
   list.AddRange(["hey", "what's", "up"]);
   list.Append("ola!"); // should not add
-  t.deepEqual(list.ToArray(), ["hey", "what's", "up",]);
+  t.deepEqual(list.ToArray(), ["hey", "what's", "up"]);
   t.deepEqual(list.Append("ola!").ToArray(), ["hey", "what's", "up", "ola!"]);
 });
 
@@ -409,8 +409,7 @@ test("InsertRange", t => {
     new Pet({ Age: 13, Name: "Max1" }),
     new Pet({ Age: 14, Name: "Max2" }),
     new Pet({ Age: 4, Name: "Boots" }),
-    new Pet({ Age: 6, Name: "Whiskers" }),
-
+    new Pet({ Age: 6, Name: "Whiskers" })
   ];
 
   let newPetArr = [
@@ -420,10 +419,7 @@ test("InsertRange", t => {
 
   pets.InsertRange(1, newPetArr);
 
-  t.deepEqual(
-    pets,
-    result
-  );
+  t.deepEqual(pets, result);
 
   t.throws(() => pets.InsertRange(-1, newPetArr), /Index is out of range./);
   t.throws(
@@ -450,7 +446,7 @@ test("Join", t => {
   const whiskers = new Pet({ Name: "Whiskers", Owner: charlotte });
   const daisy = new Pet({ Name: "Daisy", Owner: magnus });
 
-  const people: Person[] = ([magnus, terry, charlotte]);
+  const people: Person[] = [magnus, terry, charlotte];
   const pets: Pet[] = [barley, boots, whiskers, daisy];
 
   // create a list of Person-Pet pairs where
@@ -560,7 +556,6 @@ test("OrderBy", t => {
   );
 });
 
-
 test("OrderByDescending", t => {
   t.deepEqual([4, 5, 6, 3, 2, 1].OrderByDescending(x => x).ToArray(), [
     6,
@@ -582,10 +577,9 @@ test("Prepend", t => {
   const list: string[] = [];
   list.AddRange(["hey", "what's", "up"]);
   list.Prepend("ola!"); // should not add
-  t.deepEqual(list.ToArray(), ["hey", "what's", "up",]);
+  t.deepEqual(list.ToArray(), ["hey", "what's", "up"]);
   t.deepEqual(list.Prepend("ola!").ToArray(), ["ola!", "hey", "what's", "up"]);
 });
-
 
 test("ThenBy", t => {
   const fruits = [
@@ -724,7 +718,10 @@ test("RemoveAll", t => {
   ];
   const num1 = [5, 7, 8, 17, 9, 10, 11, 0, 2, 3, 4];
   const num2 = [17, 10, 11];
-  t.deepEqual(dinosaurs.RemoveAll(x => x.endsWith("saurus")).ToArray(), lessDinosaurs);
+  t.deepEqual(
+    dinosaurs.RemoveAll(x => x.endsWith("saurus")).ToArray(),
+    lessDinosaurs
+  );
   t.deepEqual(num1.RemoveAll(x => x < 10).ToArray(), num2);
   t.deepEqual(num2.RemoveAll().ToArray(), []);
 });
@@ -878,12 +875,7 @@ test("Skip", t => {
 
 test("SkipLast", t => {
   const grades = [59, 82, 70, 56, 92, 98, 85];
-  t.deepEqual(
-    grades
-      .SkipLast(2)
-      .ToArray(),
-    [59, 82, 70, 56, 92]
-  );
+  t.deepEqual(grades.SkipLast(2).ToArray(), [59, 82, 70, 56, 92]);
 });
 
 test("SkipWhile", t => {
@@ -920,12 +912,7 @@ test("Take", t => {
 
 test("TakeLast", t => {
   const grades = [59, 82, 70, 56, 92, 98, 85];
-  t.deepEqual(
-    grades
-      .TakeLast(2)
-      .ToArray(),
-    [98, 85]
-  );
+  t.deepEqual(grades.TakeLast(2).ToArray(), [98, 85]);
 });
 
 test("TakeWhile", t => {
@@ -962,8 +949,8 @@ test("ToDictionary", t => {
   // Dictionary should behave just like in C#
   const knum = dictionary.Max(x => x.Value.Age);
   const kage = dictionary.Min(x => x.Value.Age);
-  t.is(knum, 50)
-  t.is(kage, 15)
+  t.is(knum, 50);
+  t.is(kage, 15);
   const expectedKeys = ["Cathy", "Alice", "Bob"];
   const kkey = dictionary.Select(x => x.Key).ToArray();
   const kvalue = dictionary.Select(x => x.Value).ToArray();

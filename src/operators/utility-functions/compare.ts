@@ -1,4 +1,4 @@
-const compare = <T>(
+export const compare = <T>(
     a: T,
     b: T,
     _keySelector: (key: T) => any,
