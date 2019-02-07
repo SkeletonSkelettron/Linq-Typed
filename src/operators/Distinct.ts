@@ -1,6 +1,6 @@
 import { List } from './list';
-import { isObj } from "./utility-functions/isObj";
-import { equal } from "./utility-functions/equal";
+import { isObj } from './utility-functions/isObj';
+import { equal } from './utility-functions/equal';
 
 export { }
 

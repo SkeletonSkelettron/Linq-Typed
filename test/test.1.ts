@@ -1,5 +1,6 @@
 import test from "ava";
-import "./index.js";
+import ".src/Index";
+'use strict';
 
 interface IPackage {
   Company: string;
@@ -67,7 +68,7 @@ class Dog extends Pet {
 }
 
 class PetOwner {
-  constructor(public Name: string, public Pets: Pet[]) {}
+  constructor(public Name: string, public Pets: Pet[]) { }
 }
 
 class Product implements IProduct {
@@ -129,6 +130,14 @@ test("Any", t => {
   t.true(pets.Any());
 });
 
+test("Append", t => {
+  const list: string[] = [];
+  list.AddRange(["hey", "what's", "up"]);
+  list.Append("ola!"); // should not add
+  t.deepEqual(list.ToArray(), ["hey", "what's", "up",]);
+  t.deepEqual(list.Append("ola!").ToArray(), ["hey", "what's", "up", "ola!"]);
+});
+
 test("Average", t => {
   const grades = [78, 92, 100, 37, 81];
   const people: IPerson[] = [
@@ -168,7 +177,7 @@ test("Concat", t => {
   t.deepEqual(
     cats
       .Select(cat => cat.Name)
-      .Concat(dogs.Select(dog => dog.Name))
+      .Concat(dogs.Select(dog => dog.Name).ToArray())
       .ToArray(),
     expected
   );
@@ -222,14 +231,16 @@ test("Distinct", t => {
     new Pet({ Age: 1, Name: "Whiskers" }),
     new Pet({ Age: 1, Name: "Whiskers" }),
     new Pet({ Age: 8, Name: "Barley" }),
-    new Pet({ Age: 8, Name: "Barley" })
+    new Pet({ Age: 8, Name: "Barley" }),
+    new Pet({ Age: 81, Name: "Barley1" })
   ];
   const expected = [
     new Pet({ Age: 1, Name: "Whiskers" }),
-    new Pet({ Age: 8, Name: "Barley" })
+    new Pet({ Age: 8, Name: "Barley" }),
+    new Pet({ Age: 81, Name: "Barley1" })
   ];
-  t.deepEqual(ages.Distinct(), [21, 46, 55, 17]);
-  t.deepEqual(pets.Distinct(), expected);
+  t.deepEqual(ages.Distinct().ToArray(), [21, 46, 55, 17]);
+  t.deepEqual(pets.Distinct().ToArray(), expected);
 });
 
 test("DistinctBy", t => {
@@ -246,7 +257,7 @@ test("DistinctBy", t => {
     new Pet({ Age: 8, Name: "Barley" })
   ];
 
-  t.deepEqual(pets.DistinctBy(pet => pet.Age), result);
+  t.deepEqual(pets.DistinctBy(pet => pet.Age).ToArray(), result);
 });
 
 test("ElementAt", t => {
@@ -319,8 +330,8 @@ test("GroupJoin", t => {
   const whiskers = new Pet({ Name: "Whiskers", Owner: charlotte });
   const daisy = new Pet({ Name: "Daisy", Owner: magnus });
 
-  const people = new List<Person>([magnus, terry, charlotte]);
-  const pets = new List([barley, boots, whiskers, daisy]);
+  const people: Person[] = [magnus, terry, charlotte];
+  const pets: Pet[] = [barley, boots, whiskers, daisy];
 
   // create a list where each element is an anonymous
   // type that contains a person's name and
@@ -386,10 +397,47 @@ test("Insert", t => {
   );
 });
 
+test("InsertRange", t => {
+  const pets = [
+    new Pet({ Age: 10, Name: "Barley" }),
+    new Pet({ Age: 4, Name: "Boots" }),
+    new Pet({ Age: 6, Name: "Whiskers" })
+  ];
+
+  const result = [
+    new Pet({ Age: 10, Name: "Barley" }),
+    new Pet({ Age: 13, Name: "Max1" }),
+    new Pet({ Age: 14, Name: "Max2" }),
+    new Pet({ Age: 4, Name: "Boots" }),
+    new Pet({ Age: 6, Name: "Whiskers" }),
+
+  ];
+
+  let newPetArr = [
+    new Pet({ Age: 13, Name: "Max1" }),
+    new Pet({ Age: 14, Name: "Max2" })
+  ];
+
+  pets.InsertRange(1, newPetArr);
+
+  t.deepEqual(
+    pets,
+    result
+  );
+
+  t.throws(() => pets.InsertRange(-1, newPetArr), /Index is out of range./);
+  t.throws(
+    () => pets.InsertRange(pets.Count() + 1, newPetArr),
+    /Index is out of range./
+  );
+});
+
 test("Intersect", t => {
   const id1 = [44, 26, 92, 30, 71, 38];
   const id2 = [39, 59, 83, 47, 26, 4, 30];
   t.is(id1.Intersect(id2).Sum(x => x), 56);
+  const expected = [26, 30];
+  t.deepEqual(id1.Intersect(id2).ToArray(), expected);
 });
 
 test("Join", t => {
@@ -402,8 +450,8 @@ test("Join", t => {
   const whiskers = new Pet({ Name: "Whiskers", Owner: charlotte });
   const daisy = new Pet({ Name: "Daisy", Owner: magnus });
 
-  const people = new List<Person>([magnus, terry, charlotte]);
-  const pets = new List<Pet>([barley, boots, whiskers, daisy]);
+  const people: Person[] = ([magnus, terry, charlotte]);
+  const pets: Pet[] = [barley, boots, whiskers, daisy];
 
   // create a list of Person-Pet pairs where
   // each element is an anonymous type that contains a
@@ -512,6 +560,7 @@ test("OrderBy", t => {
   );
 });
 
+
 test("OrderByDescending", t => {
   t.deepEqual([4, 5, 6, 3, 2, 1].OrderByDescending(x => x).ToArray(), [
     6,
@@ -528,6 +577,15 @@ test("OrderByDescending", t => {
     ["Griechenland", "Deutschland", "Agypten"]
   );
 });
+
+test("Prepend", t => {
+  const list: string[] = [];
+  list.AddRange(["hey", "what's", "up"]);
+  list.Prepend("ola!"); // should not add
+  t.deepEqual(list.ToArray(), ["hey", "what's", "up",]);
+  t.deepEqual(list.Prepend("ola!").ToArray(), ["ola!", "hey", "what's", "up"]);
+});
+
 
 test("ThenBy", t => {
   const fruits = [
@@ -664,7 +722,11 @@ test("RemoveAll", t => {
     "Gallimimus",
     "Triceratops"
   ];
-  t.deepEqual(dinosaurs.RemoveAll(x => x.endsWith("saurus")), lessDinosaurs);
+  const num1 = [5, 7, 8, 17, 9, 10, 11, 0, 2, 3, 4];
+  const num2 = [17, 10, 11];
+  t.deepEqual(dinosaurs.RemoveAll(x => x.endsWith("saurus")).ToArray(), lessDinosaurs);
+  t.deepEqual(num1.RemoveAll(x => x < 10).ToArray(), num2);
+  t.deepEqual(num2.RemoveAll().ToArray(), []);
 });
 
 test("RemoveAt", t => {
@@ -688,6 +750,28 @@ test("RemoveAt", t => {
     "Triceratops"
   ];
   dinosaurs.RemoveAt(3);
+  t.deepEqual(dinosaurs, lessDinosaurs);
+});
+
+test("RemoveRange", t => {
+  const dinosaurs = [
+    "Compsognathus",
+    "Amargasaurus",
+    "Oviraptor",
+    "Velociraptor",
+    "Deinonychus",
+    "Dilophosaurus",
+    "Gallimimus",
+    "Triceratops"
+  ];
+  const lessDinosaurs = [
+    "Compsognathus",
+    "Amargasaurus",
+    "Dilophosaurus",
+    "Gallimimus",
+    "Triceratops"
+  ];
+  dinosaurs.RemoveRange(2, 3);
   t.deepEqual(dinosaurs, lessDinosaurs);
 });
 
@@ -792,6 +876,16 @@ test("Skip", t => {
   );
 });
 
+test("SkipLast", t => {
+  const grades = [59, 82, 70, 56, 92, 98, 85];
+  t.deepEqual(
+    grades
+      .SkipLast(2)
+      .ToArray(),
+    [59, 82, 70, 56, 92]
+  );
+});
+
 test("SkipWhile", t => {
   const grades = [59, 82, 70, 56, 92, 98, 85];
   t.deepEqual(
@@ -824,6 +918,16 @@ test("Take", t => {
   );
 });
 
+test("TakeLast", t => {
+  const grades = [59, 82, 70, 56, 92, 98, 85];
+  t.deepEqual(
+    grades
+      .TakeLast(2)
+      .ToArray(),
+    [98, 85]
+  );
+});
+
 test("TakeWhile", t => {
   const expected = ["apple", "banana", "mango"];
   const fruits = [
@@ -850,17 +954,21 @@ test("ToDictionary", t => {
     { Age: 25, Name: "Alice" },
     { Age: 50, Name: "Bob" }
   ];
-  const dictionary = people.ToDictionary(x => x.Name);
+  const dictionary = people.ToDictionary(x => x.Name).ToArray();
   t.deepEqual(dictionary["Bob"], { Age: 50, Name: "Bob" });
   t.is(dictionary["Bob"].Age, 50);
-  const dictionary2 = people.ToDictionary(x => x.Name, y => y.Age);
+  const dictionary2 = people.ToDictionary(x => x.Name, y => y.Age).ToArray();
   t.is(dictionary2["Alice"], 25);
   // Dictionary should behave just like in C#
-  // t.is(dictionary.Max(x => x.Value.Age), 50)
-  // t.is(dictionary.Min(x => x.Value.Age), 15)
+  const knum = dictionary.Max(x => x.Value.Age);
+  const kage = dictionary.Min(x => x.Value.Age);
+  t.is(knum, 50)
+  t.is(kage, 15)
   const expectedKeys = ["Cathy", "Alice", "Bob"];
-  t.deepEqual(dictionary.Select(x => x.Key), expectedKeys);
-  t.deepEqual(dictionary.Select(x => x.Value), people);
+  const kkey = dictionary.Select(x => x.Key).ToArray();
+  const kvalue = dictionary.Select(x => x.Value).ToArray();
+  t.deepEqual(kkey, expectedKeys);
+  t.deepEqual(kvalue, people);
 });
 
 test("ToList", t => {
@@ -919,9 +1027,9 @@ test("Union", t => {
   t.deepEqual(ints1.Union(ints2).ToArray(), [5, 3, 9, 7, 8, 6, 4, 1, 0]);
 
   const result = [
-    { Name: "apple", Code: 9 },
-    { Name: "orange", Code: 4 },
-    { Name: "lemon", Code: 12 }
+    new Product({ Name: "apple", Code: 9 }),
+    new Product({ Name: "orange", Code: 4 }),
+    new Product({ Name: "lemon", Code: 12 })
   ];
   const store1 = [
     new Product({ Name: "apple", Code: 9 }),
@@ -931,7 +1039,7 @@ test("Union", t => {
     new Product({ Name: "apple", Code: 9 }),
     new Product({ Name: "lemon", Code: 12 })
   ];
-  // t.deepEqual(store1.Union(store2).ToArray(), result);
+  t.deepEqual(store1.Union(store2).ToArray(), result);
 });
 
 test("Where", t => {

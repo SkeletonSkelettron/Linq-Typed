@@ -1,4 +1,4 @@
-import { getArray } from "./utility-functions/getArray";
+import { getArray } from './utility-functions/getArray';
 import { List } from './list';
 
 export { }
