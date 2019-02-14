@@ -83,13 +83,13 @@ class Product implements IProduct {
 
 test("Add", t => {
   const list: string[] = [];
-  list.toList().add("hey");
-  t.is(list.toList().first(), "hey");
+  list.ToList().Add("hey");
+  t.is(list.ToList().First(), "hey");
 });
 
 test("AddRange", t => {
   const list: string[] = [];
-  list.toList().addRange(["hey", "what's", "up"]);
+  list.ToList().AddRange(["hey", "what's", "up"]);
   t.deepEqual(list, ["hey", "what's", "up"]);
 });
 
@@ -98,7 +98,7 @@ test("Aggregate", t => {
   const reversed = "dog lazy the over jumps fox brown quick the ";
   const words = sentence.split(" ");
   t.is(
-    words.toList().aggregate(
+    words.ToList().Aggregate(
       (workingSentence, next) => next + " " + workingSentence,
       ""
     ),
@@ -115,7 +115,7 @@ test("All", t => {
 
   // determine whether all pet names
   // in the array start with 'B'.
-  t.false(pets.toList().all(pet => pet.Name.startsWith("B")));
+  t.false(pets.ToList().All(pet => pet.Name.startsWith("B")));
 });
 
 test("Any", t => {
@@ -126,16 +126,16 @@ test("Any", t => {
   ];
 
   // determine whether any pets over age 1 are also unvaccinated.
-  t.true(pets.toList().any(p => p.Age > 1 && p.Vaccinated === false));
-  t.true(pets.toList().any());
+  t.true(pets.ToList().Any(p => p.Age > 1 && p.Vaccinated === false));
+  t.true(pets.ToList().Any());
 });
 
 test("Append", t => {
   const list: string[] = [];
-  list.toList().addRange(["hey", "what's", "up"]);
-  list.toList().append("ola!"); // should not add
+  list.ToList().AddRange(["hey", "what's", "up"]);
+  list.ToList().Append("ola!"); // should not add
   t.deepEqual(list, ["hey", "what's", "up",]);
-  t.deepEqual(list.toList().append("ola!").toArray(), ["hey", "what's", "up", "ola!"]);
+  t.deepEqual(list.ToList().Append("ola!").ToArray(), ["hey", "what's", "up", "ola!"]);
 });
 
 test("Average", t => {
@@ -145,8 +145,8 @@ test("Average", t => {
     { Age: 25, Name: "Alice" },
     { Age: 50, Name: "Bob" }
   ];
-  t.is(grades.toList().average(), 77.6);
-  t.is(people.toList().average(x => x.Age), 30);
+  t.is(grades.ToList().Average(), 77.6);
+  t.is(people.ToList().Average(x => x.Age), 30);
 });
 
 test("Cast", t => {
@@ -155,11 +155,11 @@ test("Cast", t => {
     new Pet({ Age: 1, Name: "Whiskers", Vaccinated: false })
   ];
 
-  const dogs = pets.toList().cast<Dog>();
+  const dogs = pets.ToList().Cast<Dog>();
 
-  t.true(typeof dogs.first().Speak === "function");
-  t.is(dogs.first().Speak(), "Bark");
-  t.true(typeof dogs.last().Speak === "undefined");
+  t.true(typeof dogs.First().Speak === "function");
+  t.is(dogs.First().Speak(), "Bark");
+  t.true(typeof dogs.Last().Speak === "undefined");
 });
 
 test("Concat", t => {
@@ -175,10 +175,10 @@ test("Concat", t => {
   ];
   const expected = ["Barley", "Boots", "Whiskers", "Bounder", "Snoopy", "Fido"];
   t.deepEqual(
-    cats.toList()
-      .select(cat => cat.Name)
-      .concat(dogs.toList().select(dog => dog.Name).toArray())
-      .toArray(),
+    cats.ToList()
+      .Select(cat => cat.Name)
+      .Concat(dogs.ToList().Select(dog => dog.Name).ToArray())
+      .ToArray(),
     expected
   );
 });
@@ -192,7 +192,7 @@ test("Contains", t => {
     "passionfruit",
     "grape"
   ];
-  t.true(fruits.toList().contains("mango"));
+  t.true(fruits.ToList().Contains("mango"));
 });
 
 test("Count", t => {
@@ -204,8 +204,8 @@ test("Count", t => {
     "passionfruit",
     "grape"
   ];
-  t.is(fruits.toList().count(), 6);
-  t.is(fruits.toList().count(x => x.length > 5), 3);
+  t.is(fruits.ToList().Count(), 6);
+  t.is(fruits.ToList().Count(x => x.length > 5), 3);
 });
 
 test("DefaultIfEmpty", t => {
@@ -215,14 +215,14 @@ test("DefaultIfEmpty", t => {
     new Pet({ Age: 1, Name: "Whiskers" })
   ];
   t.deepEqual(
-    pets.toList()
-      .defaultIfEmpty()
-      .select(pet => pet.Name)
-      .toArray(),
+    pets.ToList()
+      .DefaultIfEmpty()
+      .Select(pet => pet.Name)
+      .ToArray(),
     ["Barley", "Boots", "Whiskers"]
   );
   const numbers: number[] = [];
-  t.deepEqual(numbers.toList().defaultIfEmpty(0).toArray(), [0]);
+  t.deepEqual(numbers.ToList().DefaultIfEmpty(0).ToArray(), [0]);
 });
 
 test("Distinct", t => {
@@ -239,8 +239,8 @@ test("Distinct", t => {
     new Pet({ Age: 8, Name: "Barley" }),
     new Pet({ Age: 81, Name: "Barley1" })
   ];
-  t.deepEqual(ages.toList().distinct().toArray(), [21, 46, 55, 17]);
-  t.deepEqual(pets.toList().distinct().toArray(), expected);
+  t.deepEqual(ages.ToList().Distinct().ToArray(), [21, 46, 55, 17]);
+  t.deepEqual(pets.ToList().Distinct().ToArray(), expected);
 });
 
 test("DistinctBy", t => {
@@ -257,23 +257,23 @@ test("DistinctBy", t => {
     new Pet({ Age: 8, Name: "Barley" })
   ];
 
-  t.deepEqual(pets.toList().distinctBy(pet => pet.Age).toArray(), result);
+  t.deepEqual(pets.ToList().DistinctBy(pet => pet.Age).ToArray(), result);
 });
 
 test("ElementAt", t => {
   const a = ["hey", "hola", "que", "tal"];
-  t.is(a.toList().elementAt(0), "hey");
+  t.is(a.ToList().ElementAt(0), "hey");
   t.throws(
-    () => a.toList().elementAt(4),
+    () => a.ToList().ElementAt(4),
     /ArgumentOutOfRangeException: index is less than 0 or greater than or equal to the number of elements in source./
   );
 });
 
 test("ElementAtOrDefault", t => {
   const a = ["hey", "hola", "que", "tal"];
-  t.is(a.toList().elementAtOrDefault(0), "hey");
+  t.is(a.ToList().ElementAtOrDefault(0), "hey");
   t.throws(
-    () => a.toList().elementAtOrDefault(4),
+    () => a.ToList().ElementAtOrDefault(4),
     /ArgumentOutOfRangeException: index is less than 0 or greater than or equal to the number of elements in source./
   );
 });
@@ -281,30 +281,47 @@ test("ElementAtOrDefault", t => {
 test("Except", t => {
   const numbers1 = [2.0, 2.1, 2.2, 2.3, 2.4, 2.5];
   const numbers2 = [2.2, 2.3];
-  t.deepEqual(numbers1.toList().except(numbers2).toArray(), [2, 2.1, 2.4, 2.5]);
+  t.deepEqual(numbers1.ToList().Except(numbers2).ToArray(), [2, 2.1, 2.4, 2.5]);
 });
 
 test("First", t => {
-  t.is(["hey", "hola", "que", "tal"].toList().first(), "hey");
-  t.is([1, 2, 3, 4, 5].toList().first(x => x > 2), 3);
+  t.is(["hey", "hola", "que", "tal"].ToList().First(), "hey");
+  t.is([1, 2, 3, 4, 5].ToList().First(x => x > 2), 3);
   t.throws(
-    () => [].toList().first(),
+    () => [].ToList().First(),
     /InvalidOperationException: The source sequence is empty./
   );
 });
 
 test("FirstOrDefault", t => {
-  t.is(["hey", "hola", "que", "tal"].toList().firstOrDefault(), "hey");
-  t.is([].toList().firstOrDefault(), undefined);
+  t.is(["hey", "hola", "que", "tal"].ToList().FirstOrDefault(), "hey");
+  t.is([].ToList().FirstOrDefault(), undefined);
 });
 
 test("ForEach", t => {
   const names = ["Bruce", "Alfred", "Tim", "Richard"];
   let test = "";
-  names.toList().forEach((x, i) => (test += `${x} ${i} `));
+  names.ToList().ForEach((x, i) => (test += `${x} ${i} `));
   t.is(test, "Bruce 0 Alfred 1 Tim 2 Richard 3 ");
 });
-
+test("GetRange", t => {
+  const dinosaurs = [
+    "Compsognathus",
+    "Amargasaurus",
+    "Oviraptor",
+    "Velociraptor",
+    "Deinonychus",
+    "Dilophosaurus",
+    "Gallimimus",
+    "Triceratops"
+  ];
+  const lessDinosaurs = [
+    "Oviraptor",
+    "Velociraptor",
+    "Deinonychus",
+  ];
+  t.deepEqual(dinosaurs.ToList().GetRange(2, 3).ToArray(), lessDinosaurs);
+});
 test("GroupBy", t => {
   const pets: Pet[] = [
     new Pet({ Age: 8, Name: "Barley" }),
@@ -317,7 +334,7 @@ test("GroupBy", t => {
     "4": ["Boots", "Daisy"],
     "8": ["Barley"]
   };
-  t.deepEqual(pets.toList().groupBy(pet => pet.Age, pet => pet.Name), result);
+  t.deepEqual(pets.ToList().GroupBy(pet => pet.Age, pet => pet.Name), result);
 });
 
 test("GroupJoin", t => {
@@ -336,13 +353,13 @@ test("GroupJoin", t => {
   // create a list where each element is an anonymous
   // type that contains a person's name and
   // a collection of names of the pets they own.
-  const query = people.toList().groupJoin(
-    pets.toList(),
+  const query = people.ToList().GroupJoin(
+    pets.ToList(),
     person => person,
     pet => pet.Owner,
     (person, petCollection) => ({
       OwnerName: person.Name,
-      Pets: petCollection.select(pet => pet.Name)
+      Pets: petCollection.Select(pet => pet.Name)
     })
   );
   const expected = [
@@ -351,7 +368,7 @@ test("GroupJoin", t => {
     "Weiss, Charlotte: Whiskers"
   ];
   t.deepEqual(
-    query.select(obj => `${obj.OwnerName}: ${obj.Pets.toArray()}`).toArray(),
+    query.Select(obj => `${obj.OwnerName}: ${obj.Pets.ToArray()}`).ToArray(),
     expected
   );
 });
@@ -371,9 +388,9 @@ test("IndexOf", t => {
   const whiskers = new Pet({ Age: 1, Name: "Whiskers", Vaccinated: false });
   const pets = [barley, boots, whiskers];
 
-  t.is(fruits.toList().indexOf("orange"), 3);
-  t.is(fruits.toList().indexOf("strawberry"), -1);
-  t.is(pets.toList().indexOf(boots), 1);
+  t.is(fruits.ToList().IndexOf("orange"), 3);
+  t.is(fruits.ToList().IndexOf("strawberry"), -1);
+  t.is(pets.ToList().IndexOf(boots), 1);
 });
 
 test("Insert", t => {
@@ -385,14 +402,14 @@ test("Insert", t => {
 
   let newPet = new Pet({ Age: 12, Name: "Max" });
 
-  pets.toList().insert(0, newPet);
-  pets.toList().insert(pets.toList().count(), newPet);
+  pets.ToList().Insert(0, newPet);
+  pets.ToList().Insert(pets.ToList().Count(), newPet);
 
-  t.is(pets.toList().first(), newPet);
-  t.is(pets.toList().last(), newPet);
-  t.throws(() => pets.toList().insert(-1, newPet), /Index is out of range./);
+  t.is(pets.ToList().First(), newPet);
+  t.is(pets.ToList().Last(), newPet);
+  t.throws(() => pets.ToList().Insert(-1, newPet), /Index is out of range./);
   t.throws(
-    () => pets.toList().insert(pets.toList().count() + 1, newPet),
+    () => pets.ToList().Insert(pets.ToList().Count() + 1, newPet),
     /Index is out of range./
   );
 });
@@ -418,16 +435,16 @@ test("InsertRange", t => {
     new Pet({ Age: 14, Name: "Max2" })
   ];
 
-  pets.toList().insertRange(1, newPetArr);
+  pets.ToList().InsertRange(1, newPetArr);
 
   t.deepEqual(
     pets,
     result
   );
 
-  t.throws(() => pets.toList().insertRange(-1, newPetArr), /Index is out of range./);
+  t.throws(() => pets.ToList().InsertRange(-1, newPetArr), /Index is out of range./);
   t.throws(
-    () => pets.toList().insertRange(pets.toList().count() + 1, newPetArr),
+    () => pets.ToList().InsertRange(pets.ToList().Count() + 1, newPetArr),
     /Index is out of range./
   );
 });
@@ -435,9 +452,9 @@ test("InsertRange", t => {
 test("Intersect", t => {
   const id1 = [44, 26, 92, 30, 71, 38];
   const id2 = [39, 59, 83, 47, 26, 4, 30];
-  t.is(id1.toList().intersect(id2).sum(x => x), 56);
+  t.is(id1.ToList().Intersect(id2).Sum(x => x), 56);
   const expected = [26, 30];
-  t.deepEqual(id1.toList().intersect(id2).toArray(), expected);
+  t.deepEqual(id1.ToList().Intersect(id2).ToArray(), expected);
 });
 
 test("Join", t => {
@@ -456,7 +473,7 @@ test("Join", t => {
   // create a list of Person-Pet pairs where
   // each element is an anonymous type that contains a
   // pet's name and the name of the Person that owns the Pet.
-  const query = people.toList().join(
+  const query = people.ToList().Join(
     pets,
     person => person,
     pet => pet.Owner,
@@ -469,23 +486,23 @@ test("Join", t => {
     "Weiss, Charlotte - Whiskers"
   ];
   t.deepEqual(
-    query.select(obj => `${obj.OwnerName} - ${obj.Pet}`).toArray(),
+    query.Select(obj => `${obj.OwnerName} - ${obj.Pet}`).ToArray(),
     expected
   );
 });
 
 test("Last", t => {
-  t.is(["hey", "hola", "que", "tal"].toList().last(), "tal");
-  t.is([1, 2, 3, 4, 5].toList().last(x => x > 2), 5);
+  t.is(["hey", "hola", "que", "tal"].ToList().Last(), "tal");
+  t.is([1, 2, 3, 4, 5].ToList().Last(x => x > 2), 5);
   t.throws(
-    () => [].toList().last(),
+    () => [].ToList().Last(),
     /InvalidOperationException: The source sequence is empty./
   );
 });
 
 test("LastOrDefault", t => {
-  t.is(["hey", "hola", "que", "tal"].toList().lastOrDefault(), "tal");
-  t.is([].toList().lastOrDefault(), undefined);
+  t.is(["hey", "hola", "que", "tal"].ToList().LastOrDefault(), "tal");
+  t.is([].ToList().LastOrDefault(), undefined);
 });
 
 test("Max", t => {
@@ -494,8 +511,8 @@ test("Max", t => {
     { Age: 25, Name: "Alice" },
     { Age: 50, Name: "Bob" }
   ];
-  t.is(people.toList().max(x => x.Age), 50);
-  t.is([1, 2, 3, 4, 5].toList().max(), 5);
+  t.is(people.ToList().Max(x => x.Age), 50);
+  t.is([1, 2, 3, 4, 5].ToList().Max(), 5);
 });
 
 test("MaxBy", t => {
@@ -504,9 +521,9 @@ test("MaxBy", t => {
     { Age: 25, Name: "Alice" },
     { Age: 50, Name: "Bob" }
   ];
-  t.is(people.toList().maxBy(x => x.Age).Age, 50);
-  t.is(people.toList().maxBy(x => x.Age).Name, "Bob");
-  t.is([1, 2, 3, 4, 5].toList().maxBy(x => x), 5);
+  t.is(people.ToList().MaxBy(x => x.Age).Age, 50);
+  t.is(people.ToList().MaxBy(x => x.Age).Name, "Bob");
+  t.is([1, 2, 3, 4, 5].ToList().MaxBy(x => x), 5);
 });
 
 test("Min", t => {
@@ -515,8 +532,8 @@ test("Min", t => {
     { Age: 25, Name: "Alice" },
     { Age: 50, Name: "Bob" }
   ];
-  t.is(people.toList().min(x => x.Age), 15);
-  t.is([1, 2, 3, 4, 5].toList().min(), 1);
+  t.is(people.ToList().Min(x => x.Age), 15);
+  t.is([1, 2, 3, 4, 5].ToList().Min(), 1);
 });
 
 test("MinBy", t => {
@@ -525,8 +542,8 @@ test("MinBy", t => {
     { Age: 25, Name: "Alice" },
     { Age: 50, Name: "Bob" }
   ];
-  t.is(people.toList().minBy(x => x.Age), people[0]);
-  t.is([1, 2, 3, 4, 5].toList().min(x => x), 1);
+  t.is(people.ToList().MinBy(x => x.Age), people[0]);
+  t.is([1, 2, 3, 4, 5].ToList().Min(x => x), 1);
 });
 
 test("OfType", t => {
@@ -536,16 +553,16 @@ test("OfType", t => {
   ];
   const anyArray = ["dogs", "cats", 13, true];
 
-  t.is(anyArray.toList().ofType(String).count(), 2);
-  t.is(anyArray.toList().ofType(Number).count(), 1);
-  t.is(anyArray.toList().ofType(Boolean).count(), 1);
-  t.is(anyArray.toList().ofType(Function).count(), 0);
+  t.is(anyArray.ToList().OfType(String).Count(), 2);
+  t.is(anyArray.ToList().OfType(Number).Count(), 1);
+  t.is(anyArray.ToList().OfType(Boolean).Count(), 1);
+  t.is(anyArray.ToList().OfType(Function).Count(), 0);
 
-  t.is(pets.toList().ofType(Dog).count(), 1);
+  t.is(pets.ToList().OfType(Dog).Count(), 1);
   t.is(
-    pets.toList()
-      .ofType<Dog>(Dog)
-      .first()
+    pets.ToList()
+      .OfType<Dog>(Dog)
+      .First()
       .Speak(),
     "Bark"
   );
@@ -553,16 +570,16 @@ test("OfType", t => {
 
 test("OrderBy", t => {
   const expected = [1, 2, 3, 4, 5, 6];
-  t.deepEqual([4, 5, 6, 3, 2, 1].toList().orderBy(x => x).toArray(), expected);
+  t.deepEqual([4, 5, 6, 3, 2, 1].ToList().OrderBy(x => x).ToArray(), expected);
   t.deepEqual(
-    ["Deutschland", "Griechenland", "Agypten"].toList().orderBy(x => x).toArray(),
+    ["Deutschland", "Griechenland", "Agypten"].ToList().OrderBy(x => x).ToArray(),
     ["Agypten", "Deutschland", "Griechenland"]
   );
 });
 
 
 test("OrderByDescending", t => {
-  t.deepEqual([4, 5, 6, 3, 2, 1].toList().orderByDescending(x => x).toArray(), [
+  t.deepEqual([4, 5, 6, 3, 2, 1].ToList().OrderByDescending(x => x).ToArray(), [
     6,
     5,
     4,
@@ -571,19 +588,19 @@ test("OrderByDescending", t => {
     1
   ]);
   t.deepEqual(
-    ["Deutschland", "Griechenland", "Agypten"].toList()
-      .orderByDescending(x => x)
-      .toArray(),
+    ["Deutschland", "Griechenland", "Agypten"].ToList()
+      .OrderByDescending(x => x)
+      .ToArray(),
     ["Griechenland", "Deutschland", "Agypten"]
   );
 });
 
 test("Prepend", t => {
   const list: string[] = [];
-  list.toList().addRange(["hey", "what's", "up"]);
-  list.toList().prepend("ola!"); // should not add
+  list.ToList().AddRange(["hey", "what's", "up"]);
+  list.ToList().Prepend("ola!"); // should not add
   t.deepEqual(list, ["hey", "what's", "up",]);
-  t.deepEqual(list.toList().prepend("ola!").toArray(), ["ola!", "hey", "what's", "up"]);
+  t.deepEqual(list.ToList().Prepend("ola!").ToArray(), ["ola!", "hey", "what's", "up"]);
 });
 
 
@@ -612,15 +629,15 @@ test("ThenBy", t => {
   ];
 
   t.deepEqual(
-    fruits.toList()
-      .orderBy(fruit => fruit.length)
-      .thenBy(fruit => fruit)
-      .toArray(),
+    fruits.ToList()
+      .OrderBy(fruit => fruit.length)
+      .ThenBy(fruit => fruit)
+      .ToArray(),
     expected
   );
   const expectedNums = [1, 2, 3, 4, 5, 6];
   // test omission of OrderBy
-  t.deepEqual([4, 5, 6, 3, 2, 1].toList().thenBy(x => x).toArray(), expectedNums);
+  t.deepEqual([4, 5, 6, 3, 2, 1].ToList().ThenBy(x => x).ToArray(), expectedNums);
 });
 
 // see https://github.com/kutyel/linq.ts/issues/23
@@ -629,11 +646,11 @@ test("ThenByMultiple", t => {
   let y = { a: 1, b: 2, c: 2 };
   let z = { a: 1, b: 1, c: 3 };
   let unsorted = [x, y, z];
-  let sorted = unsorted.toList()
-    .orderBy(u => u.a)
-    .thenBy(u => u.b)
-    .thenBy(u => u.c)
-    .toArray();
+  let sorted = unsorted.ToList()
+    .OrderBy(u => u.a)
+    .ThenBy(u => u.b)
+    .ThenBy(u => u.c)
+    .ToArray();
 
   t.is(sorted[0], z);
   t.is(sorted[1], y);
@@ -665,13 +682,13 @@ test("ThenByDescending", t => {
     "passionfruit"
   ];
   t.deepEqual(
-    fruits.toList()
-      .orderBy(fruit => fruit.length)
-      .thenByDescending(fruit => fruit)
-      .toArray(),
+    fruits.ToList()
+      .OrderBy(fruit => fruit.length)
+      .ThenByDescending(fruit => fruit)
+      .ToArray(),
     expected
   );
-  t.deepEqual([4, 5, 6, 3, 2, 1].toList().thenByDescending(x => x).toArray(), [
+  t.deepEqual([4, 5, 6, 3, 2, 1].ToList().ThenByDescending(x => x).ToArray(), [
     6,
     5,
     4,
@@ -697,9 +714,9 @@ test("Remove", t => {
   const pets = [barley, boots, whiskers];
   const lessPets = [barley, whiskers];
 
-  t.true(fruits.toList().remove("orange"));
-  t.false(fruits.toList().remove("strawberry"));
-  t.true(pets.toList().remove(boots));
+  t.true(fruits.ToList().Remove("orange"));
+  t.false(fruits.ToList().Remove("strawberry"));
+  t.true(pets.ToList().Remove(boots));
   t.deepEqual(pets, lessPets);
 });
 
@@ -722,11 +739,11 @@ test("RemoveAll", t => {
     "Gallimimus",
     "Triceratops"
   ];
-  const num1 = [5,7, 8, 17, 9, 10, 11, 0, 2, 3, 4];
+  const num1 = [5, 7, 8, 17, 9, 10, 11, 0, 2, 3, 4];
   const num2 = [17, 10, 11];
-  t.deepEqual(dinosaurs.toList().removeAll(x => x.endsWith("saurus")).toArray(), lessDinosaurs);
-  t.deepEqual(num1.toList().removeAll(x => x < 10).toArray(), num2);
-  t.deepEqual(num2.toList().removeAll().toArray(), []);
+  t.deepEqual(dinosaurs.ToList().RemoveAll(x => x.endsWith("saurus")).ToArray(), lessDinosaurs);
+  t.deepEqual(num1.ToList().RemoveAll(x => x < 10).ToArray(), num2);
+  t.deepEqual(num2.ToList().RemoveAll().ToArray(), []);
 });
 
 test("RemoveAt", t => {
@@ -749,7 +766,7 @@ test("RemoveAt", t => {
     "Gallimimus",
     "Triceratops"
   ];
-  dinosaurs.toList().removeAt(3);
+  dinosaurs.ToList().RemoveAt(3);
   t.deepEqual(dinosaurs, lessDinosaurs);
 });
 
@@ -771,16 +788,16 @@ test("RemoveRange", t => {
     "Gallimimus",
     "Triceratops"
   ];
-  dinosaurs.toList().removeRange(2, 3);
+  dinosaurs.ToList().RemoveRange(2, 3);
   t.deepEqual(dinosaurs, lessDinosaurs);
 });
 
 test("Reverse", t => {
-  t.deepEqual([1, 2, 3, 4, 5].toList().reverse().toArray(), [5, 4, 3, 2, 1]);
+  t.deepEqual([1, 2, 3, 4, 5].ToList().Reverse().ToArray(), [5, 4, 3, 2, 1]);
 });
 
 test("Select", t => {
-  t.deepEqual([1, 2, 3].toList().select(x => x * 2).toArray(), [2, 4, 6]);
+  t.deepEqual([1, 2, 3].ToList().Select(x => x * 2).ToArray(), [2, 4, 6]);
 });
 
 test("SelectMany", t => {
@@ -800,10 +817,10 @@ test("SelectMany", t => {
   ];
   const expected = ["Scruffy", "Sam", "Walker", "Sugar", "Scratches", "Diesel"];
   t.deepEqual(
-    petOwners.toList()
-      .selectMany(petOwner => petOwner.Pets).toList()
-      .select(pet => pet.Name)
-      .toArray(),
+    petOwners.ToList()
+      .SelectMany(petOwner => petOwner.Pets).ToList()
+      .Select(pet => pet.Name)
+      .ToArray(),
     expected
   );
 });
@@ -817,8 +834,8 @@ test("SequenceEqual", t => {
   const pets2 = [pet1, pet2];
   const pets3 = [pet1];
 
-  t.true(pets1.toList().sequenceEqual(pets2));
-  t.false(pets1.toList().sequenceEqual(pets3));
+  t.true(pets1.ToList().SequenceEqual(pets2));
+  t.false(pets1.ToList().SequenceEqual(pets3));
 });
 
 test("Single", t => {
@@ -826,22 +843,22 @@ test("Single", t => {
   const fruits2 = ["orange"];
   const fruits3 = ["orange", "apple"];
   const numbers1 = [1, 2, 3, 4, 5, 5];
-  t.is(fruits2.toList().single(), "orange");
+  t.is(fruits2.ToList().Single(), "orange");
   t.throws(
-    () => fruits1.toList().single(),
+    () => fruits1.ToList().Single(),
     /The collection does not contain exactly one element./
   );
   t.throws(
-    () => fruits3.toList().single(),
+    () => fruits3.ToList().Single(),
     /The collection does not contain exactly one element./
   );
-  t.is(numbers1.toList().single(x => x === 1), 1);
+  t.is(numbers1.ToList().Single(x => x === 1), 1);
   t.throws(
-    () => numbers1.toList().single(x => x === 5),
+    () => numbers1.ToList().Single(x => x === 5),
     /The collection does not contain exactly one element./
   );
   t.throws(
-    () => numbers1.toList().single(x => x > 5),
+    () => numbers1.ToList().Single(x => x > 5),
     /The collection does not contain exactly one element./
   );
 });
@@ -851,16 +868,16 @@ test("SingleOrDefault", t => {
   const fruits2 = ["orange"];
   const fruits3 = ["orange", "apple"];
   const numbers1 = [1, 2, 3, 4, 5, 5];
-  t.is(fruits1.toList().singleOrDefault(), undefined);
-  t.is(fruits2.toList().singleOrDefault(), "orange");
+  t.is(fruits1.ToList().SingleOrDefault(), undefined);
+  t.is(fruits2.ToList().SingleOrDefault(), "orange");
   t.throws(
-    () => fruits3.toList().singleOrDefault(),
+    () => fruits3.ToList().SingleOrDefault(),
     /The collection does not contain exactly one element./
   );
-  t.is(numbers1.toList().singleOrDefault(x => x === 1), 1);
-  t.is(numbers1.toList().singleOrDefault(x => x > 5), undefined);
+  t.is(numbers1.ToList().SingleOrDefault(x => x === 1), 1);
+  t.is(numbers1.ToList().SingleOrDefault(x => x > 5), undefined);
   t.throws(
-    () => numbers1.toList().singleOrDefault(x => x === 5),
+    () => numbers1.ToList().SingleOrDefault(x => x === 5),
     /The collection does not contain exactly one element./
   );
 });
@@ -868,10 +885,10 @@ test("SingleOrDefault", t => {
 test("Skip", t => {
   const grades = [59, 82, 70, 56, 92, 98, 85];
   t.deepEqual(
-    grades.toList()
-      .orderByDescending(x => x)
-      .skip(3)
-      .toArray(),
+    grades.ToList()
+      .OrderByDescending(x => x)
+      .Skip(3)
+      .ToArray(),
     [82, 70, 59, 56]
   );
 });
@@ -879,9 +896,9 @@ test("Skip", t => {
 test("SkipLast", t => {
   const grades = [59, 82, 70, 56, 92, 98, 85];
   t.deepEqual(
-    grades.toList()
-      .skipLast(2)
-      .toArray(),
+    grades.ToList()
+      .SkipLast(2)
+      .ToArray(),
     [59, 82, 70, 56, 92]
   );
 });
@@ -889,10 +906,10 @@ test("SkipLast", t => {
 test("SkipWhile", t => {
   const grades = [59, 82, 70, 56, 92, 98, 85];
   t.deepEqual(
-    grades.toList()
-      .orderByDescending(x => x)
-      .skipWhile(grade => grade >= 80)
-      .toArray(),
+    grades.ToList()
+      .OrderByDescending(x => x)
+      .SkipWhile(grade => grade >= 80)
+      .ToArray(),
     [70, 59, 56]
   );
 });
@@ -903,17 +920,17 @@ test("Sum", t => {
     { Age: 25, Name: "Alice" },
     { Age: 50, Name: "Bob" }
   ];
-  t.is([2, 3, 5].toList().sum(), 10);
-  t.is(people.toList().sum(x => x.Age), 90);
+  t.is([2, 3, 5].ToList().Sum(), 10);
+  t.is(people.ToList().Sum(x => x.Age), 90);
 });
 
 test("Take", t => {
   const grades = [59, 82, 70, 56, 92, 98, 85];
   t.deepEqual(
-    grades.toList()
-      .orderByDescending(x => x)
-      .take(3)
-      .toArray(),
+    grades.ToList()
+      .OrderByDescending(x => x)
+      .Take(3)
+      .ToArray(),
     [98, 92, 85]
   );
 });
@@ -921,9 +938,9 @@ test("Take", t => {
 test("TakeLast", t => {
   const grades = [59, 82, 70, 56, 92, 98, 85];
   t.deepEqual(
-    grades.toList()
-      .takeLast(2)
-      .toArray(),
+    grades.ToList()
+      .TakeLast(2)
+      .ToArray(),
     [98, 85]
   );
 });
@@ -939,13 +956,13 @@ test("TakeWhile", t => {
     "grape"
   ];
   t.deepEqual(
-    fruits.toList().takeWhile(fruit => fruit !== "orange").toArray(),
+    fruits.ToList().TakeWhile(fruit => fruit !== "orange").ToArray(),
     expected
   );
 });
 
 test("ToArray", t => {
-  t.deepEqual([1, 2, 3, 4, 5].toList().toArray(), [1, 2, 3, 4, 5]);
+  t.deepEqual([1, 2, 3, 4, 5].ToList().ToArray(), [1, 2, 3, 4, 5]);
 });
 
 test("ToDictionary", t => {
@@ -954,23 +971,23 @@ test("ToDictionary", t => {
     { Age: 25, Name: "Alice" },
     { Age: 50, Name: "Bob" }
   ];
-  const dictionary = people.toList().toDictionary(x => x.Name);
+  const dictionary = people.ToList().ToDictionary(x => x.Name);
   t.deepEqual(dictionary["Bob"], { Age: 50, Name: "Bob" });
   t.is(dictionary["Bob"].Age, 50);
-  const dictionary2 = people.toList().toDictionary(x => x.Name, y => y.Age);
+  const dictionary2 = people.ToList().ToDictionary(x => x.Name, y => y.Age);
   t.is(dictionary2["Alice"], 25);
   // Dictionary should behave just like in C#
-  const knum = dictionary.max(x => x.Value.Age);
-  const kage = dictionary.min(x => x.Value.Age);
+  const knum = dictionary.Max(x => x.Value.Age);
+  const kage = dictionary.Min(x => x.Value.Age);
   t.is(knum, 50)
   t.is(kage, 15)
   const expectedKeys = ["Cathy", "Alice", "Bob"];
-  t.deepEqual(dictionary.select(x => x.Key).toArray(), expectedKeys);
-  t.deepEqual(dictionary.select(x => x.Value).toArray(), people);
+  t.deepEqual(dictionary.Select(x => x.Key).ToArray(), expectedKeys);
+  t.deepEqual(dictionary.Select(x => x.Value).ToArray(), people);
 });
 
 test("ToList", t => {
-  t.deepEqual([1, 2, 3].toList().toArray(), [1, 2, 3]);
+  t.deepEqual([1, 2, 3].ToList().ToArray(), [1, 2, 3]);
 });
 
 test("ToLookup", t => {
@@ -1007,7 +1024,7 @@ test("ToLookup", t => {
   // use the first character of Company as the key value.
   // select Company appended to TrackingNumber
   // as the element values of the Lookup.
-  const lookup = packages.toList().toLookup(
+  const lookup = packages.ToList().ToLookup(
     p => p.Company.substring(0, 1),
     p => p.Company + " " + p.TrackingNumber
   );
@@ -1022,7 +1039,7 @@ test("ToLookup", t => {
 test("Union", t => {
   const ints1 = [5, 3, 9, 7, 5, 9, 3, 7];
   const ints2 = [8, 3, 6, 4, 4, 9, 1, 0];
-  t.deepEqual(ints1.toList().union(ints2).toArray(), [5, 3, 9, 7, 8, 6, 4, 1, 0]);
+  t.deepEqual(ints1.ToList().Union(ints2).ToArray(), [5, 3, 9, 7, 8, 6, 4, 1, 0]);
 
   const result = [
     new Product({ Name: "apple", Code: 9 }),
@@ -1037,7 +1054,7 @@ test("Union", t => {
     new Product({ Name: "apple", Code: 9 }),
     new Product({ Name: "lemon", Code: 12 })
   ];
-  t.deepEqual(store1.toList().union(store2).toArray(), result);
+  t.deepEqual(store1.ToList().Union(store2).ToArray(), result);
 });
 
 test("Where", t => {
@@ -1052,14 +1069,14 @@ test("Where", t => {
     "strawberry"
   ];
   const expected = ["apple", "mango", "grape"];
-  t.deepEqual(fruits.toList().where(fruit => fruit.length < 6).toArray(), expected);
+  t.deepEqual(fruits.ToList().Where(fruit => fruit.length < 6).ToArray(), expected);
 });
 
 test("Zip", t => {
   const numbers = [1, 2, 3, 4];
   const words = ["one", "two", "three"];
   t.deepEqual(
-    numbers.toList().zip(words, (first, second) => `${first} ${second}`).toArray(),
+    numbers.ToList().Zip(words, (first, second) => `${first} ${second}`).ToArray(),
     ["1 one", "2 two", "3 three"]
   );
   // larger second array
@@ -1067,24 +1084,24 @@ test("Zip", t => {
   const numbers2 = [1, 2, 3, 4];
   const words2 = ["one", "two", "three"];
   t.deepEqual(
-    words2.toList().zip(numbers2, (first, second) => `${first} ${second}`).toArray(),
+    words2.ToList().Zip(numbers2, (first, second) => `${first} ${second}`).ToArray(),
     expected
   );
 });
 
 test("Where().Select()", t => {
   t.deepEqual(
-    [1, 2, 3, 4, 5].toList()
-      .where(x => x > 3)
-      .select(y => y * 2)
-      .toArray(),
+    [1, 2, 3, 4, 5].ToList()
+      .Where(x => x > 3)
+      .Select(y => y * 2)
+      .ToArray(),
     [8, 10]
   );
   t.deepEqual(
-    [1, 2, 3, 4, 5].toList()
-      .where(x => x > 3)
-      .select(y => y + "a")
-      .toArray(),
+    [1, 2, 3, 4, 5].ToList()
+      .Where(x => x > 3)
+      .Select(y => y + "a")
+      .ToArray(),
     ["4a", "5a"]
   );
 });

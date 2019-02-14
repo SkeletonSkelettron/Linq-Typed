@@ -7,9 +7,9 @@ https://www.npmjs.com/package/linqts
 const TimSort = require('timsort');
 
 interface Array<T> {
-    toList(): List<T>;
+    ToList(): List<T>;
 }
-Array.prototype.toList = function <T>(): List<T> {
+Array.prototype.ToList = function <T>(): List<T> {
     return new List<T>(this);
 };
 /**
@@ -69,19 +69,19 @@ class List<T> {
     // }
     constructor(elements: T[] = []) {
         this._array = elements
-      }
-    
+    }
+
 
     /*
     * Adds an object to the end of the List<T> or Array<T>.
     */
-    add(element: T): void {
+    Add(element: T): void {
         this._array.push(element);
     }
     /**
     * Adds the elements of the specified collection to the end of the List<T>.
     */
-    addRange(elements: T[]): void {
+    AddRange(elements: T[]): void {
         for (let i = 0; i < elements.length; i++) {
             this._array.push(elements[i]);
         }
@@ -89,29 +89,29 @@ class List<T> {
     /**
      * Applies an accumulator function over a sequence.
      */
-    aggregate<U>(accumulator: (accum: U, value?: T, index?: number, list?: T[]) => any, initialValue?: U): any {
+    Aggregate<U>(accumulator: (accum: U, value?: T, index?: number, list?: T[]) => any, initialValue?: U): any {
         return this._array.reduce(accumulator, initialValue);
     }
 
     /**
      * Determines whether all elements of a sequence satisfy a condition.
      */
-    all(predicate: (value: T, index: number, list: T[]) => boolean): boolean {
+    All(predicate: (value: T, index: number, list: T[]) => boolean): boolean {
         return this._array.every(predicate);
     }
 
     /**
      * Determines whether a sequence contains any elements.
      */
-    any(predicate?: (value: T, index: number, list: T[]) => boolean): boolean {
+    Any(predicate?: (value: T, index: number, list: T[]) => boolean): boolean {
         return predicate ? this._array.some(predicate) : this._array.length > 0;
     }
     /**
      * Appends a value to the end of the sequence and returns new sequence.
      */
-    append(value: T): List<T> {
+    Append(value: T): List<T> {
         const list = new List<T>();
-        this.forEach(item => {
+        this.ForEach(item => {
             list._array.push(item)
         })
         list._array.push(value)
@@ -121,51 +121,51 @@ class List<T> {
      * Computes the average of a sequence of number values that are obtained by invoking
      * a transform function on each element of the input sequence.
      */
-    average(transform?: (value: T, index: number, list: T[]) => any): number {
-        return this.sum(transform) / this.count(transform);
+    Average(transform?: (value: T, index: number, list: T[]) => any): number {
+        return this.Sum(transform) / this.Count(transform);
     }
 
     /**
      * Casts the elements of a sequence to the specified type.
      */
-    cast<T>(): List<T> {
+    Cast<T>(): List<T> {
         return new List<T>(this._array as any);
     }
 
     /**
      * Concatenates two sequences.
      */
-    concat(list: T[]): List<T> {
+    Concat(list: T[]): List<T> {
         return new List<T>(this._array.concat(list));
     }
 
     /**
      * Determines whether an element is in the List<T>.
      */
-    contains(element: T): boolean {
+    Contains(element: T): boolean {
         return this._array.some(x => x === element);
     }
 
     /**
      * Returns the number of elements in a sequence.
      */
-    count(predicate?: (value: T, index: number, list: T[]) => boolean) {
-        return predicate ? this.where(predicate).count() : this._array.length;
+    Count(predicate?: (value: T, index: number, list: T[]) => boolean) {
+        return predicate ? this.Where(predicate)._array.length : this._array.length;
     }
 
     /**
      * Returns the elements of the specified sequence or the type parameter's default value
      * in a singleton collection if the sequence is empty.
      */
-    defaultIfEmpty(defaultValue?: T): List<T> {
-        return this.count() ? this : new List<T>([defaultValue]);
+    DefaultIfEmpty(defaultValue?: T): List<T> {
+        return this._array.length ? this : new List<T>([defaultValue]);
     }
 
     /**
      * Returns distinct elements from a sequence by using the default equality comparer to compare values.
      */
-    distinct(): List<T> {
-        return this.where(
+    Distinct(): List<T> {
+        return this.Where(
             (value, index, iter) =>
                 (isObj(value)
                     ? iter.findIndex(obj => equal(obj, value))
@@ -176,8 +176,8 @@ class List<T> {
     /**
      * Returns distinct elements from a sequence according to specified key selector.
      */
-    distinctBy(keySelector: (key: T) => any): List<T> {
-        const groups = this.groupBy(keySelector, (obj: any) => obj);
+    DistinctBy(keySelector: (key: T) => any): List<T> {
+        const groups = this.GroupBy(keySelector, (obj: any) => obj);
         const results = new List<T>([]);
         for (const index in groups) {
             if (groups.hasOwnProperty(index)) {
@@ -190,8 +190,8 @@ class List<T> {
     /**
      * Returns the element at a specified index in a sequence.
      */
-    elementAt(index: number): T {
-        if (index < this.count()) {
+    ElementAt(index: number): T {
+        if (index < this._array.length) {
             return this._array[index];
         } else {
             console.log();
@@ -205,34 +205,23 @@ class List<T> {
     /**
      * Returns the element at a specified index in a sequence or a default value if the index is out of range.
      */
-    elementAtOrDefault(index: number): T {
-        return this.elementAt(index) || undefined;
+    ElementAtOrDefault(index: number): T {
+        return this.ElementAt(index) || undefined;
     }
 
     /**
      * Produces the set difference of two sequences by using the default equality comparer to compare values.
      */
-    except(source: T[]): List<T> {
-        return this.where((x: any) => !source.toList().contains(x));
-    }
-
-    /**
-     * Filters a sequence of values based on a predicate and returns new sequence
-     */
-    findAll(predicate?: (value: T, index: number, list: T[]) => boolean): List<T> {
-        let ret: T[] = [];
-        this._array.filter(predicate).forEach(item => {
-            ret.push(item)
-        });
-        return new List<T>(ret);
+    Except(source: T[]): List<T> {
+        return this.Where((x: any) => !source.ToList().Contains(x));
     }
 
     /**
      * Returns the first element of a sequence.
      */
-    first(predicate?: (value: T, index: number, list: T[]) => boolean): T {
-        if (this.count()) {
-            return predicate ? this.where(predicate).toArray()[0] : this._array[0];
+    First(predicate?: (value: T, index: number, list: T[]) => boolean): T {
+        if (this._array.length) {
+            return predicate ? this.Where(predicate).ToArray()[0] : this._array[0];
         } else {
             throw new Error(
                 'InvalidOperationException: The source sequence is empty.'
@@ -243,26 +232,26 @@ class List<T> {
     /**
      * Returns the first element of a sequence, or a default value if the sequence contains no elements.
      */
-    firstOrDefault(predicate?: (value: T, index: number, list: T[]) => boolean): T {
-        return this.count(predicate) ? this.first(predicate) : undefined;
+    FirstOrDefault(predicate?: (value: T, index: number, list: T[]) => boolean): T {
+        return this.Count(predicate) ? this.First(predicate) : undefined;
     }
 
     /**
      * Performs the specified action on each element of the Array<T>.
      */
-    forEach(action: (value: T, index: number, list: T[]) => any): void {
+    ForEach(action: (value: T, index: number, list: T[]) => any): void {
         return this._array.forEach(action);
     }
 
     /**
      * Groups the elements of a sequence according to a specified key selector function.
      */
-    groupBy<TResult = T>(grouper: (key: T) => any, mapper: (element: T) => TResult): { [key: string]: TResult[] } {
+    GroupBy<TResult = T>(grouper: (key: T) => any, mapper: (element: T) => TResult): { [key: string]: TResult[] } {
         const initialValue: { [key: string]: TResult[] } = {}
         if (!mapper) {
             mapper = val => <TResult>(<any>val)
         }
-        return this.aggregate((ac, v) => {
+        return this.Aggregate((ac, v) => {
             const key = grouper(v)
             const existingGroup = ac[key]
             const mappedValue = mapper(v)
@@ -279,21 +268,21 @@ class List<T> {
      * Correlates the elements of two sequences based on equality of keys and groups the results.
      * The default equality comparer is used to compare keys.
      */
-    public groupJoin<U>(
+    GroupJoin<U>(
         list: List<U>,
         key1: (k: T) => any,
         key2: (k: U) => any,
         result: (first: T, second: List<U>) => any
     ): List<any> {
-        return this.select((x, y) =>
-            result(x, list.where(z => key1(x) === key2(z)))
+        return this.Select((x, y) =>
+            result(x, list.Where(z => key1(x) === key2(z)))
         )
     }
 
     /*
     * Returns sub array of array
     */
-    getRange(index: number, count: number): List<T> {
+    GetRange(index: number, count: number): List<T> {
         const result: Array<T> = new Array<T>();
         for (let i = 0; i < count; i++) {
             result.push(this._array[index + i]);
@@ -304,14 +293,14 @@ class List<T> {
     /**
      * Returns the index of the first occurence of an element in the List.
      */
-    indexOf(element: T) {
+    IndexOf(element: T) {
         return this._array.indexOf(element);
     }
 
     /**
      * Inserts an element into the List<T> at the specified index.
      */
-    insert(index: number, element: T): void | Error {
+    Insert(index: number, element: T): void | Error {
         if (index < 0 || index > this._array.length) {
             throw new Error('Index is out of range.');
         }
@@ -321,7 +310,7 @@ class List<T> {
     /**
      * Inserts an element into the List<T> at the specified index.
      */
-    insertRange(index: number, array: T[]): void | Error {
+    InsertRange(index: number, array: T[]): void | Error {
         if (index < 0 || index > this._array.length) {
             throw new Error('Index is out of range.');
         }
@@ -333,27 +322,27 @@ class List<T> {
     /**
      * Produces the set intersection of two sequences by using the default equality comparer to compare values.
      */
-    intersect(source: T[]): List<T> {
+    Intersect(source: T[]): List<T> {
         const th = this._array;
-        return new List<T>(th.toList().where(x => source.toList().contains(x))._array);
+        return new List<T>(th.ToList().Where(x => source.ToList().Contains(x))._array);
     }
 
     /**
      * Correlates the elements of two sequences based on matching keys. The default equality comparer is used to compare keys.
      */
-    join<U>(list: Array<U>, key1: (key: T) => any, key2: (key: U) => any, result: (first: T, second: U) => any): List<any> {
-        return new List<T>(this.selectMany(x =>
-            list.toList().where(y => key2(y) === key1(x)).select(z => result(x, z)).toArray()
+    Join<U>(list: Array<U>, key1: (key: T) => any, key2: (key: U) => any, result: (first: T, second: U) => any): List<any> {
+        return new List<T>(this.SelectMany(x =>
+            list.ToList().Where(y => key2(y) === key1(x)).Select(z => result(x, z)).ToArray()
         ))
     }
 
     /**
      * Returns the last element of a sequence.
      */
-    last(predicate?: (value: T, index: number, list: T[]) => boolean): T {
+    Last(predicate?: (value: T, index: number, list: T[]) => boolean): T {
         let th = this._array;
-        if (this.count()) {
-            return predicate ? th.toList().where(predicate).last() : th[th.length - 1];
+        if (this.Count()) {
+            return predicate ? th.ToList().Where(predicate).Last() : th[th.length - 1];
         } else {
             console.log('Last  - ' + 'InvalidOperationException: The source sequence is empty.');
             throw Error('InvalidOperationException: The source sequence is empty.');
@@ -363,14 +352,14 @@ class List<T> {
     /**
      * Returns the last element of a sequence, or a default value if the sequence contains no elements.
      */
-    lastOrDefault(predicate?: (value: T, index: number, list: T[]) => boolean): T {
-        return this.count(predicate) ? this.last(predicate) : undefined;
+    LastOrDefault(predicate?: (value: T, index: number, list: T[]) => boolean): T {
+        return this.Count(predicate) ? this.Last(predicate) : undefined;
     }
 
     /**
      * Returns the maximum value in a generic sequence.
      */
-    max(selector?: (value: T, index: number, array: T[]) => number): number {
+    Max(selector?: (value: T, index: number, array: T[]) => number): number {
         const id = x => x
         let th = this._array;
         let max = selector ? selector(th[0], 0, th) : id(th[0])
@@ -389,14 +378,14 @@ class List<T> {
     /**
      * Returns the element with maximum value in a generic sequence.
      */
-    maxBy(keySelector: (key: T) => any): T {
-        return this.orderByDescending(keySelector).firstOrDefault();
+    MaxBy(keySelector: (key: T) => any): T {
+        return this.OrderByDescending(keySelector).FirstOrDefault();
     }
 
     /**
      * Returns the minimum value in a generic sequence.
      */
-    min(selector?: (value: T, index: number, array: T[]) => number): number {
+    Min(selector?: (value: T, index: number, array: T[]) => number): number {
         const id = x => x
         let th = this._array;
         let min = selector ? selector(this._array[0], 0, this._array) : id(this._array[0])
@@ -415,14 +404,14 @@ class List<T> {
     /**
      * Returns the element with minimum value in a generic sequence.
      */
-    minBy(keySelector: (key: T) => any): T {
-        return this.orderBy(keySelector).firstOrDefault();
+    MinBy(keySelector: (key: T) => any): T {
+        return this.OrderBy(keySelector).FirstOrDefault();
     }
 
     /**
     * Filters the elements of a sequence based on a specified type.
     */
-    ofType<T>(type: any): List<T> {
+    OfType<T>(type: any): List<T> {
         let typeName: string;
         let th = this._array;
         switch (type) {
@@ -443,45 +432,45 @@ class List<T> {
                 break
         }
         return typeName === null
-            ? th.toList().where(x => x instanceof type).cast()
-            : th.toList().where(x => typeof x === typeName).cast()
+            ? th.ToList().Where(x => x instanceof type).Cast()
+            : th.ToList().Where(x => typeof x === typeName).Cast()
     }
 
     /**
      * Sorts the elements of a sequence in ascending order according to a key.
      */
-    orderBy(keySelector: (key: T) => any, comparer = keyComparer(keySelector, false)): List<T> {
+    OrderBy(keySelector: (key: T) => any, comparer = keyComparer(keySelector, false)): List<T> {
         return new OrderedList<T>(this._array, comparer)
     }
 
     /**
      * Sorts the elements of a sequence in descending order according to a key.
      */
-    orderByDescending(keySelector: (key: T) => any, comparer = keyComparer(keySelector, true)): List<T> {
+    OrderByDescending(keySelector: (key: T) => any, comparer = keyComparer(keySelector, true)): List<T> {
         return new OrderedList<T>(this._array, comparer)
     }
 
     /**
      * Performs a subsequent ordering of the elements in a sequence in ascending order according to a key.
      */
-    public thenBy(keySelector: (key: T) => any): List<T> {
-        return this.orderBy(keySelector)
+    public ThenBy(keySelector: (key: T) => any): List<T> {
+        return this.OrderBy(keySelector)
     }
 
     /**
      * Performs a subsequent ordering of the elements in a sequence in descending order, according to a key.
      */
-    public thenByDescending(keySelector: (key: T) => any): List<T> {
-        return this.orderByDescending(keySelector)
+    public ThenByDescending(keySelector: (key: T) => any): List<T> {
+        return this.OrderByDescending(keySelector)
     }
 
     /**
      * Prepends a value to the end of the sequence and returns new sequence.
      */
-    prepend(value: T): List<T> {
+    Prepend(value: T): List<T> {
         const list = new List<T>();
         list._array.push(value)
-        this.forEach(item => {
+        this.ForEach(item => {
             list._array.push(item)
         })
         return list;
@@ -490,16 +479,16 @@ class List<T> {
     /**
      * Removes the first occurrence of a specific object from the List<T>.
      */
-    remove(element: T): boolean {
-        return this.indexOf(element) !== -1
-            ? (this.removeAt(this.indexOf(element)), true)
+    Remove(element: T): boolean {
+        return this.IndexOf(element) !== -1
+            ? (this.RemoveAt(this.IndexOf(element)), true)
             : false;
     }
 
     /**
      * Removes all the elements that match the conditions defined by the specified predicate.
      */
-    removeAll(predicate?: (value?: T, index?: number, list?: T[]) => boolean): List<T> {
+    RemoveAll(predicate?: (value?: T, index?: number, list?: T[]) => boolean): List<T> {
         if (predicate) {
             const arr = this._array;
             for (let i = 0; i < arr.length; i++) {
@@ -516,42 +505,42 @@ class List<T> {
     /**
      * Removes the element at the specified index of the List<T>.
      */
-    removeAt(index: number): List<T> {
+    RemoveAt(index: number): List<T> {
         return new List<T>(this._array.splice(index, 1));
     }
 
     /*
      * Removes the element at the specified index of the List<T>.
      */
-    removeRange(index: number, count: number): List<T> {
+    RemoveRange(index: number, count: number): List<T> {
         return new List<T>(this._array.splice(index, count));
     }
 
     /**
      * Reverses the order of the elements in the entire List<T>.
      */
-    reverse(): List<T> {
+    Reverse(): List<T> {
         return new List<T>(this._array.reverse());
     }
 
     /**
      * Projects each element of a sequence into a new form.
      */
-    select<TOut>(selector: (element: T, index: number) => TOut): List<TOut> {
+    Select<TOut>(selector: (element: T, index: number) => TOut): List<TOut> {
         return new List<TOut>(this._array.map(selector));
     }
 
     /**
      * Projects each element of a sequence to a List<any> and flattens the resulting sequences into one sequence.
      */
-    selectMany<TOut extends any[]>(selector: (element: T, index: number) => TOut): TOut {
-        return this.aggregate(
+    SelectMany<TOut extends any[]>(selector: (element: T, index: number) => TOut): TOut {
+        return this.Aggregate(
             (ac, v, i) => (
-                ac.toList().addRange(
-                    this.select(selector)
-                        .elementAt(i)
-                        .toList()
-                        .toArray()
+                ac.ToList().AddRange(
+                    this.Select(selector)
+                        .ElementAt(i)
+                        .ToList()
+                        .ToArray()
                 ),
                 ac
             ),
@@ -562,7 +551,7 @@ class List<T> {
     /**
      * Determines whether two sequences are equal by comparing the elements by using the default equality comparer for their type.
      */
-    sequenceEqual(list: T[]): boolean {
+    SequenceEqual(list: T[]): boolean {
         return !!this._array.reduce(
             (x: any, y: any, z: any) => (list[z] === y ? x : undefined)
         );
@@ -572,43 +561,43 @@ class List<T> {
      * Returns the only element of a sequence, or a default value if the sequence is empty;
      * this method throws an exception if there is more than one element in the sequence.
      */
-    single(predicate?: (value: T, index: number, list: T[]) => boolean): T {
-        if (this.count(predicate) !== 1) {
+    Single(predicate?: (value: T, index: number, list: T[]) => boolean): T {
+        if (this.Count(predicate) !== 1) {
             console.log('Single - ' + 'The collection does not contain exactly one element.');
             throw new Error('The collection does not contain exactly one element.');
         } else {
-            return this.first(predicate);
+            return this.First(predicate);
         }
     }
 
     /**
      * Returns the only element of a sequence, and throws an exception if there is not exactly one element in the sequence.
      */
-    singleOrDefault(predicate?: (value: T, index: number, list: T[]) => boolean): T {
-        return this.count(predicate) ? this.single(predicate) : undefined;
+    SingleOrDefault(predicate?: (value: T, index: number, list: T[]) => boolean): T {
+        return this.Count(predicate) ? this.Single(predicate) : undefined;
     }
 
     /**
      * Bypasses a specified number of elements in a sequence and then returns the remaining elements.
      */
-    skip(amount: number): List<T> {
+    Skip(amount: number): List<T> {
         return new List<T>(this._array.slice(Math.max(0, amount)))
     }
 
     /**
      * Bypasses a specified number of elements at the end of a sequence and then returns the remaining elements.
      */
-    skipLast(amount: number): List<T> {
+    SkipLast(amount: number): List<T> {
         return new List<T>(this._array.slice(0, Math.max(0, this._array.length - amount)))
     }
 
     /**
      * Bypasses elements in a sequence as long as a specified condition is true and then returns the remaining elements.
      */
-    skipWhile(predicate: (value?: T, index?: number, list?: T[]) => boolean): List<T> {
-        return this.skip(
-            this.aggregate(
-                (ac, val) => (predicate(this.elementAt(ac)) ? ++ac : ac),
+    SkipWhile(predicate: (value?: T, index?: number, list?: T[]) => boolean): List<T> {
+        return this.Skip(
+            this.Aggregate(
+                (ac, val) => (predicate(this.ElementAt(ac)) ? ++ac : ac),
                 0
             )
         )
@@ -618,33 +607,33 @@ class List<T> {
      * Computes the sum of the sequence of number values that are obtained by invoking
      * a transform function on each element of the input sequence.
      */
-    sum(transform?: (value?: T, index?: number, list?: T[]) => number): number {
+    Sum(transform?: (value?: T, index?: number, list?: T[]) => number): number {
         return transform
-            ? this.select(transform).sum()
-            : this.aggregate((ac: any, v: any) => (ac += +v), 0);
+            ? this.Select(transform).Sum()
+            : this.Aggregate((ac: any, v: any) => (ac += +v), 0);
     }
 
     /**
      * Returns a specified number of contiguous elements from the start of a sequence.
      */
-    take(amount: number): List<T> {
+    Take(amount: number): List<T> {
         return new List<T>(this._array.slice(0, Math.max(0, amount)))
     }
 
     /**
      * Returns a specified number of contiguous elements from the end of a sequence.
      */
-    takeLast(amount: number): List<T> {
+    TakeLast(amount: number): List<T> {
         return new List<T>(this._array.slice(this._array.length - amount, this._array.length))
     }
 
     /**
      * Returns elements from a sequence as long as a specified condition is true.
      */
-    takeWhile(predicate: (value: T, index?: number, list?: T[]) => boolean): List<T> {
-        return this.take(
-            this.aggregate(
-                (ac: any) => (predicate(this.elementAt(ac)) ? ++ac : ac),
+    TakeWhile(predicate: (value: T, index?: number, list?: T[]) => boolean): List<T> {
+        return this.Take(
+            this.Aggregate(
+                (ac: any) => (predicate(this.ElementAt(ac)) ? ++ac : ac),
                 0
             )
         );
@@ -653,24 +642,24 @@ class List<T> {
     /**
      * Copies the elements of the List<T> to a new array.
      */
-    toArray() {
+    ToArray() {
         return this._array;
     }
 
     /**
      * Creates a Dictionary<TKey, TValue> from a List<T> according to a specified key selector function.
      */
-    toDictionary<TKey, TValue>(key: (key: T) => TKey, value?: (value: T) => TValue): List<{ Key: TKey; Value: T }>
-    toDictionary<TKey, TValue>(key: (key: T) => TKey, value?: (value: T) => TValue): List<{ Key: TKey; Value: T }> | List<{ Key: TKey; Value: T | TValue }> {
-        return this.aggregate((dicc, v, i) => {
+    ToDictionary<TKey, TValue>(key: (key: T) => TKey, value?: (value: T) => TValue): List<{ Key: TKey; Value: T }>
+    ToDictionary<TKey, TValue>(key: (key: T) => TKey, value?: (value: T) => TValue): List<{ Key: TKey; Value: T }> | List<{ Key: TKey; Value: T | TValue }> {
+        return this.Aggregate((dicc, v, i) => {
             dicc[
-                this.select(key)
-                    .elementAt(i)
+                this.Select(key)
+                    .ElementAt(i)
                     .toString()
-            ] = value ? this.select(value).elementAt(i) : v
-            dicc.add({
-                Key: this.select(key).elementAt(i),
-                Value: value ? this.select(value).elementAt(i) : v
+            ] = value ? this.Select(value).ElementAt(i) : v
+            dicc.Add({
+                Key: this.Select(key).ElementAt(i),
+                Value: value ? this.Select(value).ElementAt(i) : v
             })
             return dicc
         }, new List<{ Key: TKey; Value: T | TValue }>())
@@ -679,31 +668,31 @@ class List<T> {
     /**
      * Creates a Lookup<TKey, TElement> from an IEnumerable<T> according to specified key selector and element selector functions.
      */
-    toLookup(keySelector: (key: T) => any, elementSelector: (element: T) => any): any {
-        return this.groupBy(keySelector, elementSelector);
+    ToLookup(keySelector: (key: T) => any, elementSelector: (element: T) => any): any {
+        return this.GroupBy(keySelector, elementSelector);
     }
 
     /**
      * Produces the set union of two sequences by using the default equality comparer.
      */
-    union(list: T[]): List<T> {
-        return this.concat(list).distinct();
+    Union(list: T[]): List<T> {
+        return this.Concat(list).Distinct();
     }
 
     /**
      * Filters a sequence of values based on a predicate.
      */
-    where(predicate: (value: T, index: number, list: T[]) => boolean): List<T> {
+    Where(predicate: (value: T, index: number, list: T[]) => boolean): List<T> {
         return new List<T>(this._array.filter(predicate));
     }
 
     /**
      * Applies a specified function to the corresponding elements of two sequences, producing a sequence of the results.
      */
-    zip<U, TOut>(list: U[], result: (first: T, second: U) => TOut): List<TOut> {
-        return list.toList().count() < this.count()
-            ? list.toList().select((x: any, y: any) => result(this.elementAt(y), x))
-            : this.select((x: any, y: any) => result(x, list.toList().elementAt(y)));
+    Zip<U, TOut>(list: U[], result: (first: T, second: U) => TOut): List<TOut> {
+        return list.ToList().Count() < this.Count()
+            ? list.ToList().Select((x: any, y: any) => result(this.ElementAt(y), x))
+            : this.Select((x: any, y: any) => result(x, list.ToList().ElementAt(y)));
     }
 }
 /**
@@ -714,32 +703,32 @@ class List<T> {
  */
 class OrderedList<T> extends List<T> {
     constructor(elements: T[], private _comparer: (a: T, b: T) => number) {
-      super(elements)
-      TimSort.sort(this._array, this._comparer)
+        super(elements)
+        TimSort.sort(this._array, this._comparer)
     }
-  
+
     /**
      * Performs a subsequent ordering of the elements in a sequence in ascending order according to a key.
      * @override
      */
-    public thenBy(keySelector: (key: T) => any): List<T> {
-      return new OrderedList(
-        this._array,
-        composeComparers(this._comparer, keyComparer(keySelector, false))
-      )
+    public ThenBy(keySelector: (key: T) => any): List<T> {
+        return new OrderedList(
+            this._array,
+            composeComparers(this._comparer, keyComparer(keySelector, false))
+        )
     }
-  
+
     /**
      * Performs a subsequent ordering of the elements in a sequence in descending order, according to a key.
      * @override
      */
-    public thenByDescending(keySelector: (key: T) => any): List<T> {
-      return new OrderedList(
-        this._array,
-        composeComparers(this._comparer, keyComparer(keySelector, true))
-      )
+    public ThenByDescending(keySelector: (key: T) => any): List<T> {
+        return new OrderedList(
+            this._array,
+            composeComparers(this._comparer, keyComparer(keySelector, true))
+        )
     }
-  }
+}
 class Enumerable {
     /**
      * Generates a sequence of integral numbers within a specified range.
@@ -747,7 +736,7 @@ class Enumerable {
     public static Range(start: number, count: number): List<number> {
         let result = new List<number>()
         while (count--) {
-            result.add(start++)
+            result.Add(start++)
         }
         return result
     }
@@ -758,7 +747,7 @@ class Enumerable {
     public static Repeat<T>(element: T, count: number): List<T> {
         let result = new List<T>()
         while (count--) {
-            result.add(element)
+            result.Add(element)
         }
         return result
     }
