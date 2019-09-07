@@ -12,7 +12,7 @@ import 'linq-typed'
 let arr: anyType[];
 ......
 ......
-result = arr.Where(x => x.title === 'value');
+result = arr.Where(x => x.title === 'value').ToArray();
 ....
 ```
 
@@ -22,9 +22,9 @@ This library contains following functions:
     Add(element: T): void;
     AddRange(elements: T[]): void;
     Aggregate<U>(accumulator: (accum: U, value?: T, index?: number, list?: T[]) => any, initialValue?: U): any;
-    Append(value: T): List<T>;
     All(predicate: (value: T, index: number, list: T[]) => boolean): boolean;
     Any(predicate?: (value: T, index: number, list: T[]) => boolean): boolean;
+    Append(value: T): List<T>;
     Average(transform?: (value: T, index: number, list: T[]) => any): number;
     Cast<T>(): List<T>;
     Concat(list: T[]): List<T>;
@@ -36,17 +36,18 @@ This library contains following functions:
     ElementAt(index: number): T;
     ElementAtOrDefault(index: number): T;
     Except(source: T[]): List<T>;
+    FindAll(predicate?: (value: T, index: number, list: T[]) => boolean): T[];
     First(predicate?: (value: T, index: number, list: T[]) => boolean): T;
     FirstOrDefault(predicate?: (value: T, index: number, list: T[]) => boolean): T;
     ForEach(action: (value: T, index: number, list: T[]) => any): void;
     GroupBy<TResult = T>(grouper: (key: T) => any, mapper: (element: T) => TResult): { [key: string]: TResult[] };
-    GroupJoin<U>(list: U[], key1: (k: T) => any, key2: (k: U) => any, result: (first: T, second: U[]) => any): any[];
+    GroupJoin<T>(list: T[], key1: (k: T) => any, key2: (k: T) => any, result: (first: T, second: T[]) => any): List<any>;
     GetRange(index: number, count: number): List<T>;
     IndexOf(element: T): number;
     Insert(index: number, element: T): void | Error;
     InsertRange(index: number, array: T[]): void | Error;
     Intersect(source: T[]): List<T>;
-    Join<U>(list: Array<U>, key1: (key: T) => any, key2: (key: U) => any, result: (first: T, second: U) => any): any[];
+    Join<U>(list: Array<U>, key1: (key: T) => any, key2: (key: U) => any, result: (first: T, second: U) => any): List<any>;
     Last(predicate?: (value: T, index: number, list: T[]) => boolean): T;
     LastOrDefault(predicate?: (value: T, index: number, list: T[]) => boolean): T;
     Max(selector?: (value: T, index: number, array: T[]) => number): number;
@@ -54,15 +55,16 @@ This library contains following functions:
     Min(selector?: (value: T, index: number, array: T[]) => number): number;
     MinBy(keySelector: (key: T) => any): T;
     OfType<T>(type: any): List<T>;
-    OrderBy(keySelector: (key: T) => any): List<T>;
+    OrderBy(keySelector: (key: T) => any, keyComparer?: Function): List<T>;
     OrderByDescending(keySelector: (key: T) => any): List<T>;
-    ThenBy(keySelector: (key: T) => any): T[];
+    Prepend(value: T): List<T>;
+    ThenBy(keySelector: (key: T) => any): List<T>;
     ThenByDescending(keySelector: (key: T) => any): List<T>;
     Remove(element: T): boolean;
     RemoveAll(predicate?: (value: T, index: number, list: T[]) => boolean): List<T>;
     RemoveAt(index: number): void;
     RemoveRange(index: number, count: number): void;
-    Reverse(): List<T>;
+    Reverse(): void;
     Select<TOut>(selector: (element: T, index: number) => TOut): List<TOut>;
     SelectMany<TOut extends any[]>(selector: (element: T, index: number) => TOut): TOut;
     SequenceEqual(list: T[]): boolean;
@@ -76,13 +78,21 @@ This library contains following functions:
     TakeLast(amount: number): List<T>;
     TakeWhile(predicate: (value: T, index?: number, list?: T[]) => boolean): List<T>;
     ToArray(): T[];
-    ToDictionary<TKey, TValue>(key: (key: T) => TKey, value?: (value: T) => TValue): { Key: TKey; Value: T | TValue }[];
-    ToList(): T[];
+    ToDictionary<TKey, TValue>(key: (key: T) => TKey, value?: (value: T) => TValue): List<{ Key: TKey; Value: T }>;
+    ToList(): List<T>;
     ToLookup(keySelector: (key: T) => any, elementSelector: (element: T) => any): any;
     Union(list: T[]): List<T>;
     Where(predicate: (value: T, index: number, list: T[]) => boolean): List<T>;
     Zip<U, TOut>(list: U[], result: (first: T, second: U) => TOut): TOut[];
 ```
+
+## New in version 1.3.1
+
+* Updated readme. No update is necessary
+
+## New in version 1.3.0
+
+* Bug fixes and performance improvements
 
 ## New in version 1.2.6
 
