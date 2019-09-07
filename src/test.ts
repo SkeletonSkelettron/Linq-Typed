@@ -173,13 +173,27 @@ test("Concat", t => {
     new Pet({ Age: 14, Name: "Snoopy" }),
     new Pet({ Age: 9, Name: "Fido" })
   ];
-  const expected = ["Barley", "Boots", "Whiskers", "Bounder", "Snoopy", "Fido"];
+  const expected = [
+    new Pet({ Age: 8, Name: "Barley" }),
+    new Pet({ Age: 4, Name: "Boots" }),
+    new Pet({ Age: 1, Name: "Whiskers" }),
+    new Pet({ Age: 3, Name: "Bounder" }),
+    new Pet({ Age: 14, Name: "Snoopy" }),
+    new Pet({ Age: 9, Name: "Fido" })
+  ];
   t.deepEqual(
     cats
-      .Select(cat => cat.Name)
-      .Concat(dogs.Select(dog => dog.Name).ToArray())
+      .Concat(dogs)
       .ToArray(),
     expected
+  );
+  t.deepEqual(
+    cats,
+    [
+      new Pet({ Age: 8, Name: "Barley" }),
+      new Pet({ Age: 4, Name: "Boots" }),
+      new Pet({ Age: 1, Name: "Whiskers" })
+    ]
   );
 });
 
@@ -552,17 +566,24 @@ test("OfType", t => {
 });
 
 test("OrderBy", t => {
+  const grades = [4, 5, 6, 3, 2, 1];
   const expected = [1, 2, 3, 4, 5, 6];
-  t.deepEqual([4, 5, 6, 3, 2, 1].OrderBy(x => x).ToArray(), expected);
+  t.deepEqual(grades.OrderBy(x => x).ToArray(), expected);
   t.deepEqual(
     ["Deutschland", "Griechenland", "Agypten"].OrderBy(x => x).ToArray(),
     ["Agypten", "Deutschland", "Griechenland"]
+  );
+  t.deepEqual(
+    grades,
+    [4, 5, 6, 3, 2, 1]
   );
 });
 
 
 test("OrderByDescending", t => {
-  t.deepEqual([4, 5, 6, 3, 2, 1].OrderByDescending(x => x).ToArray(), [
+  const grades = [4, 5, 6, 3, 2, 1];
+
+  t.deepEqual(grades.OrderByDescending(x => x).ToArray(), [
     6,
     5,
     4,
@@ -575,6 +596,10 @@ test("OrderByDescending", t => {
       .OrderByDescending(x => x)
       .ToArray(),
     ["Griechenland", "Deutschland", "Agypten"]
+  );
+  t.deepEqual(
+    grades,
+    [4, 5, 6, 3, 2, 1]
   );
 });
 
@@ -617,6 +642,19 @@ test("ThenBy", t => {
       .ThenBy(fruit => fruit)
       .ToArray(),
     expected
+  );
+  t.deepEqual(
+    fruits,
+    [
+      "grape",
+      "passionfruit",
+      "banana",
+      "mango",
+      "orange",
+      "raspberry",
+      "apple",
+      "blueberry"
+    ]
   );
   const expectedNums = [1, 2, 3, 4, 5, 6];
   // test omission of OrderBy
@@ -671,6 +709,19 @@ test("ThenByDescending", t => {
       .ToArray(),
     expected
   );
+  t.deepEqual(
+    fruits,
+    [
+      "grape",
+      "passionfruit",
+      "banana",
+      "mango",
+      "orange",
+      "raspberry",
+      "apple",
+      "blueberry"
+    ]
+  );
   t.deepEqual([4, 5, 6, 3, 2, 1].ThenByDescending(x => x).ToArray(), [
     6,
     5,
@@ -722,7 +773,7 @@ test("RemoveAll", t => {
     "Gallimimus",
     "Triceratops"
   ];
-  const num1 = [5,7, 8, 17, 9, 10, 11, 0, 2, 3, 4];
+  const num1 = [5, 7, 8, 17, 9, 10, 11, 0, 2, 3, 4];
   const num2 = [17, 10, 11];
   t.deepEqual(dinosaurs.RemoveAll(x => x.endsWith("saurus")).ToArray(), lessDinosaurs);
   t.deepEqual(num1.RemoveAll(x => x < 10).ToArray(), num2);
@@ -776,7 +827,9 @@ test("RemoveRange", t => {
 });
 
 test("Reverse", t => {
-  t.deepEqual([1, 2, 3, 4, 5].Reverse().ToArray(), [5, 4, 3, 2, 1]);
+  var f = [1, 2, 3, 4, 5];
+  f.Reverse();
+  t.deepEqual(f, [5, 4, 3, 2, 1]);
 });
 
 test("Select", t => {
@@ -874,6 +927,10 @@ test("Skip", t => {
       .ToArray(),
     [82, 70, 59, 56]
   );
+  t.deepEqual(
+    grades,
+    [59, 82, 70, 56, 92, 98, 85]
+  );
 });
 
 test("SkipLast", t => {
@@ -883,6 +940,10 @@ test("SkipLast", t => {
       .SkipLast(2)
       .ToArray(),
     [59, 82, 70, 56, 92]
+  );
+  t.deepEqual(
+    grades,
+    [59, 82, 70, 56, 92, 98, 85]
   );
 });
 
@@ -894,6 +955,10 @@ test("SkipWhile", t => {
       .SkipWhile(grade => grade >= 80)
       .ToArray(),
     [70, 59, 56]
+  );
+  t.deepEqual(
+    grades,
+    [59, 82, 70, 56, 92, 98, 85]
   );
 });
 
@@ -916,6 +981,10 @@ test("Take", t => {
       .ToArray(),
     [98, 92, 85]
   );
+  t.deepEqual(
+    grades,
+    [59, 82, 70, 56, 92, 98, 85]
+  );
 });
 
 test("TakeLast", t => {
@@ -925,6 +994,10 @@ test("TakeLast", t => {
       .TakeLast(2)
       .ToArray(),
     [98, 85]
+  );
+  t.deepEqual(
+    grades,
+    [59, 82, 70, 56, 92, 98, 85]
   );
 });
 
@@ -941,6 +1014,17 @@ test("TakeWhile", t => {
   t.deepEqual(
     fruits.TakeWhile(fruit => fruit !== "orange").ToArray(),
     expected
+  );
+  t.deepEqual(
+    fruits,
+    [
+      "apple",
+      "banana",
+      "mango",
+      "orange",
+      "passionfruit",
+      "grape"
+    ]
   );
 });
 

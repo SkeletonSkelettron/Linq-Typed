@@ -238,7 +238,7 @@ interface Array<T> {
     /**
      * Reverses the order of the elements in the entire List<T>.
      */
-    Reverse(): List<T>;
+    Reverse(): void;
 
     /**
      * Projects each element of a sequence into a new form.
@@ -380,7 +380,7 @@ Array.prototype.Append = function <T>(value: T): List<T> {
         list._array.push(item)
     })
     list._array.push(value)
-    return list
+    return list;
 };
 
 Array.prototype.Average = function <T>(
@@ -404,7 +404,7 @@ Array.prototype.Contains = function <T>(element: T): boolean {
 Array.prototype.Count = function <T>(
     predicate?: (value: T, index: number, list: T[]) => boolean
 ): number {
-    return predicate ? this.Where(predicate).Count() : this.length;
+    return predicate ? this.Where(predicate).Count() : getArray<T>(this).length;
 };
 
 Array.prototype.DefaultIfEmpty = function <T>(defaultValue?: T): List<T> {
@@ -421,14 +421,11 @@ Array.prototype.Distinct = function <T>(): List<T> {
 };
 
 Array.prototype.DistinctBy = function <T>(keySelector: (key: T) => any): List<T> {
-    const groups = this.GroupBy(keySelector, (obj: any) => obj);
-    const results = new List<T>([]);
-    for (const index in groups) {
-        if (groups.hasOwnProperty(index)) {
-            results._array.Add(groups[index][0]);
-        }
-    }
-    return results;
+    const groups = this.GroupBy(keySelector)
+    return Object.keys(groups).reduce((res, key) => {
+        res.Add(groups[key][0])
+        return res
+    }, new List<T>());
 };
 
 Array.prototype.ElementAt = function <T>(index: number): T {
@@ -445,21 +442,17 @@ Array.prototype.ElementAt = function <T>(index: number): T {
 };
 
 Array.prototype.ElementAtOrDefault = function <T>(index: number): T {
-    return this.ElementAt(index) || undefined;
+    return this.ElementAt(index) !== undefined && this.ElementAt(index)
 };
 
 Array.prototype.Except = function <T>(source: T[]): List<T> {
-    return this.Where((x: any) => !source.Contains(x));
+    return this.Where((x) => !source.Contains(x));
 };
 
 Array.prototype.FindAll = function <T>(
     predicate?: (value: T, index: number, list: T[]) => boolean
 ): T[] {
-    let ret: T[] = [];
-    getArray<T>(this).filter(predicate).forEach(item => {
-        ret.push(item)
-    });
-    return ret;
+    return getArray<T>(this).filter(predicate)
 };
 
 Array.prototype.First = function <T>(
@@ -511,16 +504,15 @@ Array.prototype.GroupJoin = function <U, T>(
 ): List<any> {
     return this.Select((x, y) =>
         result(x, list.Where(z => key1(x) === key2(z)).ToArray())
-    )
+    );
 };
 
 Array.prototype.GetRange = function <T>(index: number, count: number): List<T> {
-    // tslint:disable-next-line:prefer-const
-    let result: Array<T> = new Array<T>();
+    const result = new List<T>();
     for (let i = 0; i < count; i++) {
-        result.push(getArray<T>(this)[index + i]);
+        result._array.push(getArray<T>(this)[index + i]);
     }
-    return new List<T>(result);
+    return result;
 };
 
 Array.prototype.IndexOf = function <T>(element: T): number {
@@ -528,16 +520,15 @@ Array.prototype.IndexOf = function <T>(element: T): number {
 };
 
 Array.prototype.Insert = function <T>(index: number, element: T): void | Error {
-    let th = getArray<T>(this)
+    let th = getArray<T>(this);
     if (index < 0 || index > th.length) {
         throw new Error('Index is out of range.');
     }
-
     th.splice(index, 0, element);
 };
 
 Array.prototype.InsertRange = function <T>(index: number, array: T[]): void | Error {
-    let th = getArray<T>(this)
+    let th = getArray<T>(this);
     if (index < 0 || index > th.length) {
         throw new Error('Index is out of range.');
     }
@@ -547,8 +538,7 @@ Array.prototype.InsertRange = function <T>(index: number, array: T[]): void | Er
 };
 
 Array.prototype.Intersect = function <T>(source: T[]): List<T> {
-    const th = getArray<T>(this)
-    return new List<T>(th.Where(x => source.Contains(x))._array);
+    return this.Where(x => source.Contains(x))
 };
 
 Array.prototype.Join = function <T, U>(
@@ -557,9 +547,9 @@ Array.prototype.Join = function <T, U>(
     key2: (key: U) => any,
     result: (first: T, second: U) => any
 ): List<any> {
-    return new List<T>(this.SelectMany(x =>
-        list.Where(y => key2(y) === key1(x)).Select(z => result(x, z)).ToArray()
-    ))
+    return this.SelectMany(x =>
+        list.Where(y => key2(y) === key1(x)).Select(z => result(x, z))
+    );
 };
 
 Array.prototype.Last = function <T>(
@@ -634,7 +624,7 @@ Array.prototype.OfType = function <T>(type: any): List<T> {
             typeName = typeof true
             break
         case Function:
-            typeName = typeof function () { } // tslint:disable-line no-empty
+            typeName = typeof function () { }
             break
         default:
             typeName = null
@@ -643,17 +633,24 @@ Array.prototype.OfType = function <T>(type: any): List<T> {
     return typeName === null
         ? th.Where(x => x instanceof type).Cast()
         : th.Where(x => typeof x === typeName).Cast()
-
 }
 
 Array.prototype.OrderBy = function <T>(keySelector: (key: T) => any,
     comparer = keyComparer(keySelector, false)): List<T> {
-    return new List<T>(getArray<T>(this), comparer)
+        const list: Array<T> = new Array();
+        for (const item of this instanceof List ? this._array : this) {
+            list.push(item);
+        }
+        return new List<T>(list, comparer);
 };
 
 Array.prototype.OrderByDescending = function <T>(keySelector: (key: T) => any,
     comparer = keyComparer(keySelector, true)): List<T> {
-    return new List<T>(getArray<T>(this), comparer)
+    const list: Array<T> = new Array();
+    for (const item of this instanceof List ? this._array : this) {
+        list.push(item);
+    }
+    return new List<T>(list, comparer);
 };
 
 Array.prototype.Prepend = function <T>(value: T): List<T> {
@@ -662,7 +659,7 @@ Array.prototype.Prepend = function <T>(value: T): List<T> {
     this.ForEach(item => {
         list._array.push(item)
     })
-    return list
+    return list;
 };
 
 Array.prototype.ThenBy = function <T>(keySelector: (key: T) => any): List<T> {
@@ -679,12 +676,13 @@ Array.prototype.Remove = function <T>(element: T): boolean {
         : false;
 };
 
+//TODO
 Array.prototype.RemoveAll = function <T>(
     predicate?: (value?: T, index?: number, list?: T[]) => boolean
 ): List<T> {
     if (predicate) {
         const arr = getArray<T>(this);
-         for (let i = 0; i < arr.length; i++) {
+        for (let i = 0; i < arr.length; i++) {
             if (predicate(arr[i])) {
                 arr.splice(i, 1);
                 i--;
@@ -696,15 +694,15 @@ Array.prototype.RemoveAll = function <T>(
 };
 
 Array.prototype.RemoveAt = function <T>(index: number): List<T> {
-    return new List<T>(getArray<T>(this).splice(index, 1));
+    return this instanceof List ? this._array.splice(index, 1) : this.splice(index, 1);
 };
 
 Array.prototype.RemoveRange = function <T>(index: number, count: number): List<T> {
-    return new List<T>(getArray<T>(this).splice(index, count));
+    return this instanceof List ? this._array.splice(index, count) : this.splice(index, count);
 };
 
-Array.prototype.Reverse = function <T>(): List<T> {
-    return new List<T>(getArray<T>(this).reverse());
+Array.prototype.Reverse = function <T>(): void {
+    this instanceof List ? this._array.reverse() : this.reverse();
 };
 
 Array.prototype.Select = function <TOut, T>(
@@ -717,21 +715,21 @@ Array.prototype.SelectMany = function <T, TOut extends any[]>(
     selector: (element: T, index: number) => TOut
 ): TOut {
     return this.Aggregate(
-        (ac, v, i) => (
-            ac.AddRange(
-                this.Select(selector)
-                    .ElementAt(i)
-                    .ToArray()
-            ),
-            ac
+        (ac, _, i) => (
+          ac.AddRange(
+            this.Select(selector)
+              .ElementAt(i)
+              .ToArray()
+          ),
+          ac
         ),
-        new Array<TOut>()
-    )
+        new List<TOut>()
+      );
 };
 
 Array.prototype.SequenceEqual = function <T>(list: T[]): boolean {
     return !!getArray<T>(this).reduce(
-        (x: any, y: any, z: any) => (list[z] === y ? x : undefined)
+        (x, y, z) => (list[z] === y ? x : undefined)
     );
 };
 
@@ -764,11 +762,8 @@ Array.prototype.SkipWhile = function <T>(
     predicate: (value?: T, index?: number, list?: T[]) => boolean
 ): List<T> {
     return this.Skip(
-        this.Aggregate(
-            (ac, val) => (predicate(this.ElementAt(ac)) ? ++ac : ac),
-            0
-        )
-    )
+        this.Aggregate(ac => (predicate(this.ElementAt(ac)) ? ++ac : ac), 0)
+      )
 };
 
 Array.prototype.Sum = function <T>(
@@ -776,7 +771,7 @@ Array.prototype.Sum = function <T>(
 ): number {
     return transform
         ? this.Select(transform).Sum()
-        : this.Aggregate((ac: any, v: any) => (ac += +v), 0);
+        : this.Aggregate((ac, v) => (ac += +v), 0);
 };
 
 Array.prototype.Take = function <T>(amount: number): List<T> {
@@ -784,7 +779,8 @@ Array.prototype.Take = function <T>(amount: number): List<T> {
 };
 
 Array.prototype.TakeLast = function <T>(amount: number): List<T> {
-    return new List<T>(getArray<T>(this).slice(getArray<T>(this).length - amount, getArray<T>(this).length))
+    const len = getArray<T>(this).length;
+    return new List<T>(getArray<T>(this).slice(len - amount, len));
 };
 
 Array.prototype.TakeWhile = function <T>(
@@ -792,7 +788,7 @@ Array.prototype.TakeWhile = function <T>(
 ): List<T> {
     return this.Take(
         this.Aggregate(
-            (ac: any) => (predicate(this.ElementAt(ac)) ? ++ac : ac),
+            (ac) => (predicate(this.ElementAt(ac)) ? ++ac : ac),
             0
         )
     );
@@ -821,7 +817,7 @@ Array.prototype.ToDictionary = function <TKey, TValue, T>(
 }
 
 Array.prototype.ToList = function <T>(): List<T> {
-    return new List<T>(this);
+    return this instanceof List ? this : new List<T>(this);
 };
 
 Array.prototype.ToLookup = function <T>(
@@ -838,7 +834,7 @@ Array.prototype.Union = function <T>(list: T[]): List<T> {
 Array.prototype.Where = function <T>(
     predicate: (value: T, index: number, list: T[]) => boolean
 ): List<T> {
-    return new List<T>(getArray<T>(this).filter(predicate));
+    return this instanceof List ? this.Where(predicate) : (new List<T>(this.filter(predicate)));
 };
 
 Array.prototype.Zip = function <T, U, TOut>(
@@ -846,8 +842,8 @@ Array.prototype.Zip = function <T, U, TOut>(
     result: (first: T, second: U) => TOut
 ): TOut[] {
     return list.Count() < this.Count()
-        ? list.Select((x: any, y: any) => result(this.ElementAt(y), x))
-        : this.Select((x: any, y: any) => result(x, list.ElementAt(y)));
+        ? list.Select((x, y) => result(this.ElementAt(y), x))
+        : this.Select((x, y) => result(x, list.ElementAt(y)));
 };
 
 
@@ -1066,7 +1062,7 @@ class List<T> {
         return this._array.RemoveRange(index, count)
     }
     Reverse() {
-        return this._array.Reverse()
+        this._array.Reverse()
     }
     Select<TOut>(selector: (element: T, index: number) => TOut) {
         return this._array.Select(selector)
