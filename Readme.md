@@ -86,6 +86,14 @@ This library contains following functions:
     Zip<U, TOut>(list: U[], result: (first: T, second: U) => TOut): TOut[];
 ```
 
+## New in version 1.3.3
+
+* Fix ElementAtOrDefault to return undefined instead of error when index is out of range
+
+## New in version 1.3.2
+
+* Bugfix in TakeLast
+
 ## New in version 1.3.1
 
 * Updated readme. No update is necessary
