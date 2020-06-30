@@ -168,7 +168,7 @@ test("Concat", t => {
   t.deepEqual(
     cats
       .Select(cat => cat.Name)
-      .Concat(dogs.Select(dog => dog.Name))
+      .Concat(dogs.Select(dog => dog.Name).ToArray())
       .ToArray(),
     expected
   );
@@ -228,8 +228,8 @@ test("Distinct", t => {
     new Pet({ Age: 1, Name: "Whiskers" }),
     new Pet({ Age: 8, Name: "Barley" })
   ];
-  t.deepEqual(ages.Distinct(), [21, 46, 55, 17]);
-  t.deepEqual(pets.Distinct(), expected);
+  t.deepEqual(ages.Distinct().ToArray(), [21, 46, 55, 17]);
+  t.deepEqual(pets.Distinct().ToArray(), expected);
 });
 
 test("DistinctBy", t => {
@@ -246,7 +246,7 @@ test("DistinctBy", t => {
     new Pet({ Age: 8, Name: "Barley" })
   ];
 
-  t.deepEqual(pets.DistinctBy(pet => pet.Age), result);
+  t.deepEqual(pets.DistinctBy(pet => pet.Age).ToArray(), result);
 });
 
 test("ElementAt", t => {
@@ -261,10 +261,7 @@ test("ElementAt", t => {
 test("ElementAtOrDefault", t => {
   const a = ["hey", "hola", "que", "tal"];
   t.is(a.ElementAtOrDefault(0), "hey");
-  t.throws(
-    () => a.ElementAtOrDefault(4),
-    /ArgumentOutOfRangeException: index is less than 0 or greater than or equal to the number of elements in source./
-  );
+  t.is(a.ElementAtOrDefault(4), undefined);
 });
 
 test("Except", t => {
@@ -656,7 +653,10 @@ test("RemoveAll", t => {
     "Gallimimus",
     "Triceratops"
   ];
-  t.deepEqual(dinosaurs.RemoveAll(x => x.endsWith("saurus")), lessDinosaurs);
+  t.deepEqual(
+    dinosaurs.RemoveAll(x => x.endsWith("saurus")).ToArray(),
+    lessDinosaurs
+  );
 });
 
 test("RemoveAt", t => {
@@ -684,7 +684,9 @@ test("RemoveAt", t => {
 });
 
 test("Reverse", t => {
-  t.deepEqual([1, 2, 3, 4, 5].Reverse().ToArray(), [5, 4, 3, 2, 1]);
+  const arr = [1, 2, 3, 4, 5];
+  arr.Reverse();
+  t.deepEqual(arr, [5, 4, 3, 2, 1]);
 });
 
 test("Select", t => {
@@ -851,8 +853,8 @@ test("ToDictionary", t => {
   // t.is(dictionary.Max(x => x.Value.Age), 50)
   // t.is(dictionary.Min(x => x.Value.Age), 15)
   const expectedKeys = ["Cathy", "Alice", "Bob"];
-  t.deepEqual(dictionary.Select(x => x.Key), expectedKeys);
-  t.deepEqual(dictionary.Select(x => x.Value), people);
+  t.deepEqual(dictionary.Select(x => x.Key).ToArray(), expectedKeys);
+  t.deepEqual(dictionary.Select(x => x.Value).ToArray(), people);
 });
 
 test("ToList", t => {

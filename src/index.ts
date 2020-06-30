@@ -430,7 +430,7 @@ Array.prototype.DistinctBy = function <T>(keySelector: (key: T) => any): List<T>
 
 Array.prototype.ElementAt = function <T>(index: number): T {
     let th = getArray<T>(this)
-    if (index < th.Count()) {
+    if (index < th.length) {
         return th[index];
     } else {
         console.log();
@@ -442,7 +442,12 @@ Array.prototype.ElementAt = function <T>(index: number): T {
 };
 
 Array.prototype.ElementAtOrDefault = function <T>(index: number): T {
-    return this.ElementAt(index) !== undefined && this.ElementAt(index)
+    let th = getArray<T>(this)
+    if (index < th.length) {
+        return th[index];
+    } else {
+        return undefined;
+    }
 };
 
 Array.prototype.Except = function <T>(source: T[]): List<T> {
@@ -637,11 +642,11 @@ Array.prototype.OfType = function <T>(type: any): List<T> {
 
 Array.prototype.OrderBy = function <T>(keySelector: (key: T) => any,
     comparer = keyComparer(keySelector, false)): List<T> {
-        const list: Array<T> = new Array();
-        for (const item of this instanceof List ? this._array : this) {
-            list.push(item);
-        }
-        return new List<T>(list, comparer);
+    const list: Array<T> = new Array();
+    for (const item of this instanceof List ? this._array : this) {
+        list.push(item);
+    }
+    return new List<T>(list, comparer);
 };
 
 Array.prototype.OrderByDescending = function <T>(keySelector: (key: T) => any,
@@ -716,15 +721,15 @@ Array.prototype.SelectMany = function <T, TOut extends any[]>(
 ): TOut {
     return this.Aggregate(
         (ac, _, i) => (
-          ac.AddRange(
-            this.Select(selector)
-              .ElementAt(i)
-              .ToArray()
-          ),
-          ac
+            ac.AddRange(
+                this.Select(selector)
+                    .ElementAt(i)
+                    .ToArray()
+            ),
+            ac
         ),
         new List<TOut>()
-      );
+    );
 };
 
 Array.prototype.SequenceEqual = function <T>(list: T[]): boolean {
@@ -763,7 +768,7 @@ Array.prototype.SkipWhile = function <T>(
 ): List<T> {
     return this.Skip(
         this.Aggregate(ac => (predicate(this.ElementAt(ac)) ? ++ac : ac), 0)
-      )
+    )
 };
 
 Array.prototype.Sum = function <T>(
@@ -780,7 +785,7 @@ Array.prototype.Take = function <T>(amount: number): List<T> {
 
 Array.prototype.TakeLast = function <T>(amount: number): List<T> {
     const len = getArray<T>(this).length;
-    return new List<T>(getArray<T>(this).slice(len - amount, len));
+    return new List<T>(getArray<T>(this).slice(len > amount ? len - amount : 0, len));
 };
 
 Array.prototype.TakeWhile = function <T>(
@@ -841,7 +846,7 @@ Array.prototype.Zip = function <T, U, TOut>(
     list: U[],
     result: (first: T, second: U) => TOut
 ): TOut[] {
-    return list.Count() < this.Count()
+    return list.length < this.Count()
         ? list.Select((x, y) => result(this.ElementAt(y), x))
         : this.Select((x, y) => result(x, list.ElementAt(y)));
 };

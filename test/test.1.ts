@@ -261,10 +261,7 @@ test("ElementAt", t => {
 test("ElementAtOrDefault", t => {
   const a = ["hey", "hola", "que", "tal"];
   t.is(a.ElementAtOrDefault(0), "hey");
-  t.throws(
-    () => a.ElementAtOrDefault(4),
-    /ArgumentOutOfRangeException: index is less than 0 or greater than or equal to the number of elements in source./
-  );
+  t.is(a.ElementAtOrDefault(4), undefined);
 });
 
 test("Except", t => {
