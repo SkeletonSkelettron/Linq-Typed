@@ -41,7 +41,7 @@ interface Array<T> {
      * Computes the average of a sequence of number values that are obtained by invoking
      * a transform function on each element of the input sequence.
      */
-    Average(transform?: (value: T, index: number, list: T[]) => any): number;
+    Average(transform?: (value: T, index: number, list?: T[]) => any): number;
 
     /**
      * Casts the elements of a sequence to the specified type.
@@ -87,7 +87,7 @@ interface Array<T> {
     /**
      * Returns the element at a specified index in a sequence or a default value if the index is out of range.
      */
-    ElementAtOrDefault(index: number): T;
+    ElementAtOrDefault(index: number): T | undefined;
 
     /**
      * Produces the set difference of two sequences by using the default equality comparer to compare values.
@@ -107,7 +107,7 @@ interface Array<T> {
     /**
      * Returns the first element of a sequence, or a default value if the sequence contains no elements.
      */
-    FirstOrDefault(predicate?: (value: T, index: number, list: T[]) => boolean): T;
+    FirstOrDefault(predicate?: (value: T, index: number, list: T[]) => boolean): T | undefined;
 
     /**
      * Performs the specified action on each element of the Array<T>.
@@ -117,7 +117,7 @@ interface Array<T> {
     /**
      * Groups the elements of a sequence according to a specified key selector function.
      */
-    GroupBy<TResult = T>(grouper: (key: T) => any, mapper: (element: T) => TResult): { [key: string]: TResult[] };
+    GroupBy<TResult = T>(grouper: (key: T) => any, mapper?: (element: T) => TResult): { [key: string]: TResult[] };
 
     /**
      * Correlates the elements of two sequences based on equality of keys and groups the results.
@@ -163,7 +163,7 @@ interface Array<T> {
     /**
      * Returns the last element of a sequence, or a default value if the sequence contains no elements.
      */
-    LastOrDefault(predicate?: (value: T, index: number, list: T[]) => boolean): T;
+    LastOrDefault(predicate?: (value: T, index: number, list: T[]) => boolean): T | undefined;
 
     /**
      * Returns the maximum value in a generic sequence.
@@ -264,7 +264,7 @@ interface Array<T> {
     /**
      * Returns the only element of a sequence, and throws an exception if there is not exactly one element in the sequence.
      */
-    SingleOrDefault(predicate?: (value: T, index: number, list: T[]) => boolean): T;
+    SingleOrDefault(predicate?: (value: T, index: number, list: T[]) => boolean): T | undefined;
 
     /**
      * Bypasses a specified number of elements in a sequence and then returns the remaining elements.
@@ -279,13 +279,13 @@ interface Array<T> {
     /**
      * Bypasses elements in a sequence as long as a specified condition is true and then returns the remaining elements.
      */
-    SkipWhile(predicate: (value?: T, index?: number, list?: T[]) => boolean): List<T>;
+    SkipWhile(predicate: (value: T, index?: number, list?: T[]) => boolean): List<T>;
 
     /**
      * Computes the sum of the sequence of number values that are obtained by invoking
      * a transform function on each element of the input sequence.
      */
-    Sum(transform?: (value: T, index: number, list: T[]) => number): number;
+    Sum(transform?: (value: T, index: number, list?: T[]) => number): number;
 
     /**
      * Returns a specified number of contiguous elements from the start of a sequence.
@@ -335,7 +335,7 @@ interface Array<T> {
     /**
      * Applies a specified function to the corresponding elements of two sequences, producing a sequence of the results.
      */
-    Zip<U, TOut>(list: U[], result: (first: T, second: U) => TOut): TOut[];
+    Zip<U, TOut>(list: U[], result: (first: T, second: U) => TOut): List<TOut>;
 }
 
 
@@ -355,7 +355,7 @@ Array.prototype.AddRange = function <T>(e: T[]): void {
 
 Array.prototype.Aggregate = function <U, T>(
     accumulator: (accum: U, value?: T, index?: number, list?: T[]) => any,
-    initialValue?: U
+    initialValue: U
 ): any {
     return getArray<T>(this).reduce(accumulator, initialValue);
 };
@@ -384,7 +384,7 @@ Array.prototype.Append = function <T>(value: T): List<T> {
 };
 
 Array.prototype.Average = function <T>(
-    transform?: (value: T, index: number, list: T[]) => any
+    transform?: (value: T, index: number, list?: T[]) => any
 ): number {
     return this.Sum(transform) / this.Count(transform);
 };
@@ -407,8 +407,8 @@ Array.prototype.Count = function <T>(
     return predicate ? this.Where(predicate).Count() : getArray<T>(this).length;
 };
 
-Array.prototype.DefaultIfEmpty = function <T>(defaultValue?: T): List<T> {
-    return this.Count() ? this : new List<T>([defaultValue]);
+Array.prototype.DefaultIfEmpty = function <T>(defaultValue: T): List<T> {
+    return this.Count() ?  new List<T>(this) : new List<T>([defaultValue]);
 };
 
 Array.prototype.Distinct = function <T>(): List<T> {
@@ -441,7 +441,7 @@ Array.prototype.ElementAt = function <T>(index: number): T {
     }
 };
 
-Array.prototype.ElementAtOrDefault = function <T>(index: number): T {
+Array.prototype.ElementAtOrDefault = function <T>(index: number): T | undefined {
     let th = getArray<T>(this)
     if (index < th.length) {
         return th[index];
@@ -455,7 +455,7 @@ Array.prototype.Except = function <T>(source: T[]): List<T> {
 };
 
 Array.prototype.FindAll = function <T>(
-    predicate?: (value: T, index: number, list: T[]) => boolean
+    predicate: (value: T, index: number, list: T[]) => boolean
 ): T[] {
     return getArray<T>(this).filter(predicate)
 };
@@ -474,7 +474,7 @@ Array.prototype.First = function <T>(
 
 Array.prototype.FirstOrDefault = function <T>(
     predicate?: (value: T, index: number, list: T[]) => boolean
-): T {
+): T | undefined {
     return this.Count(predicate) ? this.First(predicate) : undefined;
 };
 
@@ -552,9 +552,13 @@ Array.prototype.Join = function <T, U>(
     key2: (key: U) => any,
     result: (first: T, second: U) => any
 ): List<any> {
-    return this.SelectMany(x =>
-        list.Where(y => key2(y) === key1(x)).Select(z => result(x, z))
-    );
+
+    const result2 =  this.SelectMany(x => {
+        const dataList = list.Where(y => key2(y) === key1(x));
+        const data = dataList.Select(z => result(x, z));
+        return data.ToArray();
+    });
+    return new List(result2);
 };
 
 Array.prototype.Last = function <T>(
@@ -571,48 +575,47 @@ Array.prototype.Last = function <T>(
 
 Array.prototype.LastOrDefault = function <T>(
     predicate?: (value: T, index: number, list: T[]) => boolean
-): T {
+): T | undefined {
     return this.Count(predicate) ? this.Last(predicate) : undefined;
 };
 
 Array.prototype.Max = function <T>(selector?: (value: T, index: number, array: T[]) => number): number {
-    const id = x => x
     let th = getArray<T>(this)
-    let max = selector ? selector(th[0], 0, th) : id(th[0])
+    let max = selector ? selector(th[0], 0, th) : th[0] as number;
     if (selector) {
         for (let i = 0; i < th.length; i++) {
             max = selector(th[i], i, th) > max ? max = selector(th[i], i, th) : max;
         }
     } else {
         for (let i = 0; i < th.length; i++) {
-            max = id(th[i]) > max ? max = id(th[i]) : max;
+            max = th[i] as number > max ? max = th[i] as number: max;
         }
     }
     return max;
 };
 
 Array.prototype.MaxBy = function <T>(keySelector: (item: T) => any): T {
-    return this.OrderByDescending(keySelector).FirstOrDefault();
+    return this.OrderByDescending(keySelector).First();
 };
 
 Array.prototype.Min = function <T>(selector?: (value: T, index: number, array: T[]) => number): number {
-    const id = x => x
-    let th = getArray<T>(this)
-    let min = selector ? selector(this[0], 0, this) : id(this[0])
+
+    let th = getArray<T>(this);
+    let min = selector ? selector(this[0], 0, this) : this[0] as number
     if (selector) {
         for (let i = 0; i < th.length; i++) {
             min = selector(th[i], i, th) < min ? min = selector(th[i], i, th) : min;
         }
     } else {
         for (let i = 0; i < th.length; i++) {
-            min = id(th[i]) < min ? min = id(th[i]) : min;
+            min = th[i] as number < min ? min = th[i] as number : min;
         }
     }
     return min;
 };
 
 Array.prototype.MinBy = function <T>(keySelector: (item: T) => any): T {
-    return this.OrderBy(keySelector).FirstOrDefault();
+    return this.OrderBy(keySelector).First();
 };
 
 Array.prototype.OfType = function <T>(type: any): List<T> {
@@ -632,7 +635,7 @@ Array.prototype.OfType = function <T>(type: any): List<T> {
             typeName = typeof function () { }
             break
         default:
-            typeName = null
+            typeName = ''
             break
     }
     return typeName === null
@@ -681,14 +684,13 @@ Array.prototype.Remove = function <T>(element: T): boolean {
         : false;
 };
 
-//TODO
 Array.prototype.RemoveAll = function <T>(
-    predicate?: (value?: T, index?: number, list?: T[]) => boolean
+    predicate?: (value: T, index: number, list: T[]) => boolean
 ): List<T> {
     if (predicate) {
         const arr = getArray<T>(this);
         for (let i = 0; i < arr.length; i++) {
-            if (predicate(arr[i])) {
+            if (predicate(arr[i], i,arr )) {
                 arr.splice(i, 1);
                 i--;
             }
@@ -699,11 +701,11 @@ Array.prototype.RemoveAll = function <T>(
 };
 
 Array.prototype.RemoveAt = function <T>(index: number): List<T> {
-    return this instanceof List ? this._array.splice(index, 1) : this.splice(index, 1);
+    return this instanceof List ? new List(this._array.splice(index, 1)) : new List(this.splice(index, 1));
 };
 
 Array.prototype.RemoveRange = function <T>(index: number, count: number): List<T> {
-    return this instanceof List ? this._array.splice(index, count) : this.splice(index, count);
+    return this instanceof List ? new List(this._array.splice(index, count)) : new List(this.splice(index, count));
 };
 
 Array.prototype.Reverse = function <T>(): void {
@@ -723,7 +725,7 @@ Array.prototype.SelectMany = function <T, TOut extends any[]>(
         (ac, _, i) => (
             ac.AddRange(
                 this.Select(selector)
-                    .ElementAt(i)
+                    .ElementAt(i as any)
                     .ToArray()
             ),
             ac
@@ -733,9 +735,7 @@ Array.prototype.SelectMany = function <T, TOut extends any[]>(
 };
 
 Array.prototype.SequenceEqual = function <T>(list: T[]): boolean {
-    return !!getArray<T>(this).reduce(
-        (x, y, z) => (list[z] === y ? x : undefined)
-    );
+    return  JSON.stringify(this)===JSON.stringify(list)
 };
 
 Array.prototype.Single = function <T>(
@@ -751,7 +751,7 @@ Array.prototype.Single = function <T>(
 
 Array.prototype.SingleOrDefault = function <T>(
     predicate?: (value: T, index: number, list: T[]) => boolean
-): T {
+): T | undefined {
     return this.Count(predicate) ? this.Single(predicate) : undefined;
 };
 
@@ -764,7 +764,7 @@ Array.prototype.SkipLast = function <T>(amount: number): List<T> {
 };
 
 Array.prototype.SkipWhile = function <T>(
-    predicate: (value?: T, index?: number, list?: T[]) => boolean
+    predicate: (value: T, index?: number, list?: T[]) => boolean
 ): List<T> {
     return this.Skip(
         this.Aggregate(ac => (predicate(this.ElementAt(ac)) ? ++ac : ac), 0)
@@ -772,7 +772,7 @@ Array.prototype.SkipWhile = function <T>(
 };
 
 Array.prototype.Sum = function <T>(
-    transform?: (value?: T, index?: number, list?: T[]) => number
+    transform?: (value: T, index: number, list?: T[]) => number
 ): number {
     return transform
         ? this.Select(transform).Sum()
@@ -807,19 +807,21 @@ Array.prototype.ToDictionary = function <TKey, TValue, T>(
     key: (key: T) => TKey,
     value?: (value: T) => TValue
 ): List<{ Key: TKey; Value: T }> | List<{ Key: TKey; Value: T | TValue }> {
-    return new List<{ Key: TKey; Value: T | TValue }>(this.Aggregate((dicc, v, i) => {
+    const data =new  List<{ Key: TKey; Value: T | TValue }>(this.Aggregate((dicc, v, i) => {
         dicc[
-            this.Select(key)
-                .ElementAt(i)
+            (this.Select(key)
+                .ElementAt(i!) as any)
                 .toString()
-        ] = value ? this.Select(value).ElementAt(i) : v
+        ] = value ? this.Select(value).ElementAt(i!) : v
         dicc.Add({
-            Key: this.Select(key).ElementAt(i),
-            Value: value ? this.Select(value).ElementAt(i) : v
+            Key: this.Select(key).ElementAt(i!),
+            Value: value ? this.Select(value).ElementAt(i!) : v
         })
-        return dicc
-    }, Array<{ Key: TKey; Value: T | TValue }>()))
+        return dicc;
+    }, Array<{ Key: TKey; Value: T | TValue }>()));
+    return data;
 }
+
 
 Array.prototype.ToList = function <T>(): List<T> {
     return this instanceof List ? this : new List<T>(this);
@@ -845,7 +847,7 @@ Array.prototype.Where = function <T>(
 Array.prototype.Zip = function <T, U, TOut>(
     list: U[],
     result: (first: T, second: U) => TOut
-): TOut[] {
+): List<TOut> {
     return list.length < this.Count()
         ? list.Select((x, y) => result(this.ElementAt(y), x))
         : this.Select((x, y) => result(x, list.ElementAt(y)));
@@ -867,7 +869,7 @@ const getArray = function <T>(
 /**
  * Determine if two objects are equal
  */
-const equal = <T, U>(a: T, b: U): boolean =>
+const equal =  (a: any, b: any): boolean =>
     Object.keys(a).every(
         key => (isObj(a[key]) ? equal(b[key], a[key]) : b[key] === a[key])
     )
@@ -922,7 +924,7 @@ class List<T> {
     public ThenBy(keySelector: (key: T) => any): List<T> {
         return new List<T>(
             getArray<T>(this),
-            composeComparers(this._comparer, keyComparer(keySelector, false))
+            composeComparers(this._comparer!, keyComparer(keySelector, false))
         )
     }
 
@@ -933,7 +935,7 @@ class List<T> {
     public ThenByDescending(keySelector: (key: T) => any): List<T> {
         return new List<T>(
             getArray<T>(this),
-            composeComparers(this._comparer, keyComparer(keySelector, true))
+            composeComparers(this._comparer!, keyComparer(keySelector, true))
         )
     }
 
@@ -955,7 +957,7 @@ class List<T> {
     Append(value: T) {
         return this._array.Append(value);
     }
-    Average(transform?: (value: T, index: number, list: T[]) => any) {
+    Average(transform?: (value: T, index: number, list?: T[]) => any) {
         return this._array.Average(transform);
     }
     Cast<T>() {
@@ -1000,8 +1002,8 @@ class List<T> {
     ForEach(action: (value: T, index: number, list: T[]) => any) {
         return this._array.ForEach(action);
     }
-    GroupBy<TResult = T>(grouper: (key: T) => any, mapper: (element: T) => TResult) {
-        return this._array.GroupBy(grouper, mapper);
+    GroupBy<TResult = T>(grouper: (key: T) => any, mapper?: (element: T) => TResult) {
+        return mapper ? this._array.GroupBy(grouper, mapper):this._array.GroupBy(grouper);
     }
     GroupJoin<T>(list: T[], key1: (k: T) => any, key2: (k: T) => any, result: (first: T, second: T[]) => any) {
         return this._array.GroupJoin(list, key1, key2, result);
@@ -1090,10 +1092,10 @@ class List<T> {
     SkipLast(amount: number) {
         return this._array.SkipLast(amount)
     }
-    SkipWhile(predicate: (value?: T, index?: number, list?: T[]) => boolean) {
+    SkipWhile(predicate: (value: T, index?: number, list?: T[]) => boolean) {
         return this._array.SkipWhile(predicate)
     }
-    Sum(transform?: (value: T, index: number, list: T[]) => number) {
+    Sum(transform?: (value: T, index: number, list?: T[]) => number) {
         return this._array.Sum(transform)
     }
     Take(amount: number) {

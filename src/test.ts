@@ -10,7 +10,7 @@ interface IPackage {
 
 interface IPerson {
   Name: string;
-  Age?: number;
+  Age: number;
 }
 
 interface IPet {
@@ -43,7 +43,7 @@ class Person implements IPerson {
 
   constructor(pet: IPet) {
     this.Name = pet.Name;
-    this.Age = pet.Age;
+    this.Age = pet.Age!;
   }
 }
 
@@ -55,9 +55,9 @@ class Pet implements IPet {
 
   constructor(pet: IPet) {
     this.Name = pet.Name;
-    this.Age = pet.Age;
-    this.Owner = pet.Owner;
-    this.Vaccinated = pet.Vaccinated;
+    this.Age = pet.Age!;
+    this.Owner = pet.Owner!;
+    this.Vaccinated = pet.Vaccinated!;
   }
 }
 
@@ -278,9 +278,10 @@ test("ElementAt", t => {
   const a = ["hey", "hola", "que", "tal"];
   t.is(a.ElementAt(0), "hey");
   t.throws(
-    () => a.ElementAt(4),
+    () => a.ElementAt(4),{
+      message:
     /ArgumentOutOfRangeException: index is less than 0 or greater than or equal to the number of elements in source./
-  );
+});
 });
 
 test("ElementAtOrDefault", t => {
@@ -299,9 +300,10 @@ test("First", t => {
   t.is(["hey", "hola", "que", "tal"].First(), "hey");
   t.is([1, 2, 3, 4, 5].First(x => x > 2), 3);
   t.throws(
-    () => [].First(),
+    () => [].First(),{
+      message:
     /InvalidOperationException: The source sequence is empty./
-  );
+});
 });
 
 test("FirstOrDefault", t => {
@@ -401,11 +403,14 @@ test("Insert", t => {
 
   t.is(pets.First(), newPet);
   t.is(pets.Last(), newPet);
-  t.throws(() => pets.Insert(-1, newPet), /Index is out of range./);
+  t.throws(() => pets.Insert(-1, newPet), {
+    message:/Index is out of range./
+});
   t.throws(
-    () => pets.Insert(pets.Count() + 1, newPet),
+    () => pets.Insert(pets.Count() + 1, newPet),{
+      message:
     /Index is out of range./
-  );
+});
 });
 
 test("InsertRange", t => {
@@ -436,11 +441,14 @@ test("InsertRange", t => {
     result
   );
 
-  t.throws(() => pets.InsertRange(-1, newPetArr), /Index is out of range./);
+  t.throws(() => pets.InsertRange(-1, newPetArr), {
+    message:/Index is out of range./
+});
   t.throws(
-    () => pets.InsertRange(pets.Count() + 1, newPetArr),
+    () => pets.InsertRange(pets.Count() + 1, newPetArr),{
+      message:
     /Index is out of range./
-  );
+});
 });
 
 test("Intersect", t => {
@@ -489,9 +497,10 @@ test("Last", t => {
   t.is(["hey", "hola", "que", "tal"].Last(), "tal");
   t.is([1, 2, 3, 4, 5].Last(x => x > 2), 5);
   t.throws(
-    () => [].Last(),
+    () => [].Last(),{
+      message:
     /InvalidOperationException: The source sequence is empty./
-  );
+});
 });
 
 test("LastOrDefault", t => {
@@ -851,7 +860,7 @@ test("SelectMany", t => {
   const expected = ["Scruffy", "Sam", "Walker", "Sugar", "Scratches", "Diesel"];
   t.deepEqual(
     petOwners
-      .SelectMany(petOwner => petOwner.Pets)
+      .SelectMany(petOwner => {return petOwner.Pets})
       .Select(pet => pet.Name)
       .ToArray(),
     expected
@@ -878,22 +887,25 @@ test("Single", t => {
   const numbers1 = [1, 2, 3, 4, 5, 5];
   t.is(fruits2.Single(), "orange");
   t.throws(
-    () => fruits1.Single(),
+    () => fruits1.Single(),{
+      message:
     /The collection does not contain exactly one element./
-  );
+});
   t.throws(
-    () => fruits3.Single(),
+    () => fruits3.Single(),{
+      message:
     /The collection does not contain exactly one element./
-  );
+});
   t.is(numbers1.Single(x => x === 1), 1);
   t.throws(
-    () => numbers1.Single(x => x === 5),
+    () => numbers1.Single(x => x === 5),{
+      message:
     /The collection does not contain exactly one element./
-  );
+});
   t.throws(
-    () => numbers1.Single(x => x > 5),
-    /The collection does not contain exactly one element./
-  );
+    () => numbers1.Single(x => x > 5),{
+      message: /The collection does not contain exactly one element./
+    });
 });
 
 test("SingleOrDefault", t => {
@@ -904,15 +916,17 @@ test("SingleOrDefault", t => {
   t.is(fruits1.SingleOrDefault(), undefined);
   t.is(fruits2.SingleOrDefault(), "orange");
   t.throws(
-    () => fruits3.SingleOrDefault(),
+    () => fruits3.SingleOrDefault(),{
+      message:
     /The collection does not contain exactly one element./
-  );
+});
   t.is(numbers1.SingleOrDefault(x => x === 1), 1);
   t.is(numbers1.SingleOrDefault(x => x > 5), undefined);
   t.throws(
-    () => numbers1.SingleOrDefault(x => x === 5),
+    () => numbers1.SingleOrDefault(x => x === 5),{
+      message:
     /The collection does not contain exactly one element./
-  );
+});
 });
 
 test("Skip", t => {
@@ -1029,28 +1043,43 @@ test("ToArray", t => {
   t.deepEqual([1, 2, 3, 4, 5].ToArray(), [1, 2, 3, 4, 5]);
 });
 
-test("ToDictionary", t => {
-  const people: IPerson[] = [
-    { Age: 15, Name: "Cathy" },
-    { Age: 25, Name: "Alice" },
-    { Age: 50, Name: "Bob" }
-  ];
-  const dictionary = people.ToDictionary(x => x.Name).ToArray();
-  t.deepEqual(dictionary["Bob"], { Age: 50, Name: "Bob" });
-  t.is(dictionary["Bob"].Age, 50);
-  const dictionary2 = people.ToDictionary(x => x.Name, y => y.Age).ToArray();
-  t.is(dictionary2["Alice"], 25);
+test('ToDictionary', t => {
+  const people = new List<IPerson>([
+    { Age: 15, Name: 'Cathy' },
+    { Age: 25, Name: 'Alice' },
+    { Age: 50, Name: 'Bob' }
+  ])
+  const dictionary = people.ToDictionary<string, IPerson>(x => x.Name).ToArray();
+  // @ts-ignore
+  t.deepEqual(dictionary['Bob'], { Age: 50, Name: 'Bob' })
+  // @ts-ignore
+  t.is(dictionary['Bob'].Age, 50)
+  const dictionary2 = people.ToDictionary(
+    x => x.Name,
+    y => y.Age
+  ).ToArray()
+  // @ts-ignore
+  t.is(dictionary2['Alice'], 25)
   // Dictionary should behave just like in C#
-  const knum = dictionary.Max(x => x.Value.Age);
-  const kage = dictionary.Min(x => x.Value.Age);
-  t.is(knum, 50)
-  t.is(kage, 15)
-  const expectedKeys = ["Cathy", "Alice", "Bob"];
-  const kkey = dictionary.Select(x => x.Key).ToArray();
-  const kvalue = dictionary.Select(x => x.Value).ToArray();
-  t.deepEqual(kkey, expectedKeys);
-  t.deepEqual(kvalue, people);
-});
+  t.is(
+    dictionary.Max(x => x.Value.Age),
+    50
+  )
+  t.is(
+    dictionary.Min(x => x.Value.Age),
+    15
+  )
+  const expectedKeys = new List(['Cathy', 'Alice', 'Bob'])
+  t.deepEqual(
+    dictionary.Select(x => x.Key),
+    expectedKeys
+  )
+  t.deepEqual(
+    dictionary.Select(x => x.Value),
+    people
+  )
+})
+
 
 test("ToList", t => {
   t.deepEqual([1, 2, 3].ToList().ToArray(), [1, 2, 3]);

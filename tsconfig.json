@@ -1,11 +1,29 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "moduleResolution": "node",
     "target": "es6",
+    "module": "CommonJS",
+    "lib": [
+      "es2015",
+      "es2016",
+      "es2017",
+      "dom"
+    ],
+    "sourceMap": true,
     "declaration": true,
-    "outDir": "./dist/linq-typed"
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "declarationDir": "dist",
+    "outDir": "dist",
+    "strict": true,
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "downlevelIteration": true
   },
   "include": [
-    "src/**/*"
+    "src",
+    "__tests__"
   ]
 }

@@ -85,6 +85,10 @@ This library contains following functions:
     Where(predicate: (value: T, index: number, list: T[]) => boolean): List<T>;
     Zip<U, TOut>(list: U[], result: (first: T, second: U) => TOut): TOut[];
 ```
+## New in version 1.3.6
+
+* fixed FirstOrDefault, LastOrDefault, SingleOrDefault, ElementAtOrDefault to return undefined when element not found.
+
 ## New in version 1.3.5
 
 * Fixed security issue. Updated  semantic-release>= ^17.2.3. 

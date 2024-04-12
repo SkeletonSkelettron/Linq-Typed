@@ -137,7 +137,10 @@ test("Average", t => {
     { Age: 50, Name: "Bob" }
   ];
   t.is(grades.Average(), 77.6);
-  t.is(people.Average(x => x.Age), 30);
+  t.is(
+    people.Average(x => x.Age),
+    30
+  );
 });
 
 test("Cast", t => {
@@ -196,7 +199,10 @@ test("Count", t => {
     "grape"
   ];
   t.is(fruits.Count(), 6);
-  t.is(fruits.Count(x => x.length > 5), 3);
+  t.is(
+    fruits.Count(x => x.length > 5),
+    3
+  );
 });
 
 test("DefaultIfEmpty", t => {
@@ -246,7 +252,10 @@ test("DistinctBy", t => {
     new Pet({ Age: 8, Name: "Barley" })
   ];
 
-  t.deepEqual(pets.DistinctBy(pet => pet.Age), result);
+  t.deepEqual(
+    pets.DistinctBy(pet => pet.Age),
+    result
+  );
 });
 
 test("ElementAt", t => {
@@ -272,7 +281,10 @@ test("Except", t => {
 
 test("First", t => {
   t.is(["hey", "hola", "que", "tal"].First(), "hey");
-  t.is([1, 2, 3, 4, 5].First(x => x > 2), 3);
+  t.is(
+    [1, 2, 3, 4, 5].First(x => x > 2),
+    3
+  );
   t.throws(
     () => [].First(),
     /InvalidOperationException: The source sequence is empty./
@@ -303,7 +315,13 @@ test("GroupBy", t => {
     "4": ["Boots", "Daisy"],
     "8": ["Barley"]
   };
-  t.deepEqual(pets.GroupBy(pet => pet.Age, pet => pet.Name), result);
+  t.deepEqual(
+    pets.GroupBy(
+      pet => pet.Age,
+      pet => pet.Name
+    ),
+    result
+  );
 });
 
 test("GroupJoin", t => {
@@ -386,7 +404,10 @@ test("Insert", t => {
 test("Intersect", t => {
   const id1 = [44, 26, 92, 30, 71, 38];
   const id2 = [39, 59, 83, 47, 26, 4, 30];
-  t.is(id1.Intersect(id2).Sum(x => x), 56);
+  t.is(
+    id1.Intersect(id2).Sum(x => x),
+    56
+  );
 });
 
 test("Join", t => {
@@ -425,7 +446,10 @@ test("Join", t => {
 
 test("Last", t => {
   t.is(["hey", "hola", "que", "tal"].Last(), "tal");
-  t.is([1, 2, 3, 4, 5].Last(x => x > 2), 5);
+  t.is(
+    [1, 2, 3, 4, 5].Last(x => x > 2),
+    5
+  );
   t.throws(
     () => [].Last(),
     /InvalidOperationException: The source sequence is empty./
@@ -443,7 +467,10 @@ test("Max", t => {
     { Age: 25, Name: "Alice" },
     { Age: 50, Name: "Bob" }
   ];
-  t.is(people.Max(x => x.Age), 50);
+  t.is(
+    people.Max(x => x.Age),
+    50
+  );
   t.is([1, 2, 3, 4, 5].Max(), 5);
 });
 
@@ -455,7 +482,10 @@ test("MaxBy", t => {
   ];
   t.is(people.MaxBy(x => x.Age).Age, 50);
   t.is(people.MaxBy(x => x.Age).Name, "Bob");
-  t.is([1, 2, 3, 4, 5].MaxBy(x => x), 5);
+  t.is(
+    [1, 2, 3, 4, 5].MaxBy(x => x),
+    5
+  );
 });
 
 test("Min", t => {
@@ -464,7 +494,10 @@ test("Min", t => {
     { Age: 25, Name: "Alice" },
     { Age: 50, Name: "Bob" }
   ];
-  t.is(people.Min(x => x.Age), 15);
+  t.is(
+    people.Min(x => x.Age),
+    15
+  );
   t.is([1, 2, 3, 4, 5].Min(), 1);
 });
 
@@ -474,8 +507,14 @@ test("MinBy", t => {
     { Age: 25, Name: "Alice" },
     { Age: 50, Name: "Bob" }
   ];
-  t.is(people.MinBy(x => x.Age), people[0]);
-  t.is([1, 2, 3, 4, 5].Min(x => x), 1);
+  t.is(
+    people.MinBy(x => x.Age),
+    people[0]
+  );
+  t.is(
+    [1, 2, 3, 4, 5].Min(x => x),
+    1
+  );
 });
 
 test("OfType", t => {
@@ -661,7 +700,10 @@ test("RemoveAll", t => {
     "Gallimimus",
     "Triceratops"
   ];
-  t.deepEqual(dinosaurs.RemoveAll(x => x.endsWith("saurus")), lessDinosaurs);
+  t.deepEqual(
+    dinosaurs.RemoveAll(x => x.endsWith("saurus")),
+    lessDinosaurs
+  );
 });
 
 test("RemoveAt", t => {
@@ -748,7 +790,10 @@ test("Single", t => {
     () => fruits3.Single(),
     /The collection does not contain exactly one element./
   );
-  t.is(numbers1.Single(x => x === 1), 1);
+  t.is(
+    numbers1.Single(x => x === 1),
+    1
+  );
   t.throws(
     () => numbers1.Single(x => x === 5),
     /The collection does not contain exactly one element./
@@ -770,8 +815,14 @@ test("SingleOrDefault", t => {
     () => fruits3.SingleOrDefault(),
     /The collection does not contain exactly one element./
   );
-  t.is(numbers1.SingleOrDefault(x => x === 1), 1);
-  t.is(numbers1.SingleOrDefault(x => x > 5), undefined);
+  t.is(
+    numbers1.SingleOrDefault(x => x === 1),
+    1
+  );
+  t.is(
+    numbers1.SingleOrDefault(x => x > 5),
+    undefined
+  );
   t.throws(
     () => numbers1.SingleOrDefault(x => x === 5),
     /The collection does not contain exactly one element./
@@ -807,7 +858,10 @@ test("Sum", t => {
     { Age: 50, Name: "Bob" }
   ];
   t.is([2, 3, 5].Sum(), 10);
-  t.is(people.Sum(x => x.Age), 90);
+  t.is(
+    people.Sum(x => x.Age),
+    90
+  );
 });
 
 test("Take", t => {
@@ -850,14 +904,23 @@ test("ToDictionary", t => {
   const dictionary = people.ToDictionary(x => x.Name);
   t.deepEqual(dictionary["Bob"], { Age: 50, Name: "Bob" });
   t.is(dictionary["Bob"].Age, 50);
-  const dictionary2 = people.ToDictionary(x => x.Name, y => y.Age);
+  const dictionary2 = people.ToDictionary(
+    x => x.Name,
+    y => y.Age
+  );
   t.is(dictionary2["Alice"], 25);
   // Dictionary should behave just like in C#
   // t.is(dictionary.Max(x => x.Value.Age), 50)
   // t.is(dictionary.Min(x => x.Value.Age), 15)
   const expectedKeys = ["Cathy", "Alice", "Bob"];
-  t.deepEqual(dictionary.Select(x => x.Key), expectedKeys);
-  t.deepEqual(dictionary.Select(x => x.Value), people);
+  t.deepEqual(
+    dictionary.Select(x => x.Key),
+    expectedKeys
+  );
+  t.deepEqual(
+    dictionary.Select(x => x.Value),
+    people
+  );
 });
 
 test("ToList", t => {
