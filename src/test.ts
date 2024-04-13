@@ -2,30 +2,30 @@ import test from "ava";
 import "./index.js";
 'use strict';
 
-interface IPackage {
+export interface IPackage {
   Company: string;
   Weight: number;
   TrackingNumber: number;
 }
 
-interface IPerson {
+export interface IPerson {
   Name: string;
   Age: number;
 }
 
-interface IPet {
+export interface IPet {
   Name: string;
   Age?: number;
   Owner?: Person;
   Vaccinated?: boolean;
 }
 
-interface IProduct {
+export interface IProduct {
   Name: string;
   Code: number;
 }
 
-class Package {
+export class Package {
   public Company: string;
   public Weight: number;
   public TrackingNumber: number;
@@ -37,7 +37,7 @@ class Package {
   }
 }
 
-class Person implements IPerson {
+export class Person implements IPerson {
   public Name: string;
   public Age: number;
 
@@ -47,7 +47,7 @@ class Person implements IPerson {
   }
 }
 
-class Pet implements IPet {
+export class Pet implements IPet {
   public Name: string;
   public Age: number;
   public Owner: Person;
@@ -61,17 +61,17 @@ class Pet implements IPet {
   }
 }
 
-class Dog extends Pet {
+export class Dog extends Pet {
   public Speak(): string {
     return "Bark";
   }
 }
 
-class PetOwner {
+export class PetOwner {
   constructor(public Name: string, public Pets: Pet[]) { }
 }
 
-class Product implements IProduct {
+export class Product implements IProduct {
   public Name: string;
   public Code: number;
 
@@ -1044,11 +1044,11 @@ test("ToArray", t => {
 });
 
 test('ToDictionary', t => {
-  const people = new List<IPerson>([
+  const people =[
     { Age: 15, Name: 'Cathy' },
     { Age: 25, Name: 'Alice' },
     { Age: 50, Name: 'Bob' }
-  ])
+  ];
   const dictionary = people.ToDictionary<string, IPerson>(x => x.Name).ToArray();
   // @ts-ignore
   t.deepEqual(dictionary['Bob'], { Age: 50, Name: 'Bob' })
@@ -1057,7 +1057,7 @@ test('ToDictionary', t => {
   const dictionary2 = people.ToDictionary(
     x => x.Name,
     y => y.Age
-  ).ToArray()
+  ).ToArray();
   // @ts-ignore
   t.is(dictionary2['Alice'], 25)
   // Dictionary should behave just like in C#
@@ -1069,13 +1069,13 @@ test('ToDictionary', t => {
     dictionary.Min(x => x.Value.Age),
     15
   )
-  const expectedKeys = new List(['Cathy', 'Alice', 'Bob'])
+  const expectedKeys = ['Cathy', 'Alice', 'Bob'];
   t.deepEqual(
-    dictionary.Select(x => x.Key),
+    dictionary.Select(x => x.Key).ToArray(),
     expectedKeys
   )
   t.deepEqual(
-    dictionary.Select(x => x.Value),
+    dictionary.Select(x => x.Value).ToArray(),
     people
   )
 })

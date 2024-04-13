@@ -619,29 +619,28 @@ Array.prototype.MinBy = function <T>(keySelector: (item: T) => any): T {
 };
 
 Array.prototype.OfType = function <T>(type: any): List<T> {
-    let typeName: string;
-    let th = getArray<T>(this)
+    let typeName: string | null;
     switch (type) {
-        case Number:
-            typeName = typeof 0
-            break
-        case String:
-            typeName = typeof ''
-            break
-        case Boolean:
-            typeName = typeof true
-            break
-        case Function:
-            typeName = typeof function () { }
-            break
-        default:
-            typeName = ''
-            break
+      case Number:
+        typeName = typeof 0
+        break
+      case String:
+        typeName = typeof ''
+        break
+      case Boolean:
+        typeName = typeof true
+        break
+      case Function:
+        typeName = typeof function() {} // tslint:disable-line no-empty
+        break
+      default:
+        typeName = null
+        break
     }
     return typeName === null
-        ? th.Where(x => x instanceof type).Cast()
-        : th.Where(x => typeof x === typeName).Cast()
-}
+      ? this.Where(x => x instanceof type).Cast<T>()
+      : this.Where(x => typeof x === typeName).Cast<T>()
+  }
 
 Array.prototype.OrderBy = function <T>(keySelector: (key: T) => any,
     comparer = keyComparer(keySelector, false)): List<T> {
@@ -808,10 +807,10 @@ Array.prototype.ToDictionary = function <TKey, TValue, T>(
     value?: (value: T) => TValue
 ): List<{ Key: TKey; Value: T }> | List<{ Key: TKey; Value: T | TValue }> {
     const data =new  List<{ Key: TKey; Value: T | TValue }>(this.Aggregate((dicc, v, i) => {
+        const ky = this.Select(key).ElementAt(i!);
         dicc[
-            (this.Select(key)
-                .ElementAt(i!) as any)
-                .toString()
+            //@ts-ignore
+            ky.toString()
         ] = value ? this.Select(value).ElementAt(i!) : v
         dicc.Add({
             Key: this.Select(key).ElementAt(i!),
