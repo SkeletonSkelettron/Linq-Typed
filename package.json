@@ -55,6 +55,7 @@
   "homepage": "https://github.com/SkeletonSkelettron/Linq-Typed#readme",
   "dependencies": {
     "microbundle": "^0.15.1",
-    "timsort": "^0.3.0"
+    "timsort": "^0.3.0",
+    "tslib": "^2.6.2"
   }
 }
