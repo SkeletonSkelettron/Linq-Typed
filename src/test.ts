@@ -275,11 +275,9 @@ test('DistinctBy', (t) => {
 test('ElementAt', (t) => {
   const a = ['hey', 'hola', 'que', 'tal'];
   t.is(a.ElementAt(0), 'hey');
-  t.throws(
-    () => a.ElementAt(4),
-
-    /ArgumentOutOfRangeException: index is less than 0 or greater than or equal to the number of elements in source./i
-  );
+  t.throws(() => a.ElementAt(4), {
+    message: /ArgumentOutOfRangeException: index is less than 0 or greater than or equal to the number of elements in source./i,
+  });
 });
 
 test('ElementAtOrDefault', (t) => {
@@ -300,10 +298,9 @@ test('First', (t) => {
     [1, 2, 3, 4, 5].First((x) => x > 2),
     3
   );
-  t.throws(
-    () => [].First(),
-    /InvalidOperationException: The source sequence is empty./i
-  );
+  t.throws(() => [].First(), {
+    message: /InvalidOperationException: The source sequence is empty./i,
+  });
 });
 
 test('FirstOrDefault', (t) => {
@@ -409,11 +406,12 @@ test('Insert', (t) => {
 
   t.is(pets.First(), newPet);
   t.is(pets.Last(), newPet);
-  t.throws(() => pets.Insert(-1, newPet), /Index is out of range./i);
-  t.throws(
-    () => pets.Insert(pets.Count() + 1, newPet),
-    /Index is out of range./i
-  );
+  t.throws(() => pets.Insert(-1, newPet), {
+    message: /Index is out of range./i,
+  });
+  t.throws(() => pets.Insert(pets.Count() + 1, newPet), {
+    message: /Index is out of range./i,
+  });
 });
 
 test('InsertRange', (t) => {
@@ -440,11 +438,12 @@ test('InsertRange', (t) => {
 
   t.deepEqual(pets, result);
 
-  t.throws(() => pets.InsertRange(-1, newPetArr), /Index is out of range./);
-  t.throws(
-    () => pets.InsertRange(pets.Count() + 1, newPetArr),
-    /Index is out of range./
-  );
+  t.throws(() => pets.InsertRange(-1, newPetArr), {
+    message: /Index is out of range./,
+  });
+  t.throws(() => pets.InsertRange(pets.Count() + 1, newPetArr), {
+    message: /Index is out of range./,
+  });
 });
 
 test('Intersect', (t) => {
@@ -498,10 +497,9 @@ test('Last', (t) => {
     [1, 2, 3, 4, 5].Last((x) => x > 2),
     5
   );
-  t.throws(
-    () => [].Last(),
-    /InvalidOperationException: The source sequence is empty./i
-  );
+  t.throws(() => [].Last(), {
+    message: /InvalidOperationException: The source sequence is empty./i,
+  });
 });
 
 test('LastOrDefault', (t) => {
@@ -886,26 +884,22 @@ test('Single', (t) => {
   const fruits3 = ['orange', 'apple'];
   const numbers1 = [1, 2, 3, 4, 5, 5];
   t.is(fruits2.Single(), 'orange');
-  t.throws(
-    () => fruits1.Single(),
-    /The collection does not contain exactly one element./i
-  );
-  t.throws(
-    () => fruits3.Single(),
-    /The collection does not contain exactly one element./i
-  );
+  t.throws(() => fruits1.Single(), {
+    message: /The collection does not contain exactly one element./i,
+  });
+  t.throws(() => fruits3.Single(), {
+    message: /The collection does not contain exactly one element./i,
+  });
   t.is(
     numbers1.Single((x) => x === 1),
     1
   );
-  t.throws(
-    () => numbers1.Single((x) => x === 5),
-    /The collection does not contain exactly one element./i
-  );
-  t.throws(
-    () => numbers1.Single((x) => x > 5),
-    /The collection does not contain exactly one element./i
-  );
+  t.throws(() => numbers1.Single((x) => x === 5), {
+    message: /The collection does not contain exactly one element./i,
+  });
+  t.throws(() => numbers1.Single((x) => x > 5), {
+    message: /The collection does not contain exactly one element./i,
+  });
 });
 
 test('SingleOrDefault', (t) => {
@@ -915,10 +909,9 @@ test('SingleOrDefault', (t) => {
   const numbers1 = [1, 2, 3, 4, 5, 5];
   t.is(fruits1.SingleOrDefault(), undefined);
   t.is(fruits2.SingleOrDefault(), 'orange');
-  t.throws(
-    () => fruits3.SingleOrDefault(),
-    /The collection does not contain exactly one element./i
-  );
+  t.throws(() => fruits3.SingleOrDefault(), {
+    message: /The collection does not contain exactly one element./i,
+  });
   t.is(
     numbers1.SingleOrDefault((x) => x === 1),
     1
@@ -927,10 +920,9 @@ test('SingleOrDefault', (t) => {
     numbers1.SingleOrDefault((x) => x > 5),
     undefined
   );
-  t.throws(
-    () => numbers1.SingleOrDefault((x) => x === 5),
-    /The collection does not contain exactly one element./i
-  );
+  t.throws(() => numbers1.SingleOrDefault((x) => x === 5), {
+    message: /The collection does not contain exactly one element./i,
+  });
 });
 
 test('Skip', (t) => {
