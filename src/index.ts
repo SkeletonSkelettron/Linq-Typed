@@ -173,7 +173,7 @@ interface Array<T> {
     /**
      * Returns the element with maximum value in a generic sequence.
      */
-    MaxBy(keySelector: (key: T) => any): T | undefined;
+    MaxBy(keySelector: (key: T) => any): T;
 
     /**
      * Returns the minimum value in a generic sequence.
@@ -183,7 +183,7 @@ interface Array<T> {
     /**
      * Returns the element with minimum value in a generic sequence.
      */
-    MinBy(keySelector: (key: T) => any): T | undefined;
+    MinBy(keySelector: (key: T) => any): T;
 
     /**
     * Filters the elements of a sequence based on a specified type.
@@ -594,8 +594,8 @@ Array.prototype.Max = function <T>(selector?: (value: T, index: number, array: T
     return max;
 };
 
-Array.prototype.MaxBy = function <T>(keySelector: (item: T) => any): T | undefined {
-    return this.OrderByDescending(keySelector).FirstOrDefault();
+Array.prototype.MaxBy = function <T>(keySelector: (item: T) => any): T {
+    return this.OrderByDescending(keySelector).First();
 };
 
 Array.prototype.Min = function <T>(selector?: (value: T, index: number, array: T[]) => number): number {
@@ -614,8 +614,8 @@ Array.prototype.Min = function <T>(selector?: (value: T, index: number, array: T
     return min;
 };
 
-Array.prototype.MinBy = function <T>(keySelector: (item: T) => any): T | undefined {
-    return this.OrderBy(keySelector).FirstOrDefault();
+Array.prototype.MinBy = function <T>(keySelector: (item: T) => any): T {
+    return this.OrderBy(keySelector).First();
 };
 
 Array.prototype.OfType = function <T>(type: any): List<T> {

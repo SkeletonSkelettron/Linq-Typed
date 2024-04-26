@@ -439,10 +439,10 @@ test('InsertRange', (t) => {
   t.deepEqual(pets, result);
 
   t.throws(() => pets.InsertRange(-1, newPetArr), {
-    message: /Index is out of range./,
+    message: /Index is out of range./i,
   });
   t.throws(() => pets.InsertRange(pets.Count() + 1, newPetArr), {
-    message: /Index is out of range./,
+    message: /Index is out of range./i,
   });
 });
 

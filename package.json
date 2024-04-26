@@ -22,7 +22,7 @@
     "report-coverage": "nyc report --reporter=text-lcov | coveralls",
     "semantic-release": "semantic-release",
     "start": "tsc -w",
-    "test": "npx ava ./dist/linq-typed/test.js",
+    "test": "npx ava ./dist/test.js",
     "validate": "npm run cover && npm run check-coverage"
   },
   "author": "SkeletonSkelettron",
