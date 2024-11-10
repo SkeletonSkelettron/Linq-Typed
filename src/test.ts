@@ -526,8 +526,8 @@ test('MaxBy', (t) => {
     { Age: 25, Name: 'Alice' },
     { Age: 50, Name: 'Bob' },
   ];
-  t.is(people.MaxBy((x) => x.Age)?.Age, 50);
-  t.is(people.MaxBy((x) => x.Age)?.Name, 'Bob');
+  t.is(people.MaxBy((x) => x.Age).Age, 50);
+  t.is(people.MaxBy((x) => x.Age).Name, 'Bob');
   t.is(
     [1, 2, 3, 4, 5].MaxBy((x) => x),
     5
