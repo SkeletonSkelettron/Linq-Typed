@@ -1,31 +1,31 @@
 import test from "ava";
 import "./index.js";
-'use strict';
+"use strict";
 
-interface IPackage {
+export interface IPackage {
   Company: string;
   Weight: number;
   TrackingNumber: number;
 }
 
-interface IPerson {
+export interface IPerson {
   Name: string;
-  Age?: number;
+  Age: number;
 }
 
-interface IPet {
+export interface IPet {
   Name: string;
   Age?: number;
   Owner?: Person;
   Vaccinated?: boolean;
 }
 
-interface IProduct {
+export interface IProduct {
   Name: string;
   Code: number;
 }
 
-class Package {
+export class Package {
   public Company: string;
   public Weight: number;
   public TrackingNumber: number;
@@ -37,17 +37,17 @@ class Package {
   }
 }
 
-class Person implements IPerson {
+export class Person implements IPerson {
   public Name: string;
   public Age: number;
 
   constructor(pet: IPet) {
     this.Name = pet.Name;
-    this.Age = pet.Age;
+    this.Age = pet.Age!;
   }
 }
 
-class Pet implements IPet {
+export class Pet implements IPet {
   public Name: string;
   public Age: number;
   public Owner: Person;
@@ -55,23 +55,23 @@ class Pet implements IPet {
 
   constructor(pet: IPet) {
     this.Name = pet.Name;
-    this.Age = pet.Age;
-    this.Owner = pet.Owner;
-    this.Vaccinated = pet.Vaccinated;
+    this.Age = pet.Age!;
+    this.Owner = pet.Owner!;
+    this.Vaccinated = pet.Vaccinated!;
   }
 }
 
-class Dog extends Pet {
+export class Dog extends Pet {
   public Speak(): string {
     return "Bark";
   }
 }
 
-class PetOwner {
-  constructor(public Name: string, public Pets: Pet[]) { }
+export class PetOwner {
+  constructor(public Name: string, public Pets: Pet[]) {}
 }
 
-class Product implements IProduct {
+export class Product implements IProduct {
   public Name: string;
   public Code: number;
 
@@ -134,19 +134,34 @@ test("Append", t => {
   const list: string[] = [];
   list.AddRange(["hey", "what's", "up"]);
   list.Append("ola!"); // should not add
-  t.deepEqual(list.ToArray(), ["hey", "what's", "up",]);
+  t.deepEqual(list.ToArray(), ["hey", "what's", "up"]);
   t.deepEqual(list.Append("ola!").ToArray(), ["hey", "what's", "up", "ola!"]);
 });
 
 test("Average", t => {
-  const grades = [78, 92, 100, 37, 81];
+  const grades = [78, 92, 100, 0, 81];
   const people: IPerson[] = [
     { Age: 15, Name: "Cathy" },
     { Age: 25, Name: "Alice" },
     { Age: 50, Name: "Bob" }
   ];
-  t.is(grades.Average(), 77.6);
-  t.is(people.Average(x => x.Age), 30);
+  t.is(grades.Average(), 70.2);
+  t.is(
+    people.Average(x => x.Age),
+    30
+  );
+
+  // A zero in the data and a transform in the call have to meet in the SAME
+  // assertion, otherwise the denominator bug hides: grades.Average() takes
+  // Count's no-predicate branch, and no age in people is falsy.
+  t.is(
+    grades.Average(x => x),
+    70.2
+  );
+  t.is(
+    people.Concat([{ Age: 0, Name: "Newborn" }]).Average(x => x.Age),
+    22.5
+  );
 });
 
 test("Cast", t => {
@@ -181,20 +196,12 @@ test("Concat", t => {
     new Pet({ Age: 14, Name: "Snoopy" }),
     new Pet({ Age: 9, Name: "Fido" })
   ];
-  t.deepEqual(
-    cats
-      .Concat(dogs)
-      .ToArray(),
-    expected
-  );
-  t.deepEqual(
-    cats,
-    [
-      new Pet({ Age: 8, Name: "Barley" }),
-      new Pet({ Age: 4, Name: "Boots" }),
-      new Pet({ Age: 1, Name: "Whiskers" })
-    ]
-  );
+  t.deepEqual(cats.Concat(dogs).ToArray(), expected);
+  t.deepEqual(cats, [
+    new Pet({ Age: 8, Name: "Barley" }),
+    new Pet({ Age: 4, Name: "Boots" }),
+    new Pet({ Age: 1, Name: "Whiskers" })
+  ]);
 });
 
 test("Contains", t => {
@@ -219,7 +226,19 @@ test("Count", t => {
     "grape"
   ];
   t.is(fruits.Count(), 6);
-  t.is(fruits.Count(x => x.length > 5), 3);
+  t.is(
+    fruits.Count(x => x.length > 5),
+    3
+  );
+});
+
+test("Count numbers", t => {
+  const fruits = [0, 1, 2, 3, 4, 5];
+  t.is(fruits.Count(), 6);
+  t.is(
+    fruits.Count(x => x > 4),
+    1
+  );
 });
 
 test("DefaultIfEmpty", t => {
@@ -277,10 +296,9 @@ test("DistinctBy", t => {
 test("ElementAt", t => {
   const a = ["hey", "hola", "que", "tal"];
   t.is(a.ElementAt(0), "hey");
-  t.throws(
-    () => a.ElementAt(4),
-    /ArgumentOutOfRangeException: index is less than 0 or greater than or equal to the number of elements in source./
-  );
+  t.throws(() => a.ElementAt(4), {
+    message: /ArgumentOutOfRangeException: index is less than 0 or greater than or equal to the number of elements in source./i
+  });
 });
 
 test("ElementAtOrDefault", t => {
@@ -297,16 +315,32 @@ test("Except", t => {
 
 test("First", t => {
   t.is(["hey", "hola", "que", "tal"].First(), "hey");
-  t.is([1, 2, 3, 4, 5].First(x => x > 2), 3);
-  t.throws(
-    () => [].First(),
-    /InvalidOperationException: The source sequence is empty./
+  t.is(
+    [1, 2, 3, 4, 5].First(x => x > 2),
+    3
   );
+  t.throws(() => [].First(), {
+    message: /InvalidOperationException: The source sequence is empty./i
+  });
+  // A predicate that matches nothing used to return undefined from a method
+  // declared to return T, because the guard tested the source rather than the
+  // matches. An empty source and an unmatched predicate are distinct in .NET.
+  t.throws(() => [1, 2].First(x => x > 5), {
+    message: /InvalidOperationException: The source sequence contains no matching element./i
+  });
 });
 
 test("FirstOrDefault", t => {
   t.is(["hey", "hola", "que", "tal"].FirstOrDefault(), "hey");
   t.is([].FirstOrDefault(), undefined);
+  t.is(
+    [1, 2, 3].FirstOrDefault(x => x > 2),
+    3
+  );
+  t.is(
+    [1, 2].FirstOrDefault(x => x > 5),
+    undefined
+  );
 });
 
 test("ForEach", t => {
@@ -328,7 +362,13 @@ test("GroupBy", t => {
     "4": ["Boots", "Daisy"],
     "8": ["Barley"]
   };
-  t.deepEqual(pets.GroupBy(pet => pet.Age, pet => pet.Name), result);
+  t.deepEqual(
+    pets.GroupBy(
+      pet => pet.Age,
+      pet => pet.Name
+    ),
+    result
+  );
 });
 
 test("GroupJoin", t => {
@@ -401,11 +441,12 @@ test("Insert", t => {
 
   t.is(pets.First(), newPet);
   t.is(pets.Last(), newPet);
-  t.throws(() => pets.Insert(-1, newPet), /Index is out of range./);
-  t.throws(
-    () => pets.Insert(pets.Count() + 1, newPet),
-    /Index is out of range./
-  );
+  t.throws(() => pets.Insert(-1, newPet), {
+    message: /Index is out of range./i
+  });
+  t.throws(() => pets.Insert(pets.Count() + 1, newPet), {
+    message: /Index is out of range./i
+  });
 });
 
 test("InsertRange", t => {
@@ -420,8 +461,7 @@ test("InsertRange", t => {
     new Pet({ Age: 13, Name: "Max1" }),
     new Pet({ Age: 14, Name: "Max2" }),
     new Pet({ Age: 4, Name: "Boots" }),
-    new Pet({ Age: 6, Name: "Whiskers" }),
-
+    new Pet({ Age: 6, Name: "Whiskers" })
   ];
 
   let newPetArr = [
@@ -431,22 +471,23 @@ test("InsertRange", t => {
 
   pets.InsertRange(1, newPetArr);
 
-  t.deepEqual(
-    pets,
-    result
-  );
+  t.deepEqual(pets, result);
 
-  t.throws(() => pets.InsertRange(-1, newPetArr), /Index is out of range./);
-  t.throws(
-    () => pets.InsertRange(pets.Count() + 1, newPetArr),
-    /Index is out of range./
-  );
+  t.throws(() => pets.InsertRange(-1, newPetArr), {
+    message: /Index is out of range./i
+  });
+  t.throws(() => pets.InsertRange(pets.Count() + 1, newPetArr), {
+    message: /Index is out of range./i
+  });
 });
 
 test("Intersect", t => {
   const id1 = [44, 26, 92, 30, 71, 38];
   const id2 = [39, 59, 83, 47, 26, 4, 30];
-  t.is(id1.Intersect(id2).Sum(x => x), 56);
+  t.is(
+    id1.Intersect(id2).Sum(x => x),
+    56
+  );
   const expected = [26, 30];
   t.deepEqual(id1.Intersect(id2).ToArray(), expected);
 });
@@ -461,7 +502,7 @@ test("Join", t => {
   const whiskers = new Pet({ Name: "Whiskers", Owner: charlotte });
   const daisy = new Pet({ Name: "Daisy", Owner: magnus });
 
-  const people: Person[] = ([magnus, terry, charlotte]);
+  const people: Person[] = [magnus, terry, charlotte];
   const pets: Pet[] = [barley, boots, whiskers, daisy];
 
   // create a list of Person-Pet pairs where
@@ -487,16 +528,31 @@ test("Join", t => {
 
 test("Last", t => {
   t.is(["hey", "hola", "que", "tal"].Last(), "tal");
-  t.is([1, 2, 3, 4, 5].Last(x => x > 2), 5);
-  t.throws(
-    () => [].Last(),
-    /InvalidOperationException: The source sequence is empty./
+  t.is(
+    [1, 2, 3, 4, 5].Last(x => x > 2),
+    5
   );
+  t.throws(() => [].Last(), {
+    message: /InvalidOperationException: The source sequence is empty./i
+  });
+  // Used to report "the source sequence is empty" about a sequence that was not
+  // empty, because the filtered result was what ended up empty.
+  t.throws(() => [1, 2].Last(x => x > 5), {
+    message: /InvalidOperationException: The source sequence contains no matching element./i
+  });
 });
 
 test("LastOrDefault", t => {
   t.is(["hey", "hola", "que", "tal"].LastOrDefault(), "tal");
   t.is([].LastOrDefault(), undefined);
+  t.is(
+    [1, 2, 3].LastOrDefault(x => x < 3),
+    2
+  );
+  t.is(
+    [1, 2].LastOrDefault(x => x > 5),
+    undefined
+  );
 });
 
 test("Max", t => {
@@ -505,8 +561,22 @@ test("Max", t => {
     { Age: 25, Name: "Alice" },
     { Age: 50, Name: "Bob" }
   ];
-  t.is(people.Max(x => x.Age), 50);
+  t.is(
+    people.Max(x => x.Age),
+    50
+  );
   t.is([1, 2, 3, 4, 5].Max(), 5);
+  // Returned undefined from a method declared to return number.
+  t.throws(() => ([] as number[]).Max(), {
+    message: /InvalidOperationException: The source sequence is empty./i
+  });
+  // The selector must run once per element, not twice.
+  let calls = 0;
+  [1, 2, 3, 4, 5].Max(x => {
+    calls++;
+    return x;
+  });
+  t.is(calls, 5);
 });
 
 test("MaxBy", t => {
@@ -517,7 +587,23 @@ test("MaxBy", t => {
   ];
   t.is(people.MaxBy(x => x.Age).Age, 50);
   t.is(people.MaxBy(x => x.Age).Name, "Bob");
-  t.is([1, 2, 3, 4, 5].MaxBy(x => x), 5);
+  t.is(
+    [1, 2, 3, 4, 5].MaxBy(x => x),
+    5
+  );
+
+  // Ties must resolve to the FIRST element holding the maximum key, as .NET
+  // does. A >= comparison in the scan would return "Dave" here.
+  const tied: IPerson[] = [
+    { Age: 15, Name: "Cathy" },
+    { Age: 50, Name: "Bob" },
+    { Age: 50, Name: "Dave" }
+  ];
+  t.is(tied.MaxBy(x => x.Age).Name, "Bob");
+
+  t.throws(() => ([] as IPerson[]).MaxBy(x => x.Age), {
+    message: /InvalidOperationException: The source sequence is empty./i
+  });
 });
 
 test("Min", t => {
@@ -526,8 +612,20 @@ test("Min", t => {
     { Age: 25, Name: "Alice" },
     { Age: 50, Name: "Bob" }
   ];
-  t.is(people.Min(x => x.Age), 15);
+  t.is(
+    people.Min(x => x.Age),
+    15
+  );
   t.is([1, 2, 3, 4, 5].Min(), 1);
+  t.throws(() => ([] as number[]).Min(), {
+    message: /InvalidOperationException: The source sequence is empty./i
+  });
+  let calls = 0;
+  [1, 2, 3, 4, 5].Min(x => {
+    calls++;
+    return x;
+  });
+  t.is(calls, 5);
 });
 
 test("MinBy", t => {
@@ -536,8 +634,25 @@ test("MinBy", t => {
     { Age: 25, Name: "Alice" },
     { Age: 50, Name: "Bob" }
   ];
-  t.is(people.MinBy(x => x.Age), people[0]);
-  t.is([1, 2, 3, 4, 5].Min(x => x), 1);
+  t.is(
+    people.MinBy(x => x.Age),
+    people[0]
+  );
+  t.is(
+    [1, 2, 3, 4, 5].Min(x => x),
+    1
+  );
+
+  const tied: IPerson[] = [
+    { Age: 15, Name: "Cathy" },
+    { Age: 15, Name: "Dave" },
+    { Age: 50, Name: "Bob" }
+  ];
+  t.is(tied.MinBy(x => x.Age).Name, "Cathy");
+
+  t.throws(() => ([] as IPerson[]).MinBy(x => x.Age), {
+    message: /InvalidOperationException: The source sequence is empty./i
+  });
 });
 
 test("OfType", t => {
@@ -570,44 +685,29 @@ test("OrderBy", t => {
     ["Deutschland", "Griechenland", "Agypten"].OrderBy(x => x).ToArray(),
     ["Agypten", "Deutschland", "Griechenland"]
   );
-  t.deepEqual(
-    grades,
-    [4, 5, 6, 3, 2, 1]
-  );
+  t.deepEqual(grades, [4, 5, 6, 3, 2, 1]);
 });
-
 
 test("OrderByDescending", t => {
   const grades = [4, 5, 6, 3, 2, 1];
 
-  t.deepEqual(grades.OrderByDescending(x => x).ToArray(), [
-    6,
-    5,
-    4,
-    3,
-    2,
-    1
-  ]);
+  t.deepEqual(grades.OrderByDescending(x => x).ToArray(), [6, 5, 4, 3, 2, 1]);
   t.deepEqual(
     ["Deutschland", "Griechenland", "Agypten"]
       .OrderByDescending(x => x)
       .ToArray(),
     ["Griechenland", "Deutschland", "Agypten"]
   );
-  t.deepEqual(
-    grades,
-    [4, 5, 6, 3, 2, 1]
-  );
+  t.deepEqual(grades, [4, 5, 6, 3, 2, 1]);
 });
 
 test("Prepend", t => {
   const list: string[] = [];
   list.AddRange(["hey", "what's", "up"]);
   list.Prepend("ola!"); // should not add
-  t.deepEqual(list.ToArray(), ["hey", "what's", "up",]);
+  t.deepEqual(list.ToArray(), ["hey", "what's", "up"]);
   t.deepEqual(list.Prepend("ola!").ToArray(), ["ola!", "hey", "what's", "up"]);
 });
-
 
 test("ThenBy", t => {
   const fruits = [
@@ -640,19 +740,16 @@ test("ThenBy", t => {
       .ToArray(),
     expected
   );
-  t.deepEqual(
-    fruits,
-    [
-      "grape",
-      "passionfruit",
-      "banana",
-      "mango",
-      "orange",
-      "raspberry",
-      "apple",
-      "blueberry"
-    ]
-  );
+  t.deepEqual(fruits, [
+    "grape",
+    "passionfruit",
+    "banana",
+    "mango",
+    "orange",
+    "raspberry",
+    "apple",
+    "blueberry"
+  ]);
   const expectedNums = [1, 2, 3, 4, 5, 6];
   // test omission of OrderBy
   t.deepEqual([4, 5, 6, 3, 2, 1].ThenBy(x => x).ToArray(), expectedNums);
@@ -706,19 +803,16 @@ test("ThenByDescending", t => {
       .ToArray(),
     expected
   );
-  t.deepEqual(
-    fruits,
-    [
-      "grape",
-      "passionfruit",
-      "banana",
-      "mango",
-      "orange",
-      "raspberry",
-      "apple",
-      "blueberry"
-    ]
-  );
+  t.deepEqual(fruits, [
+    "grape",
+    "passionfruit",
+    "banana",
+    "mango",
+    "orange",
+    "raspberry",
+    "apple",
+    "blueberry"
+  ]);
   t.deepEqual([4, 5, 6, 3, 2, 1].ThenByDescending(x => x).ToArray(), [
     6,
     5,
@@ -772,7 +866,10 @@ test("RemoveAll", t => {
   ];
   const num1 = [5, 7, 8, 17, 9, 10, 11, 0, 2, 3, 4];
   const num2 = [17, 10, 11];
-  t.deepEqual(dinosaurs.RemoveAll(x => x.endsWith("saurus")).ToArray(), lessDinosaurs);
+  t.deepEqual(
+    dinosaurs.RemoveAll(x => x.endsWith("saurus")).ToArray(),
+    lessDinosaurs
+  );
   t.deepEqual(num1.RemoveAll(x => x < 10).ToArray(), num2);
   t.deepEqual(num2.RemoveAll().ToArray(), []);
 });
@@ -829,6 +926,22 @@ test("Reverse", t => {
   t.deepEqual(f, [5, 4, 3, 2, 1]);
 });
 
+test("Reversed", t => {
+  const f = [1, 2, 3, 4, 5];
+  t.deepEqual(f.Reversed().ToArray(), [5, 4, 3, 2, 1]);
+  // The source must survive - this is the difference from Reverse().
+  t.deepEqual(f, [1, 2, 3, 4, 5]);
+  // and it chains, which Reverse() cannot do because it returns void.
+  t.deepEqual(
+    f
+      .Reversed()
+      .Select(x => x * 2)
+      .ToArray(),
+    [10, 8, 6, 4, 2]
+  );
+  t.deepEqual([].Reversed().ToArray(), []);
+});
+
 test("Select", t => {
   t.deepEqual([1, 2, 3].Select(x => x * 2).ToArray(), [2, 4, 6]);
 });
@@ -851,7 +964,9 @@ test("SelectMany", t => {
   const expected = ["Scruffy", "Sam", "Walker", "Sugar", "Scratches", "Diesel"];
   t.deepEqual(
     petOwners
-      .SelectMany(petOwner => petOwner.Pets)
+      .SelectMany(petOwner => {
+        return petOwner.Pets;
+      })
       .Select(pet => pet.Name)
       .ToArray(),
     expected
@@ -877,23 +992,24 @@ test("Single", t => {
   const fruits3 = ["orange", "apple"];
   const numbers1 = [1, 2, 3, 4, 5, 5];
   t.is(fruits2.Single(), "orange");
-  t.throws(
-    () => fruits1.Single(),
-    /The collection does not contain exactly one element./
+  // .NET distinguishes these four cases; a single generic message could not say
+  // which of them had happened.
+  t.throws(() => fruits1.Single(), {
+    message: /InvalidOperationException: The source sequence is empty./i
+  });
+  t.throws(() => fruits3.Single(), {
+    message: /InvalidOperationException: The source sequence contains more than one element./i
+  });
+  t.is(
+    numbers1.Single(x => x === 1),
+    1
   );
-  t.throws(
-    () => fruits3.Single(),
-    /The collection does not contain exactly one element./
-  );
-  t.is(numbers1.Single(x => x === 1), 1);
-  t.throws(
-    () => numbers1.Single(x => x === 5),
-    /The collection does not contain exactly one element./
-  );
-  t.throws(
-    () => numbers1.Single(x => x > 5),
-    /The collection does not contain exactly one element./
-  );
+  t.throws(() => numbers1.Single(x => x === 5), {
+    message: /InvalidOperationException: The source sequence contains more than one matching element./i
+  });
+  t.throws(() => numbers1.Single(x => x > 5), {
+    message: /InvalidOperationException: The source sequence contains no matching element./i
+  });
 });
 
 test("SingleOrDefault", t => {
@@ -903,16 +1019,20 @@ test("SingleOrDefault", t => {
   const numbers1 = [1, 2, 3, 4, 5, 5];
   t.is(fruits1.SingleOrDefault(), undefined);
   t.is(fruits2.SingleOrDefault(), "orange");
-  t.throws(
-    () => fruits3.SingleOrDefault(),
-    /The collection does not contain exactly one element./
+  t.throws(() => fruits3.SingleOrDefault(), {
+    message: /InvalidOperationException: The source sequence contains more than one element./i
+  });
+  t.is(
+    numbers1.SingleOrDefault(x => x === 1),
+    1
   );
-  t.is(numbers1.SingleOrDefault(x => x === 1), 1);
-  t.is(numbers1.SingleOrDefault(x => x > 5), undefined);
-  t.throws(
-    () => numbers1.SingleOrDefault(x => x === 5),
-    /The collection does not contain exactly one element./
+  t.is(
+    numbers1.SingleOrDefault(x => x > 5),
+    undefined
   );
+  t.throws(() => numbers1.SingleOrDefault(x => x === 5), {
+    message: /InvalidOperationException: The source sequence contains more than one matching element./i
+  });
 });
 
 test("Skip", t => {
@@ -924,24 +1044,13 @@ test("Skip", t => {
       .ToArray(),
     [82, 70, 59, 56]
   );
-  t.deepEqual(
-    grades,
-    [59, 82, 70, 56, 92, 98, 85]
-  );
+  t.deepEqual(grades, [59, 82, 70, 56, 92, 98, 85]);
 });
 
 test("SkipLast", t => {
   const grades = [59, 82, 70, 56, 92, 98, 85];
-  t.deepEqual(
-    grades
-      .SkipLast(2)
-      .ToArray(),
-    [59, 82, 70, 56, 92]
-  );
-  t.deepEqual(
-    grades,
-    [59, 82, 70, 56, 92, 98, 85]
-  );
+  t.deepEqual(grades.SkipLast(2).ToArray(), [59, 82, 70, 56, 92]);
+  t.deepEqual(grades, [59, 82, 70, 56, 92, 98, 85]);
 });
 
 test("SkipWhile", t => {
@@ -953,10 +1062,7 @@ test("SkipWhile", t => {
       .ToArray(),
     [70, 59, 56]
   );
-  t.deepEqual(
-    grades,
-    [59, 82, 70, 56, 92, 98, 85]
-  );
+  t.deepEqual(grades, [59, 82, 70, 56, 92, 98, 85]);
 });
 
 test("Sum", t => {
@@ -966,7 +1072,10 @@ test("Sum", t => {
     { Age: 50, Name: "Bob" }
   ];
   t.is([2, 3, 5].Sum(), 10);
-  t.is(people.Sum(x => x.Age), 90);
+  t.is(
+    people.Sum(x => x.Age),
+    90
+  );
 });
 
 test("Take", t => {
@@ -978,24 +1087,13 @@ test("Take", t => {
       .ToArray(),
     [98, 92, 85]
   );
-  t.deepEqual(
-    grades,
-    [59, 82, 70, 56, 92, 98, 85]
-  );
+  t.deepEqual(grades, [59, 82, 70, 56, 92, 98, 85]);
 });
 
 test("TakeLast", t => {
   const grades = [59, 82, 70, 56, 92, 98, 85];
-  t.deepEqual(
-    grades
-      .TakeLast(2)
-      .ToArray(),
-    [98, 85]
-  );
-  t.deepEqual(
-    grades,
-    [59, 82, 70, 56, 92, 98, 85]
-  );
+  t.deepEqual(grades.TakeLast(2).ToArray(), [98, 85]);
+  t.deepEqual(grades, [59, 82, 70, 56, 92, 98, 85]);
 });
 
 test("TakeWhile", t => {
@@ -1012,17 +1110,14 @@ test("TakeWhile", t => {
     fruits.TakeWhile(fruit => fruit !== "orange").ToArray(),
     expected
   );
-  t.deepEqual(
-    fruits,
-    [
-      "apple",
-      "banana",
-      "mango",
-      "orange",
-      "passionfruit",
-      "grape"
-    ]
-  );
+  t.deepEqual(fruits, [
+    "apple",
+    "banana",
+    "mango",
+    "orange",
+    "passionfruit",
+    "grape"
+  ]);
 });
 
 test("ToArray", t => {
@@ -1030,26 +1125,38 @@ test("ToArray", t => {
 });
 
 test("ToDictionary", t => {
-  const people: IPerson[] = [
+  const people = [
     { Age: 15, Name: "Cathy" },
     { Age: 25, Name: "Alice" },
     { Age: 50, Name: "Bob" }
   ];
-  const dictionary = people.ToDictionary(x => x.Name).ToArray();
+  const dictionary = people
+    .ToDictionary<string, IPerson>(x => x.Name)
+    .ToArray();
+  // @ts-ignore
   t.deepEqual(dictionary["Bob"], { Age: 50, Name: "Bob" });
+  // @ts-ignore
   t.is(dictionary["Bob"].Age, 50);
-  const dictionary2 = people.ToDictionary(x => x.Name, y => y.Age).ToArray();
+  const dictionary2 = people
+    .ToDictionary(
+      x => x.Name,
+      y => y.Age
+    )
+    .ToArray();
+  // @ts-ignore
   t.is(dictionary2["Alice"], 25);
   // Dictionary should behave just like in C#
-  const knum = dictionary.Max(x => x.Value.Age);
-  const kage = dictionary.Min(x => x.Value.Age);
-  t.is(knum, 50)
-  t.is(kage, 15)
+  t.is(
+    dictionary.Max(x => x.Value.Age),
+    50
+  );
+  t.is(
+    dictionary.Min(x => x.Value.Age),
+    15
+  );
   const expectedKeys = ["Cathy", "Alice", "Bob"];
-  const kkey = dictionary.Select(x => x.Key).ToArray();
-  const kvalue = dictionary.Select(x => x.Value).ToArray();
-  t.deepEqual(kkey, expectedKeys);
-  t.deepEqual(kvalue, people);
+  t.deepEqual(dictionary.Select(x => x.Key).ToArray(), expectedKeys);
+  t.deepEqual(dictionary.Select(x => x.Value).ToArray(), people);
 });
 
 test("ToList", t => {

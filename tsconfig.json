@@ -1,11 +1,31 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "es6",
+    "moduleResolution": "bundler",
+    "target": "ES2022",
+    "module": "CommonJS",
+    "lib": [
+      "ES2022",
+      "dom"
+    ],
+    "sourceMap": true,
     "declaration": true,
-    "outDir": "./dist/linq-typed"
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "declarationDir": "dist",
+    "outDir": "dist",
+    "rootDir": "src",
+    "strict": true,
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "types": [
+      "node"
+    ],
+    "ignoreDeprecations": "6.0"
   },
   "include": [
-    "src/**/*"
+    "src"
   ]
 }

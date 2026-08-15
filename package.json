@@ -1,10 +1,28 @@
 {
   "name": "linq-typed",
-  "version": "1.3.5",
+  "version": "2.0.0",
   "description": "linq for Typescript by array prototyping",
-  "main": "index.ts",
-  "umd:main": "dist/linq-typed/index.umd.js",
-  "module": "dist/linq-typed/index.mjs",
+  "main": "dist/index.js",
+  "module": "dist/linq-typed/linq-typed.mjs",
+  "umd:main": "dist/linq-typed/linq-typed.umd.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/linq-typed/linq-typed.mjs",
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist/index.js",
+    "dist/index.js.map",
+    "dist/index.d.ts",
+    "dist/linq-typed",
+    "Readme.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "microbundle -o dist/linq-typed",
     "postbuild": "rimraf .rpt2_cache ./dist/test",
@@ -17,12 +35,13 @@
     "nyan": "ava --tap | tap-nyan",
     "prebuild": "rimraf dist",
     "precompile": "npm run pretty",
+    "prepublishOnly": "npm run build && npm run compile",
     "pretest": "npm run compile",
-    "pretty": "prettier index.ts test/**/*.ts --write",
+    "pretty": "prettier src/*.ts --write",
     "report-coverage": "nyc report --reporter=text-lcov | coveralls",
     "semantic-release": "semantic-release",
     "start": "tsc -w",
-    "test": "npx ava ./dist/linq-typed/test.js",
+    "test": "npx ava ./dist/test.js",
     "validate": "npm run cover && npm run check-coverage"
   },
   "author": "SkeletonSkelettron",
@@ -32,22 +51,25 @@
     "url": "git+https://github.com/SkeletonSkelettron/Linq-Typed.git"
   },
   "devDependencies": {
-    "ava": "^0.25.0",
-    "commitizen": "^3.0.0",
-    "coveralls": "^3.0.1",
+    "@ava/typescript": "^4.0.0",
+    "@types/node": "^22.10.0",
+    "all-contributors-cli": "^6.20.0",
+    "ava": "^5.2.0",
+    "commitizen": "^3.1.1",
     "cz-conventional-changelog": "^2.1.0",
+    "esm": "^3.2.25",
     "ghooks": "^2.0.4",
-    "microbundle": "0.4.4",
-    "nyc": "^12.0.2",
+    "nyc": "^15.1.0",
     "prettier": "^1.13.7",
     "rimraf": "^2.6.2",
-    "semantic-release": "^17.2.3",
+    "microbundle": "^0.15.1",
+    "tap-nyan": "^1.1.0",
     "ts-node": "^7.0.0",
     "tslint": "^5.10.0",
     "tslint-config-prettier": "^1.13.0",
     "tslint-config-standard": "^7.1.0",
-    "typedoc": "^0.13.0",
-    "typescript": "^3.1.3"
+    "typedoc": "^0.17.6",
+    "typescript": ">=6.0.0 <6.1.0"
   },
   "keywords": [
     "linq",
