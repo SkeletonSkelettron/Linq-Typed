@@ -18,7 +18,7 @@
     "prebuild": "rimraf dist",
     "precompile": "npm run pretty",
     "pretest": "npm run compile",
-    "pretty": "prettier index.ts test/**/*.ts --write",
+    "pretty": "prettier src/*.ts --write",
     "report-coverage": "nyc report --reporter=text-lcov | coveralls",
     "semantic-release": "semantic-release",
     "start": "tsc -w",
@@ -33,7 +33,7 @@
   },
   "devDependencies": {
     "@ava/typescript": "^4.0.0",
-    "@types/node": "^20.12.7",
+    "@types/node": "^22.10.0",
     "all-contributors-cli": "^6.20.0",
     "ava": "^5.2.0",
     "commitizen": "^3.1.1",
@@ -50,7 +50,7 @@
     "tslint-config-prettier": "^1.13.0",
     "tslint-config-standard": "^7.1.0",
     "typedoc": "^0.17.6",
-    "typescript": "^5.0.4"
+    "typescript": ">=6.0.0 <6.1.0"
   },
   "keywords": [
     "linq",

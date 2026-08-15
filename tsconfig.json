@@ -1,29 +1,31 @@
 {
   "compilerOptions": {
-    "moduleResolution": "node",
-    "target": "es6",
+    "moduleResolution": "bundler",
+    "target": "ES2022",
     "module": "CommonJS",
     "lib": [
-      "es2015",
-      "es2016",
-      "es2017",
+      "ES2022",
       "dom"
     ],
     "sourceMap": true,
     "declaration": true,
     "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "declarationDir": "dist",
     "outDir": "dist",
+    "rootDir": "src",
     "strict": true,
     "typeRoots": [
       "node_modules/@types"
     ],
-    "downlevelIteration": true
+    "types": [
+      "node"
+    ],
+    "ignoreDeprecations": "6.0"
   },
   "include": [
-    "src",
-    "__tests__"
-, "test/prog.ts"  ]
+    "src"
+  ]
 }
