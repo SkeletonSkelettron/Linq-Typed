@@ -35,6 +35,7 @@
     "nyan": "ava --tap | tap-nyan",
     "prebuild": "rimraf dist",
     "precompile": "npm run pretty",
+    "prepublishOnly": "npm run build && npm run compile",
     "pretest": "npm run compile",
     "pretty": "prettier src/*.ts --write",
     "report-coverage": "nyc report --reporter=text-lcov | coveralls",
