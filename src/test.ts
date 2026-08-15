@@ -322,11 +322,25 @@ test("First", t => {
   t.throws(() => [].First(), {
     message: /InvalidOperationException: The source sequence is empty./i
   });
+  // A predicate that matches nothing used to return undefined from a method
+  // declared to return T, because the guard tested the source rather than the
+  // matches. An empty source and an unmatched predicate are distinct in .NET.
+  t.throws(() => [1, 2].First(x => x > 5), {
+    message: /InvalidOperationException: The source sequence contains no matching element./i
+  });
 });
 
 test("FirstOrDefault", t => {
   t.is(["hey", "hola", "que", "tal"].FirstOrDefault(), "hey");
   t.is([].FirstOrDefault(), undefined);
+  t.is(
+    [1, 2, 3].FirstOrDefault(x => x > 2),
+    3
+  );
+  t.is(
+    [1, 2].FirstOrDefault(x => x > 5),
+    undefined
+  );
 });
 
 test("ForEach", t => {
@@ -521,11 +535,24 @@ test("Last", t => {
   t.throws(() => [].Last(), {
     message: /InvalidOperationException: The source sequence is empty./i
   });
+  // Used to report "the source sequence is empty" about a sequence that was not
+  // empty, because the filtered result was what ended up empty.
+  t.throws(() => [1, 2].Last(x => x > 5), {
+    message: /InvalidOperationException: The source sequence contains no matching element./i
+  });
 });
 
 test("LastOrDefault", t => {
   t.is(["hey", "hola", "que", "tal"].LastOrDefault(), "tal");
   t.is([].LastOrDefault(), undefined);
+  t.is(
+    [1, 2, 3].LastOrDefault(x => x < 3),
+    2
+  );
+  t.is(
+    [1, 2].LastOrDefault(x => x > 5),
+    undefined
+  );
 });
 
 test("Max", t => {
@@ -539,6 +566,17 @@ test("Max", t => {
     50
   );
   t.is([1, 2, 3, 4, 5].Max(), 5);
+  // Returned undefined from a method declared to return number.
+  t.throws(() => ([] as number[]).Max(), {
+    message: /InvalidOperationException: The source sequence is empty./i
+  });
+  // The selector must run once per element, not twice.
+  let calls = 0;
+  [1, 2, 3, 4, 5].Max(x => {
+    calls++;
+    return x;
+  });
+  t.is(calls, 5);
 });
 
 test("MaxBy", t => {
@@ -579,6 +617,15 @@ test("Min", t => {
     15
   );
   t.is([1, 2, 3, 4, 5].Min(), 1);
+  t.throws(() => ([] as number[]).Min(), {
+    message: /InvalidOperationException: The source sequence is empty./i
+  });
+  let calls = 0;
+  [1, 2, 3, 4, 5].Min(x => {
+    calls++;
+    return x;
+  });
+  t.is(calls, 5);
 });
 
 test("MinBy", t => {
@@ -879,6 +926,22 @@ test("Reverse", t => {
   t.deepEqual(f, [5, 4, 3, 2, 1]);
 });
 
+test("Reversed", t => {
+  const f = [1, 2, 3, 4, 5];
+  t.deepEqual(f.Reversed().ToArray(), [5, 4, 3, 2, 1]);
+  // The source must survive - this is the difference from Reverse().
+  t.deepEqual(f, [1, 2, 3, 4, 5]);
+  // and it chains, which Reverse() cannot do because it returns void.
+  t.deepEqual(
+    f
+      .Reversed()
+      .Select(x => x * 2)
+      .ToArray(),
+    [10, 8, 6, 4, 2]
+  );
+  t.deepEqual([].Reversed().ToArray(), []);
+});
+
 test("Select", t => {
   t.deepEqual([1, 2, 3].Select(x => x * 2).ToArray(), [2, 4, 6]);
 });
@@ -929,21 +992,23 @@ test("Single", t => {
   const fruits3 = ["orange", "apple"];
   const numbers1 = [1, 2, 3, 4, 5, 5];
   t.is(fruits2.Single(), "orange");
+  // .NET distinguishes these four cases; a single generic message could not say
+  // which of them had happened.
   t.throws(() => fruits1.Single(), {
-    message: /The collection does not contain exactly one element./i
+    message: /InvalidOperationException: The source sequence is empty./i
   });
   t.throws(() => fruits3.Single(), {
-    message: /The collection does not contain exactly one element./i
+    message: /InvalidOperationException: The source sequence contains more than one element./i
   });
   t.is(
     numbers1.Single(x => x === 1),
     1
   );
   t.throws(() => numbers1.Single(x => x === 5), {
-    message: /The collection does not contain exactly one element./i
+    message: /InvalidOperationException: The source sequence contains more than one matching element./i
   });
   t.throws(() => numbers1.Single(x => x > 5), {
-    message: /The collection does not contain exactly one element./i
+    message: /InvalidOperationException: The source sequence contains no matching element./i
   });
 });
 
@@ -955,7 +1020,7 @@ test("SingleOrDefault", t => {
   t.is(fruits1.SingleOrDefault(), undefined);
   t.is(fruits2.SingleOrDefault(), "orange");
   t.throws(() => fruits3.SingleOrDefault(), {
-    message: /The collection does not contain exactly one element./i
+    message: /InvalidOperationException: The source sequence contains more than one element./i
   });
   t.is(
     numbers1.SingleOrDefault(x => x === 1),
@@ -966,7 +1031,7 @@ test("SingleOrDefault", t => {
     undefined
   );
   t.throws(() => numbers1.SingleOrDefault(x => x === 5), {
-    message: /The collection does not contain exactly one element./i
+    message: /InvalidOperationException: The source sequence contains more than one matching element./i
   });
 });
 

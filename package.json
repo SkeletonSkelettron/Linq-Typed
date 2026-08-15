@@ -1,10 +1,28 @@
 {
   "name": "linq-typed",
-  "version": "1.4.0",
+  "version": "2.0.0",
   "description": "linq for Typescript by array prototyping",
-  "main": "index.ts",
-  "umd:main": "dist/linq-typed/index.umd.js",
-  "module": "dist/linq-typed/index.mjs",
+  "main": "dist/index.js",
+  "module": "dist/linq-typed/linq-typed.mjs",
+  "umd:main": "dist/linq-typed/linq-typed.umd.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/linq-typed/linq-typed.mjs",
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist/index.js",
+    "dist/index.js.map",
+    "dist/index.d.ts",
+    "dist/linq-typed",
+    "Readme.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "microbundle -o dist/linq-typed",
     "postbuild": "rimraf .rpt2_cache ./dist/test",
@@ -43,8 +61,8 @@
     "nyc": "^15.1.0",
     "prettier": "^1.13.7",
     "rimraf": "^2.6.2",
+    "microbundle": "^0.15.1",
     "tap-nyan": "^1.1.0",
-    "timsort": "^0.3.0",
     "ts-node": "^7.0.0",
     "tslint": "^5.10.0",
     "tslint-config-prettier": "^1.13.0",
@@ -62,8 +80,6 @@
   },
   "homepage": "https://github.com/SkeletonSkelettron/Linq-Typed#readme",
   "dependencies": {
-    "microbundle": "^0.15.1",
-    "timsort": "^0.3.0",
-    "tslib": "^2.6.2"
+    "timsort": "^0.3.0"
   }
 }

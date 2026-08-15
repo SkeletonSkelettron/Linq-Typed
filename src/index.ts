@@ -4,374 +4,391 @@ https://www.npmjs.com/package/linqts
 */
 "use strict";
 
-const TimSort = require("timsort");
+import { sort as timsort } from "timsort";
 
-interface Array<T> {
-  /*
+declare global {
+  interface Array<T> {
+    /*
         Adds an object to the end of the List<T> or Array<T>.
     */
-  Add(element: T): void;
-
-  /**
-   * Adds the elements of the specified collection to the end of the List<T>.
-   */
-  AddRange(elements: T[]): void;
-
-  /**
-   * Applies an accumulator function over a sequence.
-   */
-  Aggregate<U>(
-    accumulator: (accum: U, value?: T, index?: number, list?: T[]) => any,
-    initialValue?: U
-  ): any;
-
-  /**
-   * Determines whether all elements of a sequence satisfy a condition.
-   */
-  All(predicate: (value: T, index: number, list: T[]) => boolean): boolean;
-
-  /**
-   * Determines whether a sequence contains any elements.
-   */
-  Any(predicate?: (value: T, index: number, list: T[]) => boolean): boolean;
-
-  /**
-   * Appends a value to the end of the sequence and returns new sequence.
-   */
-  Append(value: T): List<T>;
-
-  /**
-   * Computes the average of a sequence of number values that are obtained by invoking
-   * a transform function on each element of the input sequence.
-   */
-  Average(transform?: (value: T, index: number, list?: T[]) => number): number;
-
-  /**
-   * Casts the elements of a sequence to the specified type.
-   */
-  Cast<T>(): List<T>;
-
-  /**
-   * Concatenates two sequences.
-   */
-  Concat(list: T[]): List<T>;
-
-  /**
-   * Determines whether an element is in the List<T>.
-   */
-  Contains(element: T): boolean;
-
-  /**
-   * Returns the number of elements in a sequence.
-   */
-  Count(predicate?: (value: T, index: number, list: T[]) => boolean): number;
-
-  /**
-   * Returns the elements of the specified sequence or the type parameter's default value
-   * in a singleton collection if the sequence is empty.
-   */
-  DefaultIfEmpty(defaultValue?: T): List<T>;
-
-  /**
-   * Returns distinct elements from a sequence by using the default equality comparer to compare values.
-   */
-  Distinct(): List<T>;
-
-  /**
-   * Returns distinct elements from a sequence according to specified key selector.
-   */
-  DistinctBy(keySelector: (key: T) => any): List<T>;
-
-  /**
-   * Returns the element at a specified index in a sequence.
-   */
-  ElementAt(index: number): T;
-
-  /**
-   * Returns the element at a specified index in a sequence or a default value if the index is out of range.
-   */
-  ElementAtOrDefault(index: number): T | undefined;
-
-  /**
-   * Produces the set difference of two sequences by using the default equality comparer to compare values.
-   */
-  Except(source: T[]): List<T>;
-
-  /**
-   * Filters a sequence of values based on a predicate and returns new sequence
-   */
-  FindAll(predicate?: (value: T, index: number, list: T[]) => boolean): T[];
-
-  /**
-   * Returns the first element of a sequence.
-   */
-  First(predicate?: (value: T, index: number, list: T[]) => boolean): T;
-
-  /**
-   * Returns the first element of a sequence, or a default value if the sequence contains no elements.
-   */
-  FirstOrDefault(
-    predicate?: (value: T, index: number, list: T[]) => boolean
-  ): T | undefined;
-
-  /**
-   * Performs the specified action on each element of the Array<T>.
-   */
-  ForEach(action: (value: T, index: number, list: T[]) => any): void;
-
-  /**
-   * Groups the elements of a sequence according to a specified key selector function.
-   */
-  GroupBy<TResult = T>(
-    grouper: (key: T) => any,
-    mapper?: (element: T) => TResult
-  ): { [key: string]: TResult[] };
-
-  /**
-   * Correlates the elements of two sequences based on equality of keys and groups the results.
-   * The default equality comparer is used to compare keys.
-   */
-  GroupJoin<T>(
-    list: T[],
-    key1: (k: T) => any,
-    key2: (k: T) => any,
-    result: (first: T, second: T[]) => any
-  ): List<any>;
-
-  /*
-   * Returns sub array of array
-   */
-  GetRange(index: number, count: number): List<T>;
-
-  /**
-   * Returns the index of the first occurence of an element in the List.
-   */
-  IndexOf(element: T): number;
-
-  /**
-   * Inserts an element into the List<T> at the specified index.
-   */
-  Insert(index: number, element: T): void | Error;
-
-  /**
-   * Inserts an element into the List<T> at the specified index.
-   */
-  InsertRange(index: number, array: T[]): void | Error;
-
-  /**
-   * Produces the set intersection of two sequences by using the default equality comparer to compare values.
-   */
-  Intersect(source: T[]): List<T>;
-
-  /**
-   * Correlates the elements of two sequences based on matching keys. The default equality comparer is used to compare keys.
-   */
-  Join<U>(
-    list: Array<U>,
-    key1: (key: T) => any,
-    key2: (key: U) => any,
-    result: (first: T, second: U) => any
-  ): List<any>;
-
-  /**
-   * Returns the last element of a sequence.
-   */
-  Last(predicate?: (value: T, index: number, list: T[]) => boolean): T;
-
-  /**
-   * Returns the last element of a sequence, or a default value if the sequence contains no elements.
-   */
-  LastOrDefault(
-    predicate?: (value: T, index: number, list: T[]) => boolean
-  ): T | undefined;
-
-  /**
-   * Returns the maximum value in a generic sequence.
-   */
-  Max(selector?: (value: T, index: number, array: T[]) => number): number;
-
-  /**
-   * Returns the element with maximum value in a generic sequence.
-   */
-  MaxBy(keySelector: (key: T) => any): T;
-
-  /**
-   * Returns the minimum value in a generic sequence.
-   */
-  Min(selector?: (value: T, index: number, array: T[]) => number): number;
-
-  /**
-   * Returns the element with minimum value in a generic sequence.
-   */
-  MinBy(keySelector: (key: T) => any): T;
-
-  /**
-   * Filters the elements of a sequence based on a specified type.
-   */
-  OfType<T>(type: any): List<T>;
-
-  /**
-   * Sorts the elements of a sequence in ascending order according to a key.
-   */
-  OrderBy(keySelector: (key: T) => any, keyComparer?: Function): List<T>;
-
-  /**
-   * Sorts the elements of a sequence in descending order according to a key.
-   */
-  OrderByDescending(keySelector: (key: T) => any): List<T>;
-
-  /**
-   * Prepends a value to the end of the sequence and returns new sequence.
-   */
-  Prepend(value: T): List<T>;
-
-  /**
-   * Performs a subsequent ordering of the elements in a sequence in ascending order according to a key.
-   */
-  ThenBy(keySelector: (key: T) => any): List<T>;
-
-  /**
-   * Performs a subsequent ordering of the elements in a sequence in descending order, according to a key.
-   */
-  ThenByDescending(keySelector: (key: T) => any): List<T>;
-
-  /**
-   * Removes the first occurrence of a specific object from the List<T>.
-   */
-  Remove(element: T): boolean;
-
-  /**
-   * Removes all the elements that match the conditions defined by the specified predicate.
-   */
-  RemoveAll(
-    predicate?: (value: T, index: number, list: T[]) => boolean
-  ): List<T>;
-
-  /**
-   * Removes the element at the specified index of the List<T>.
-   */
-  RemoveAt(index: number): void;
-
-  /*
-   * Removes the element at the specified index of the List<T>.
-   */
-  RemoveRange(index: number, count: number): void;
-
-  /**
-   * Reverses the order of the elements in the entire List<T>.
-   */
-  Reverse(): void;
-
-  /**
-   * Projects each element of a sequence into a new form.
-   */
-  Select<TOut>(selector: (element: T, index: number) => TOut): List<TOut>;
-
-  /**
-   * Projects each element of a sequence to a List<any> and flattens the resulting sequences into one sequence.
-   */
-  SelectMany<TOut extends any[]>(
-    selector: (element: T, index: number) => TOut
-  ): TOut;
-
-  /**
-   * Determines whether two sequences are equal by comparing the elements by using the default equality comparer for their type.
-   */
-  SequenceEqual(list: T[]): boolean;
-
-  /**
-   * Returns the only element of a sequence, or a default value if the sequence is empty;
-   * this method throws an exception if there is more than one element in the sequence.
-   */
-  Single(predicate?: (value: T, index: number, list: T[]) => boolean): T;
-
-  /**
-   * Returns the only element of a sequence, and throws an exception if there is not exactly one element in the sequence.
-   */
-  SingleOrDefault(
-    predicate?: (value: T, index: number, list: T[]) => boolean
-  ): T | undefined;
-
-  /**
-   * Bypasses a specified number of elements in a sequence and then returns the remaining elements.
-   */
-  Skip(amount: number): List<T>;
-
-  /**
-   * Bypasses a specified number of elements at the end of a sequence and then returns the remaining elements.
-   */
-  SkipLast(amount: number): List<T>;
-
-  /**
-   * Bypasses elements in a sequence as long as a specified condition is true and then returns the remaining elements.
-   */
-  SkipWhile(
-    predicate: (value: T, index?: number, list?: T[]) => boolean
-  ): List<T>;
-
-  /**
-   * Computes the sum of the sequence of number values that are obtained by invoking
-   * a transform function on each element of the input sequence.
-   */
-  Sum(transform?: (value: T, index: number, list?: T[]) => number): number;
-
-  /**
-   * Returns a specified number of contiguous elements from the start of a sequence.
-   */
-  Take(amount: number): List<T>;
-
-  /**
-   * Returns a specified number of contiguous elements from the end of a sequence.
-   */
-  TakeLast(amount: number): List<T>;
-
-  /**
-   * Returns elements from a sequence as long as a specified condition is true.
-   */
-  TakeWhile(
-    predicate: (value: T, index?: number, list?: T[]) => boolean
-  ): List<T>;
-
-  /**
-   * Copies the elements of the List<T> to a new array.
-   */
-  ToArray(): T[];
-
-  /**
-   * Creates a Dictionary<TKey, TValue> from a List<T> according to a specified key selector function.
-   */
-  ToDictionary<TKey, TValue>(
-    key: (key: T) => TKey,
-    value?: (value: T) => TValue
-  ): List<{ Key: TKey; Value: T }>;
-
-  /**
-   * Creates a List<T> from an Enumerable.List<T>.
-   */
-  ToList(): List<T>;
-
-  /**
-   * Creates a Lookup<TKey, TElement> from an IEnumerable<T> according to specified key selector and element selector functions.
-   */
-  ToLookup(
-    keySelector: (key: T) => any,
-    elementSelector: (element: T) => any
-  ): any;
-
-  /**
-   * Produces the set union of two sequences by using the default equality comparer.
-   */
-  Union(list: T[]): List<T>;
-
-  /**
-   * Filters a sequence of values based on a predicate.
-   */
-  Where(predicate: (value: T, index: number, list: T[]) => boolean): List<T>;
-
-  /**
-   * Applies a specified function to the corresponding elements of two sequences, producing a sequence of the results.
-   */
-  Zip<U, TOut>(list: U[], result: (first: T, second: U) => TOut): List<TOut>;
+    Add(element: T): void;
+
+    /**
+     * Adds the elements of the specified collection to the end of the List<T>.
+     */
+    AddRange(elements: T[]): void;
+
+    /**
+     * Applies an accumulator function over a sequence.
+     */
+    Aggregate<U>(
+      accumulator: (accum: U, value?: T, index?: number, list?: T[]) => any,
+      initialValue?: U
+    ): any;
+
+    /**
+     * Determines whether all elements of a sequence satisfy a condition.
+     */
+    All(predicate: (value: T, index: number, list: T[]) => boolean): boolean;
+
+    /**
+     * Determines whether a sequence contains any elements.
+     */
+    Any(predicate?: (value: T, index: number, list: T[]) => boolean): boolean;
+
+    /**
+     * Appends a value to the end of the sequence and returns new sequence.
+     */
+    Append(value: T): List<T>;
+
+    /**
+     * Computes the average of a sequence of number values that are obtained by invoking
+     * a transform function on each element of the input sequence.
+     */
+    Average(
+      transform?: (value: T, index: number, list?: T[]) => number
+    ): number;
+
+    /**
+     * Casts the elements of a sequence to the specified type.
+     */
+    Cast<T>(): List<T>;
+
+    /**
+     * Concatenates two sequences.
+     */
+    Concat(list: T[]): List<T>;
+
+    /**
+     * Determines whether an element is in the List<T>.
+     */
+    Contains(element: T): boolean;
+
+    /**
+     * Returns the number of elements in a sequence.
+     */
+    Count(predicate?: (value: T, index: number, list: T[]) => boolean): number;
+
+    /**
+     * Returns the elements of the specified sequence or the type parameter's default value
+     * in a singleton collection if the sequence is empty.
+     */
+    DefaultIfEmpty(defaultValue?: T): List<T>;
+
+    /**
+     * Returns distinct elements from a sequence by using the default equality comparer to compare values.
+     */
+    Distinct(): List<T>;
+
+    /**
+     * Returns distinct elements from a sequence according to specified key selector.
+     */
+    DistinctBy(keySelector: (key: T) => any): List<T>;
+
+    /**
+     * Returns the element at a specified index in a sequence.
+     */
+    ElementAt(index: number): T;
+
+    /**
+     * Returns the element at a specified index in a sequence or a default value if the index is out of range.
+     */
+    ElementAtOrDefault(index: number): T | undefined;
+
+    /**
+     * Produces the set difference of two sequences by using the default equality comparer to compare values.
+     */
+    Except(source: T[]): List<T>;
+
+    /**
+     * Filters a sequence of values based on a predicate and returns new sequence
+     */
+    FindAll(predicate?: (value: T, index: number, list: T[]) => boolean): T[];
+
+    /**
+     * Returns the first element of a sequence.
+     */
+    First(predicate?: (value: T, index: number, list: T[]) => boolean): T;
+
+    /**
+     * Returns the first element of a sequence, or a default value if the sequence contains no elements.
+     */
+    FirstOrDefault(
+      predicate?: (value: T, index: number, list: T[]) => boolean
+    ): T | undefined;
+
+    /**
+     * Performs the specified action on each element of the Array<T>.
+     */
+    ForEach(action: (value: T, index: number, list: T[]) => any): void;
+
+    /**
+     * Groups the elements of a sequence according to a specified key selector function.
+     */
+    GroupBy<TResult = T>(
+      grouper: (key: T) => any,
+      mapper?: (element: T) => TResult
+    ): { [key: string]: TResult[] };
+
+    /**
+     * Correlates the elements of two sequences based on equality of keys and groups the results.
+     * The default equality comparer is used to compare keys.
+     */
+    GroupJoin<T>(
+      list: T[],
+      key1: (k: T) => any,
+      key2: (k: T) => any,
+      result: (first: T, second: T[]) => any
+    ): List<any>;
+
+    /*
+     * Returns sub array of array
+     */
+    GetRange(index: number, count: number): List<T>;
+
+    /**
+     * Returns the index of the first occurence of an element in the List.
+     */
+    IndexOf(element: T): number;
+
+    /**
+     * Inserts an element into the List<T> at the specified index.
+     */
+    Insert(index: number, element: T): void | Error;
+
+    /**
+     * Inserts an element into the List<T> at the specified index.
+     */
+    InsertRange(index: number, array: T[]): void | Error;
+
+    /**
+     * Produces the set intersection of two sequences by using the default equality comparer to compare values.
+     */
+    Intersect(source: T[]): List<T>;
+
+    /**
+     * Correlates the elements of two sequences based on matching keys. The default equality comparer is used to compare keys.
+     */
+    Join<U>(
+      list: Array<U>,
+      key1: (key: T) => any,
+      key2: (key: U) => any,
+      result: (first: T, second: U) => any
+    ): List<any>;
+
+    /**
+     * Returns the last element of a sequence.
+     */
+    Last(predicate?: (value: T, index: number, list: T[]) => boolean): T;
+
+    /**
+     * Returns the last element of a sequence, or a default value if the sequence contains no elements.
+     */
+    LastOrDefault(
+      predicate?: (value: T, index: number, list: T[]) => boolean
+    ): T | undefined;
+
+    /**
+     * Returns the maximum value in a generic sequence.
+     */
+    Max(selector?: (value: T, index: number, array: T[]) => number): number;
+
+    /**
+     * Returns the element with maximum value in a generic sequence.
+     */
+    MaxBy(keySelector: (key: T) => any): T;
+
+    /**
+     * Returns the minimum value in a generic sequence.
+     */
+    Min(selector?: (value: T, index: number, array: T[]) => number): number;
+
+    /**
+     * Returns the element with minimum value in a generic sequence.
+     */
+    MinBy(keySelector: (key: T) => any): T;
+
+    /**
+     * Filters the elements of a sequence based on a specified type.
+     */
+    OfType<T>(type: any): List<T>;
+
+    /**
+     * Sorts the elements of a sequence in ascending order according to a key.
+     */
+    OrderBy(keySelector: (key: T) => any, keyComparer?: Function): List<T>;
+
+    /**
+     * Sorts the elements of a sequence in descending order according to a key.
+     */
+    OrderByDescending(keySelector: (key: T) => any): List<T>;
+
+    /**
+     * Prepends a value to the end of the sequence and returns new sequence.
+     */
+    Prepend(value: T): List<T>;
+
+    /**
+     * Performs a subsequent ordering of the elements in a sequence in ascending order according to a key.
+     */
+    ThenBy(keySelector: (key: T) => any): List<T>;
+
+    /**
+     * Performs a subsequent ordering of the elements in a sequence in descending order, according to a key.
+     */
+    ThenByDescending(keySelector: (key: T) => any): List<T>;
+
+    /**
+     * Removes the first occurrence of a specific object from the List<T>.
+     */
+    Remove(element: T): boolean;
+
+    /**
+     * Removes all the elements that match the conditions defined by the specified predicate.
+     */
+    RemoveAll(
+      predicate?: (value: T, index: number, list: T[]) => boolean
+    ): List<T>;
+
+    /**
+     * Removes the element at the specified index of the List<T>.
+     */
+    RemoveAt(index: number): void;
+
+    /*
+     * Removes the element at the specified index of the List<T>.
+     */
+    RemoveRange(index: number, count: number): void;
+
+    /**
+     * Reverses the order of the elements in the entire List<T>, IN PLACE.
+     *
+     * This follows List<T>.Reverse() in .NET, which mutates the collection and
+     * returns void - not Enumerable.Reverse(), which leaves the source alone and
+     * returns a new sequence. .NET can offer both because the receiver type picks
+     * one; here there is only one receiver, so the two cannot share a name.
+     * Use Reversed() for the non-mutating LINQ operator.
+     */
+    Reverse(): void;
+
+    /**
+     * Returns a new sequence with the elements in reverse order, leaving the
+     * source untouched. This is Enumerable.Reverse() in .NET. For the in-place
+     * List<T>.Reverse() behaviour, use Reverse().
+     */
+    Reversed(): List<T>;
+
+    /**
+     * Projects each element of a sequence into a new form.
+     */
+    Select<TOut>(selector: (element: T, index: number) => TOut): List<TOut>;
+
+    /**
+     * Projects each element of a sequence to a List<any> and flattens the resulting sequences into one sequence.
+     */
+    SelectMany<TOut extends any[]>(
+      selector: (element: T, index: number) => TOut
+    ): TOut;
+
+    /**
+     * Determines whether two sequences are equal by comparing the elements by using the default equality comparer for their type.
+     */
+    SequenceEqual(list: T[]): boolean;
+
+    /**
+     * Returns the only element of a sequence, or a default value if the sequence is empty;
+     * this method throws an exception if there is more than one element in the sequence.
+     */
+    Single(predicate?: (value: T, index: number, list: T[]) => boolean): T;
+
+    /**
+     * Returns the only element of a sequence, and throws an exception if there is not exactly one element in the sequence.
+     */
+    SingleOrDefault(
+      predicate?: (value: T, index: number, list: T[]) => boolean
+    ): T | undefined;
+
+    /**
+     * Bypasses a specified number of elements in a sequence and then returns the remaining elements.
+     */
+    Skip(amount: number): List<T>;
+
+    /**
+     * Bypasses a specified number of elements at the end of a sequence and then returns the remaining elements.
+     */
+    SkipLast(amount: number): List<T>;
+
+    /**
+     * Bypasses elements in a sequence as long as a specified condition is true and then returns the remaining elements.
+     */
+    SkipWhile(
+      predicate: (value: T, index?: number, list?: T[]) => boolean
+    ): List<T>;
+
+    /**
+     * Computes the sum of the sequence of number values that are obtained by invoking
+     * a transform function on each element of the input sequence.
+     */
+    Sum(transform?: (value: T, index: number, list?: T[]) => number): number;
+
+    /**
+     * Returns a specified number of contiguous elements from the start of a sequence.
+     */
+    Take(amount: number): List<T>;
+
+    /**
+     * Returns a specified number of contiguous elements from the end of a sequence.
+     */
+    TakeLast(amount: number): List<T>;
+
+    /**
+     * Returns elements from a sequence as long as a specified condition is true.
+     */
+    TakeWhile(
+      predicate: (value: T, index?: number, list?: T[]) => boolean
+    ): List<T>;
+
+    /**
+     * Copies the elements of the List<T> to a new array.
+     */
+    ToArray(): T[];
+
+    /**
+     * Creates a Dictionary<TKey, TValue> from a List<T> according to a specified key selector function.
+     */
+    ToDictionary<TKey, TValue>(
+      key: (key: T) => TKey,
+      value?: (value: T) => TValue
+    ): List<{ Key: TKey; Value: T }>;
+
+    /**
+     * Creates a List<T> from an Enumerable.List<T>.
+     */
+    ToList(): List<T>;
+
+    /**
+     * Creates a Lookup<TKey, TElement> from an IEnumerable<T> according to specified key selector and element selector functions.
+     */
+    ToLookup(
+      keySelector: (key: T) => any,
+      elementSelector: (element: T) => any
+    ): any;
+
+    /**
+     * Produces the set union of two sequences by using the default equality comparer.
+     */
+    Union(list: T[]): List<T>;
+
+    /**
+     * Filters a sequence of values based on a predicate.
+     */
+    Where(predicate: (value: T, index: number, list: T[]) => boolean): List<T>;
+
+    /**
+     * Applies a specified function to the corresponding elements of two sequences, producing a sequence of the results.
+     */
+    Zip<U, TOut>(list: U[], result: (first: T, second: U) => TOut): List<TOut>;
+  }
 }
 
 Array.prototype.Add = function<T>(e: T): void {
@@ -441,7 +458,19 @@ Array.prototype.Contains = function<T>(element: T): boolean {
 Array.prototype.Count = function<T>(
   predicate?: (value: T, index: number, list: T[]) => boolean
 ): number {
-  return predicate ? this.Where(predicate).Count() : getArray<T>(this).length;
+  const th = getArray<T>(this);
+  if (!predicate) {
+    return th.length;
+  }
+  // Counting loop rather than Where(predicate).Count(), which allocated a
+  // filtered List and a copy of the matches only to read their length.
+  let count = 0;
+  for (let i = 0; i < th.length; i++) {
+    if (predicate(th[i], i, th)) {
+      count++;
+    }
+  }
+  return count;
 };
 
 Array.prototype.DefaultIfEmpty = function<T>(defaultValue: T): List<T> {
@@ -500,19 +529,43 @@ Array.prototype.FindAll = function<T>(
 Array.prototype.First = function<T>(
   predicate?: (value: T, index: number, list: T[]) => boolean
 ): T {
-  if (this.Count()) {
-    return predicate
-      ? this.Where(predicate).ToArray()[0]
-      : getArray<T>(this)[0];
-  } else {
+  const th = getArray<T>(this);
+  if (!th.length) {
     throw new Error("InvalidOperationException: The source sequence is empty.");
   }
+  if (!predicate) {
+    return th[0];
+  }
+  // The guard used to be `if (this.Count())`, which asks whether the SOURCE is
+  // non-empty rather than whether anything MATCHED - so a predicate that matched
+  // nothing fell through to Where(predicate).ToArray()[0] and returned undefined
+  // from a method declared to return T. It now throws, as .NET does, and returns
+  // on the first match instead of filtering the whole sequence first.
+  for (let i = 0; i < th.length; i++) {
+    if (predicate(th[i], i, th)) {
+      return th[i];
+    }
+  }
+  throw new Error(
+    "InvalidOperationException: The source sequence contains no matching element."
+  );
 };
 
 Array.prototype.FirstOrDefault = function<T>(
   predicate?: (value: T, index: number, list: T[]) => boolean
 ): T | undefined {
-  return this.Count(predicate) ? this.First(predicate) : undefined;
+  const th = getArray<T>(this);
+  if (!predicate) {
+    return th.length ? th[0] : undefined;
+  }
+  // One pass. This used to be Count(predicate) followed by First(predicate),
+  // which walked the sequence twice and allocated twice.
+  for (let i = 0; i < th.length; i++) {
+    if (predicate(th[i], i, th)) {
+      return th[i];
+    }
+  }
+  return undefined;
 };
 
 Array.prototype.ForEach = function<T>(
@@ -607,32 +660,57 @@ Array.prototype.Join = function<T, U>(
 Array.prototype.Last = function<T>(
   predicate?: (value: T, index: number, list: T[]) => boolean
 ): T {
-  let th = getArray<T>(this);
-  if (this.Count()) {
-    return predicate ? th.Where(predicate).Last() : th[th.Count() - 1];
-  } else {
-    throw Error("InvalidOperationException: The source sequence is empty.");
+  const th = getArray<T>(this);
+  if (!th.length) {
+    throw new Error("InvalidOperationException: The source sequence is empty.");
   }
+  if (!predicate) {
+    return th[th.length - 1];
+  }
+  // Walks backwards and returns on the first match, the way .NET does for an
+  // IList<T>. Previously this filtered the whole sequence and called Last() on
+  // the result, so a predicate matching nothing reported "the source sequence
+  // is empty" about a sequence that was not empty.
+  for (let i = th.length - 1; i >= 0; i--) {
+    if (predicate(th[i], i, th)) {
+      return th[i];
+    }
+  }
+  throw new Error(
+    "InvalidOperationException: The source sequence contains no matching element."
+  );
 };
 
 Array.prototype.LastOrDefault = function<T>(
   predicate?: (value: T, index: number, list: T[]) => boolean
 ): T | undefined {
-  return this.Count(predicate) ? this.Last(predicate) : undefined;
+  const th = getArray<T>(this);
+  if (!predicate) {
+    return th.length ? th[th.length - 1] : undefined;
+  }
+  for (let i = th.length - 1; i >= 0; i--) {
+    if (predicate(th[i], i, th)) {
+      return th[i];
+    }
+  }
+  return undefined;
 };
 
 Array.prototype.Max = function<T>(
   selector?: (value: T, index: number, array: T[]) => number
 ): number {
-  let th = getArray<T>(this);
+  const th = getArray<T>(this);
+  if (!th.length) {
+    throw new Error("InvalidOperationException: The source sequence is empty.");
+  }
+  // The selector is evaluated once per element and the result reused; the old
+  // form called it twice for every element it compared. The scan also starts at
+  // 1, since element 0 is the seed and comparing it with itself is pointless.
   let max = selector ? selector(th[0], 0, th) : (th[0] as number);
-  if (selector) {
-    for (let i = 0; i < th.length; i++) {
-      max = selector(th[i], i, th) > max ? (max = selector(th[i], i, th)) : max;
-    }
-  } else {
-    for (let i = 0; i < th.length; i++) {
-      max = (th[i] as number) > max ? (max = th[i] as number) : max;
+  for (let i = 1; i < th.length; i++) {
+    const value = selector ? selector(th[i], i, th) : (th[i] as number);
+    if (value > max) {
+      max = value;
     }
   }
   return max;
@@ -662,15 +740,18 @@ Array.prototype.MaxBy = function<T>(keySelector: (item: T) => any): T {
 Array.prototype.Min = function<T>(
   selector?: (value: T, index: number, array: T[]) => number
 ): number {
-  let th = getArray<T>(this);
-  let min = selector ? selector(this[0], 0, this) : (this[0] as number);
-  if (selector) {
-    for (let i = 0; i < th.length; i++) {
-      min = selector(th[i], i, th) < min ? (min = selector(th[i], i, th)) : min;
-    }
-  } else {
-    for (let i = 0; i < th.length; i++) {
-      min = (th[i] as number) < min ? (min = th[i] as number) : min;
+  const th = getArray<T>(this);
+  if (!th.length) {
+    throw new Error("InvalidOperationException: The source sequence is empty.");
+  }
+  // See Max. The seed also now reads from `th` rather than `this`, which is
+  // what Max always did - the two only coincided because the receiver of an
+  // Array.prototype method is never a List.
+  let min = selector ? selector(th[0], 0, th) : (th[0] as number);
+  for (let i = 1; i < th.length; i++) {
+    const value = selector ? selector(th[i], i, th) : (th[i] as number);
+    if (value < min) {
+      min = value;
     }
   }
   return min;
@@ -724,7 +805,7 @@ Array.prototype.OrderBy = function<T>(
   comparer = keyComparer(keySelector, false)
 ): List<T> {
   const list: Array<T> = new Array();
-  for (const item of this instanceof List ? this._array : this) {
+  for (const item of getArray<T>(this)) {
     list.push(item);
   }
   return new List<T>(list, comparer);
@@ -735,7 +816,7 @@ Array.prototype.OrderByDescending = function<T>(
   comparer = keyComparer(keySelector, true)
 ): List<T> {
   const list: Array<T> = new Array();
-  for (const item of this instanceof List ? this._array : this) {
+  for (const item of getArray<T>(this)) {
     list.push(item);
   }
   return new List<T>(list, comparer);
@@ -783,22 +864,28 @@ Array.prototype.RemoveAll = function<T>(
 };
 
 Array.prototype.RemoveAt = function<T>(index: number): List<T> {
-  return this instanceof List
-    ? new List(this._array.splice(index, 1))
-    : new List(this.splice(index, 1));
+  return new List(getArray<T>(this).splice(index, 1));
 };
 
 Array.prototype.RemoveRange = function<T>(
   index: number,
   count: number
 ): List<T> {
-  return this instanceof List
-    ? new List(this._array.splice(index, count))
-    : new List(this.splice(index, count));
+  return new List(getArray<T>(this).splice(index, count));
 };
 
 Array.prototype.Reverse = function<T>(): void {
-  this instanceof List ? this._array.reverse() : this.reverse();
+  getArray<T>(this).reverse();
+};
+
+Array.prototype.Reversed = function<T>(): List<T> {
+  // slice() first - reverse() mutates, and the whole point of this operator is
+  // that the source comes out unchanged.
+  return new List<T>(
+    getArray<T>(this)
+      .slice()
+      .reverse()
+  );
 };
 
 Array.prototype.Select = function<TOut, T>(
@@ -830,17 +917,70 @@ Array.prototype.SequenceEqual = function<T>(list: T[]): boolean {
 Array.prototype.Single = function<T>(
   predicate?: (value: T, index: number, list: T[]) => boolean
 ): T {
-  if (this.Count(predicate) !== 1) {
-    throw new Error("The collection does not contain exactly one element.");
-  } else {
-    return this.First(predicate);
+  const th = getArray<T>(this);
+  if (!th.length) {
+    throw new Error("InvalidOperationException: The source sequence is empty.");
   }
+  if (!predicate) {
+    if (th.length > 1) {
+      throw new Error(
+        "InvalidOperationException: The source sequence contains more than one element."
+      );
+    }
+    return th[0];
+  }
+  // .NET distinguishes four cases here, and stops as soon as a second match is
+  // found rather than counting every match first.
+  let found: T | undefined;
+  let seen = false;
+  for (let i = 0; i < th.length; i++) {
+    if (predicate(th[i], i, th)) {
+      if (seen) {
+        throw new Error(
+          "InvalidOperationException: The source sequence contains more than one matching element."
+        );
+      }
+      found = th[i];
+      seen = true;
+    }
+  }
+  if (!seen) {
+    throw new Error(
+      "InvalidOperationException: The source sequence contains no matching element."
+    );
+  }
+  return found as T;
 };
 
 Array.prototype.SingleOrDefault = function<T>(
   predicate?: (value: T, index: number, list: T[]) => boolean
 ): T | undefined {
-  return this.Count(predicate) ? this.Single(predicate) : undefined;
+  const th = getArray<T>(this);
+  if (!th.length) {
+    return undefined;
+  }
+  if (!predicate) {
+    if (th.length > 1) {
+      throw new Error(
+        "InvalidOperationException: The source sequence contains more than one element."
+      );
+    }
+    return th[0];
+  }
+  let found: T | undefined;
+  let seen = false;
+  for (let i = 0; i < th.length; i++) {
+    if (predicate(th[i], i, th)) {
+      if (seen) {
+        throw new Error(
+          "InvalidOperationException: The source sequence contains more than one matching element."
+        );
+      }
+      found = th[i];
+      seen = true;
+    }
+  }
+  return seen ? found : undefined;
 };
 
 Array.prototype.Skip = function<T>(amount: number): List<T> {
@@ -914,7 +1054,7 @@ Array.prototype.ToDictionary = function<TKey, TValue, T>(
 };
 
 Array.prototype.ToList = function<T>(): List<T> {
-  return this instanceof List ? this : new List<T>(this);
+  return new List<T>(getArray<T>(this));
 };
 
 Array.prototype.ToLookup = function<T>(
@@ -931,9 +1071,7 @@ Array.prototype.Union = function<T>(list: T[]): List<T> {
 Array.prototype.Where = function<T>(
   predicate: (value: T, index: number, list: T[]) => boolean
 ): List<T> {
-  return this instanceof List
-    ? this.Where(predicate)
-    : new List<T>(this.filter(predicate));
+  return new List<T>(getArray<T>(this).filter(predicate));
 };
 
 Array.prototype.Zip = function<T, U, TOut>(
@@ -991,14 +1129,14 @@ const composeComparers = <T>(
 ): ((a: T, b: T) => number) => (a: T, b: T) =>
   previousComparer(a, b) || currentComparer(a, b);
 
-class List<T> {
+export class List<T> {
   public _array: T[] = [];
   constructor(elements?: T[], private _comparer?: (a: T, b: T) => number) {
     if (elements) {
       this._array = elements;
     }
     if (this._comparer) {
-      TimSort.sort(this._array, this._comparer);
+      timsort(this._array, this._comparer);
     }
   }
 
@@ -1174,6 +1312,9 @@ class List<T> {
   Reverse() {
     this._array.Reverse();
   }
+  Reversed() {
+    return this._array.Reversed();
+  }
   Select<TOut>(selector: (element: T, index: number) => TOut) {
     return this._array.Select(selector);
   }
@@ -1260,4 +1401,19 @@ class Enumerable {
     }
     return result;
   }
+}
+
+/**
+ * Everything above was attached with `Array.prototype.X = ...`, which creates an
+ * ENUMERABLE property. That leaks all 65 method names into `for...in` over any
+ * array in the process - including arrays owned by code that never asked for this
+ * library - turning `for (const i in [1,2,3])` into 68 iterations instead of 3.
+ *
+ * Object.keys() on a prototype returns only its enumerable own properties, and
+ * the built-in Array methods are all non-enumerable, so this sees exactly the
+ * names this module added. Passing only `enumerable` to defineProperty leaves
+ * writable and configurable as they were.
+ */
+for (const name of Object.keys(Array.prototype)) {
+  Object.defineProperty(Array.prototype, name, { enumerable: false });
 }
